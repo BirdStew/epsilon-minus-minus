@@ -41,9 +41,3 @@ void delMatrix(matrix** m)
 
 }
 
-
-int main( int argc, const char* argv[] )
-{
-	printf( "\nHello World\n\n" );
-	return EXIT_SUCCESS;
-}
