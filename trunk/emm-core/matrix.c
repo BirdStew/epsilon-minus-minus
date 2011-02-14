@@ -11,7 +11,7 @@
 
 matrix* newMatrix(int rows, int cols)
 {
-	matrix* m = (matrix)malloc(sizeof(matrix));
+	matrix* m = (matrix*)malloc(sizeof(matrix));
 	if(m == NULL)
 		fprintf(stderr,"error: malloc failed for 'matrix' in newMatrix\n");
 
@@ -34,9 +34,9 @@ void delMatrix(matrix** m)
 	}
 	else
 	{
-		free(*m->data);
+		free((*m)->data);
 		free(*m);
-		**m = NULL;
+		*m = NULL;
 	}
 
 }
