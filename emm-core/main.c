@@ -37,4 +37,5 @@ void printUsage()
 	" <message> is the path to the mesage file.\n";
 
 	printf("%s", usage);
+
 }
