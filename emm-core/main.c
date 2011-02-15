@@ -7,6 +7,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+
+#define PROGRAM_NAME "emm-core"
 
 void printUsage();
 
@@ -14,7 +17,50 @@ void printUsage();
 
 int main( int argc, const char** argv )
 {
-	printUsage();
+	unsigned char c;
+	char linFlag = 0;
+	char hamFlag = 0;
+	char lflag = 0;
+
+	int n = 0;
+	int k = 0;
+	int p = .01;
+
+	while ((c = getopt (argc, argv, "LRHhk:n:")) != -1)
+	{
+		switch(c)
+		{
+			case 'L':
+			break;
+
+			case 'R':
+			break;
+
+			case 'H':
+			break;
+
+			case 'h':
+				printUsage();
+			break;
+
+			case 'k':
+			break;
+
+			case 'n':
+			break;
+
+			//case ':':
+				//fprintf(stderr, "Option -%c requires an operand\n", optopt);
+			//break;
+
+			case '?':
+				fprintf(stderr, "Try `%s --help' for more information.\n",  PROGRAM_NAME);
+				return EXIT_FAILURE;
+			break;
+		}
+
+	}
+
 	return EXIT_SUCCESS;
 }
 
@@ -22,7 +68,7 @@ int main( int argc, const char** argv )
 void printUsage()
 {
 	char* usage=""
-	" Usage: emm-core [options] <message>\n"
+	" Usage: " PROGRAM_NAME " [options] <message>\n"
 	"\n"
 	"Options:\n"
 	" -L                use linear encoding\n"
