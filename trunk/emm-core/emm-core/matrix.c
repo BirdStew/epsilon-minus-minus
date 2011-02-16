@@ -15,9 +15,6 @@ matrix* newMatrix(int rows, int cols)
 	if(m == NULL)
 		fprintf(stderr,"error: malloc failed for 'matrix' in newMatrix\n");
 
-	// Fill matrix with zeros
-	memset(m, 0, rows * cols);
-
 	m->rows = rows;
 	m->cols = cols;
 
@@ -43,14 +40,4 @@ void delMatrix(matrix** m)
 	}
 
 }
-
-void makeIdentity(matrix* m)
-{
-	int i;
-	for(i = 0; i < m->rows; i += m->rows)
-	{
-		m->data[i];
-	}
-}
-
 
