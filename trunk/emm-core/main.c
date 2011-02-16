@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #define PROGRAM_NAME "emm-core"
@@ -17,14 +18,17 @@ void printUsage();
 
 int main( int argc, const char** argv )
 {
-	unsigned char c;
+	signed char c;
 	char linFlag = 0;
 	char hamFlag = 0;
 	char lflag = 0;
 
-	int n = 0;
-	int k = 0;
+	int n = {0,0};
+	int k = {0,0};
 	int p = .01;
+
+	if(argc <= 1 || strstr(argv[1],"help"))
+		printUsage();
 
 	while ((c = getopt (argc, argv, "LRHhk:n:")) != -1)
 	{
@@ -49,9 +53,10 @@ int main( int argc, const char** argv )
 			case 'n':
 			break;
 
-			//case ':':
-				//fprintf(stderr, "Option -%c requires an operand\n", optopt);
-			//break;
+			case ':':
+				fprintf(stderr, "Option -%c requires an operand\n", optopt);
+				printf("adsfadf");
+			break;
 
 			case '?':
 				fprintf(stderr, "Try `%s --help' for more information.\n",  PROGRAM_NAME);
