@@ -53,4 +53,23 @@ void makeIdentity(matrix* m)
 	}
 }
 
+matrix* binaryMultiply(matrix* a, matrix* b)
+{
+	//r c  * r c
+	if(a->cols != b->rows)
+	{
+		fprintf(stderr, "error: cannot multiply! A.rows != B.cols in binaryMultiply\n");
+	}
 
+	matrix* c = newMatrix(a->rows, b->cols);
+
+	int i,j,k;
+    for(i = 0; i < a->cols; i++)
+        for( j = 0; j < b->rows; j++)
+            for( k = 0; k < 3; k++)
+            {
+            	c->data[i*c->cols+j] ^= a->data[i*a->cols+k] & b->data[k*b->cols+j];
+            }
+
+    return c;
+}
