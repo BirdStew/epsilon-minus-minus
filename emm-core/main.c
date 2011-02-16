@@ -55,7 +55,6 @@ int main( int argc, const char** argv )
 
 			case ':':
 				fprintf(stderr, "Option -%c requires an operand\n", optopt);
-				printf("adsfadf");
 			break;
 
 			case '?':
@@ -85,7 +84,7 @@ void printUsage()
 	"\n"
 	"Notes:\n"
 	" <number> can be a single be a unsigned integer or a colon separated range.\n"
-	" <message> is the path to the mesage file.\n";
+	" <message> is the path to the message file.\n";
 
 	printf("%s", usage);
 
