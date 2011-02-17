@@ -13,7 +13,8 @@ matrix* newGeneratorMatrix(int k, int n)
 	setIdentity(gen, 0);
 
 	printAugMatrix(gen, 3);
-
+	transposeMatrix(gen);
+	printMatrix(gen);
 	return 0;
 }
 

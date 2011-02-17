@@ -86,13 +86,13 @@ void transposeMatrix(matrix* m)
 		for(j = 0; j < m->cols; j++)
 		{
 			temp = m->data[i * m->cols + j];
-			m->data[i * m->cols + j] = m->data[j * m->cols + i];
-			m->data[j * m->cols + i] = temp;
+			m->data[i * m->cols + j] = m->data[j * m->rows + i];
+			m->data[j * m->rows + i] = temp;
 		}
 	}
 
 	temp = m-> rows;
-	m->rows = m_>cols;
+	m->rows = m->cols;
 	m->cols = temp;
 }
 
