@@ -80,8 +80,20 @@ matrix* binaryMultiply(matrix* a, matrix* b)
 
 void transposeMatrix(matrix* m)
 {
-	int i, j;
-	//for(i = 0; i < m->rows; i++)
+	int i, j, temp;
+	for(i = 0; i < m->rows; i++)
+	{
+		for(j = 0; j < m->cols; j++)
+		{
+			temp = m->data[i * m->cols + j];
+			m->data[i * m->cols + j] = m->data[j * m->cols + i];
+			m->data[j * m->cols + i] = temp;
+		}
+	}
+
+	temp = m-> rows;
+	m->rows = m_>cols;
+	m->cols = temp;
 }
 
 
