@@ -13,14 +13,14 @@ matrix* newMatrix(int rows, int cols)
 {
 	matrix* m = (matrix*)malloc(sizeof(matrix));
 	if(m == NULL)
-		fprintf(stderr,"error: malloc failed for 'matrix' in newMatrix\n");
+		fprintf(stderr,"error: malloc failed for 'matrix' in 'newMatrix'\n");
 
 	m->rows = rows;
 	m->cols = cols;
 
 	char* d = (char*)calloc(rows*cols, sizeof(char));
 	if(d == NULL)
-		fprintf(stderr,"error: malloc failed for 'data' in newMatrix\n");
+		fprintf(stderr,"error: malloc failed for 'data' in 'newMatrix'\n");
 
 	m->data = d;
 	return m;
@@ -30,7 +30,7 @@ void delMatrix(matrix** m)
 {
 	if(*m == NULL)
 	{
-		fprintf(stderr,"error: passed ptr is NULL in delMatrix\n");
+		fprintf(stderr,"error: passed ptr is NULL in 'delMatrix'\n");
 	}
 	else
 	{
@@ -41,12 +41,18 @@ void delMatrix(matrix** m)
 
 }
 
-void setIdentity(matrix* m)
+void setIdentity(matrix* m, int offset)
 {
+	if(m->rows + offset > m->cols)
+	{
+		fprintf(stderr, "error: Setting identity would extend out-of-bounds in 'setIdentity'\n");
+		exit(EXIT_FAILURE);
+	}
+
 	int i;
 	for(i = 0; i < m->rows; i++)
 	{
-		m->data[i * m->cols + i] = 1;
+		m->data[i * m->cols + i + offset] = 1;
 	}
 }
 
@@ -55,7 +61,7 @@ matrix* binaryMultiply(matrix* a, matrix* b)
 	//r c  * r c
 	if(a->cols != b->rows)
 	{
-		fprintf(stderr, "error: cannot multiply! A.rows != B.cols in binaryMultiply\n");
+		fprintf(stderr, "error: cannot multiply! A.rows != B.cols in 'binaryMultiply'\n");
 	}
 
 	matrix* c = newMatrix(a->rows, b->cols);
