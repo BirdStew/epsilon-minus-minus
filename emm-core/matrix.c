@@ -41,9 +41,9 @@ void delMatrix(matrix** m)
 
 }
 
-void setIdentity(matrix* m, int offset)
+void setIdentity(matrix* m)
 {
-	if(m->rows + offset > m->cols)
+	if(m->rows > m->cols)
 	{
 		fprintf(stderr, "error: Setting identity would extend out-of-bounds in 'setIdentity'\n");
 		exit(EXIT_FAILURE);
@@ -52,7 +52,7 @@ void setIdentity(matrix* m, int offset)
 	int i;
 	for(i = 0; i < m->rows; i++)
 	{
-		m->data[i * m->cols + i + offset] = 1;
+		m->data[i * m->cols + i] = 1;
 	}
 }
 
@@ -97,9 +97,39 @@ void transposeMatrix(matrix* m)
 }
 
 
+matrix* joinMatrix(matrix* a, matrix* b)
+{
+	if(a->rows != b->rows)
+	{
+		fprintf(stderr, "error: Matrices must have the same number of rows 'joinMatrix'\n");
+		exit(EXIT_FAILURE);
+	}
+
+	matrix* c = newMatrix(a->rows, a->cols + b->cols);
+
+	int i, j;
+	for(i = 0; i < c->rows; i++)
+	{
+		for(j = 0; j < c->cols; j++)
+		{
+			if(j < a->rows)
+			{
+				c->data[i * c->cols + j] = a->data[i * a->cols + j];
+			}
+			else
+			{
+				c->data[i * c->cols + j] = b->data[i * b->cols + (j - a->cols) ];
+			}
+		}
+	}
+
+	return c;
+}
+
+
 void printAugMatrix(matrix* m, int column)
 {
-	int i,j;
+	int i, j;
 	for(i = 0; i < m->rows; i++)
 	{
 		for(j = 0; j < m->cols; j++)
