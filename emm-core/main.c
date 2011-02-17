@@ -10,6 +10,10 @@
 #include <string.h>
 #include <unistd.h>
 
+				/* TESTING ONLY */
+				#include "code.h"
+				#include "matrix.h"
+
 #define PROGRAM_NAME "emm-core"
 
 void printUsage();
@@ -27,6 +31,7 @@ int main( int argc, const char** argv )
 	int k = {0,0};
 	int p = .01;
 
+
 	if(argc <= 1 || strstr(argv[1],"help"))
 		printUsage();
 
@@ -35,6 +40,7 @@ int main( int argc, const char** argv )
 		switch(c)
 		{
 			case 'L':
+				newGeneratorMatrix(4,8);
 			break;
 
 			case 'R':

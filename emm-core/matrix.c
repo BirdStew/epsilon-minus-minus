@@ -41,7 +41,7 @@ void delMatrix(matrix** m)
 
 }
 
-void makeIdentity(matrix* m)
+void setIdentity(matrix* m)
 {
 	int i;
 	for(i = 0; i < m->rows; i += m->rows)

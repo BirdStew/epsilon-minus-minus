@@ -19,7 +19,7 @@ typedef struct struc_mx matrix;
 
 matrix* newMatrix(int rows, int cols);
 void delMatrix(matrix** m);
-void makeIdentity(matrix* m);
+void setIdentity(matrix* m);
 matrix* binaryMultiply(matrix* a, matrix* b);
 void printAugMatrix(matrix* m, int partition);
 void printMatrix(matrix* m);
