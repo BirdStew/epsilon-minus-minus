@@ -44,9 +44,9 @@ void delMatrix(matrix** m)
 void setIdentity(matrix* m)
 {
 	int i;
-	for(i = 0; i < m->rows; i += m->rows)
+	for(i = 0; i < m->rows; i++)
 	{
-		m->data[i * m->rows + i] = 1;
+		m->data[i * m->cols + i] = 1;
 	}
 }
 
@@ -72,7 +72,7 @@ matrix* binaryMultiply(matrix* a, matrix* b)
 }
 
 
-void printAugMatrix(matrix* m, int partition)
+void printAugMatrix(matrix* m, int column)
 {
 	int i,j;
 	for(i = 0; i < m->rows; i++)
@@ -80,7 +80,7 @@ void printAugMatrix(matrix* m, int partition)
 		for(j = 0; j < m->cols; j++)
 		{
 			printf("%d ", m->data[i * m->cols + j]);
-			if(partition > -1 && partition == j)
+			if(column > -1 && column == j)
 				printf("| ");
 		}
 		printf("\n");
