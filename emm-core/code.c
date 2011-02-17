@@ -10,7 +10,7 @@
 matrix* newGeneratorMatrix(int n, int k)
 {
 	matrix* gen = newMatrix(n, k);
-	setIdentity(gen);
+	setIdentity(gen, 0);
 
 	printAugMatrix(gen, 3);
 
