@@ -15,13 +15,10 @@ matrix* newMatrix(int rows, int cols)
 	if(m == NULL)
 		fprintf(stderr,"error: malloc failed for 'matrix' in newMatrix\n");
 
-	// Fill matrix with zeros
-	memset(m, 0, rows * cols);
-
 	m->rows = rows;
 	m->cols = cols;
 
-	char* d = (char*)malloc(sizeof(char)*rows*cols);
+	char* d = (char*)calloc(rows*cols, sizeof(char));
 	if(d == NULL)
 		fprintf(stderr,"error: malloc failed for 'data' in newMatrix\n");
 
@@ -49,7 +46,7 @@ void makeIdentity(matrix* m)
 	int i;
 	for(i = 0; i < m->rows; i += m->rows)
 	{
-		m->data[i];
+		m->data[i * m->rows + i] = 1;
 	}
 }
 
@@ -72,4 +69,26 @@ matrix* binaryMultiply(matrix* a, matrix* b)
             }
 
     return c;
+}
+
+
+void printAugMatrix(matrix* m, int partition)
+{
+	int i,j;
+	for(i = 0; i < m->rows; i++)
+	{
+		for(j = 0; j < m->cols; j++)
+		{
+			printf("%d ", m->data[i * m->cols + j]);
+			if(partition > -1 && partition == j)
+				printf("| ");
+		}
+		printf("\n");
+	}
+}
+
+
+void printMatrix(matrix* m)
+{
+	printAugMatrix(m, -1);
 }
