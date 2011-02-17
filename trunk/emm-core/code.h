@@ -11,5 +11,6 @@
 #include "matrix.h"
 
 matrix* newGeneratorMatrix();
+void setPCE(matrix *m, int offset);
 
 #endif /* CODE_H_ */

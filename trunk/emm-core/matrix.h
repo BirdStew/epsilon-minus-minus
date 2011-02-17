@@ -21,7 +21,7 @@ matrix* newMatrix(int rows, int cols);
 void delMatrix(matrix** m);
 void setIdentity(matrix* m);
 matrix* binaryMultiply(matrix* a, matrix* b);
-void printAugMatrix(matrix* m, int partition);
+void printAugMatrix(matrix* m, int column);
 void printMatrix(matrix* m);
 
 #endif /* MATRIX_H_ */
