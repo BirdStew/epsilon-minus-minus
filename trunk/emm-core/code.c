@@ -7,9 +7,9 @@
 #include "code.h"
 
 
-matrix* newGeneratorMatrix(int n, int k)
+matrix* newGeneratorMatrix(int k, int n)
 {
-	matrix* gen = newMatrix(n, k);
+	matrix* gen = newMatrix(k, n);
 	setIdentity(gen, 0);
 
 	printAugMatrix(gen, 3);

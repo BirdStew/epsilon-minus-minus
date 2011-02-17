@@ -78,6 +78,13 @@ matrix* binaryMultiply(matrix* a, matrix* b)
 }
 
 
+void transposeMatrix(matrix* m)
+{
+	int i, j;
+	//for(i = 0; i < m->rows; i++)
+}
+
+
 void printAugMatrix(matrix* m, int column)
 {
 	int i,j;
