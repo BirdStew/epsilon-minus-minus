@@ -10,7 +10,7 @@
 
 #include "matrix.h"
 
-matrix* newGeneratorMatrix();
-void setPCE(matrix *m, int offset);
+matrix* newGeneratorMatrix(matrix* pce);
+matrix* setPCE(int method);
 
 #endif /* CODE_H_ */
