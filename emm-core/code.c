@@ -20,7 +20,7 @@ matrix* newGeneratorMatrix(matrix* pce)
 }
 
 
-void setPCE(matrix *m, int k)
+matrix* setPCE(int method)
 {
  // j should always start at offset
  // offset = k-n

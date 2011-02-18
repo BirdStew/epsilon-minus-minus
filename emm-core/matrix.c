@@ -41,19 +41,16 @@ void delMatrix(matrix** m)
 
 }
 
-void setIdentity(matrix* m)
+matrix* makeIdentity(int rows)
 {
-	if(m->rows > m->cols)
-	{
-		fprintf(stderr, "error: Setting identity would extend out-of-bounds in 'setIdentity'\n");
-		exit(EXIT_FAILURE);
-	}
+	matrix* m = newMatrix(rows, rows);
 
 	int i;
-	for(i = 0; i < m->rows; i++)
+	for(i = 0; i < rows; i++)
 	{
-		m->data[i * m->cols + i] = 1;
+		m->data[i * rows + i] = 1;
 	}
+	return m;
 }
 
 matrix* binaryMultiply(matrix* a, matrix* b)
