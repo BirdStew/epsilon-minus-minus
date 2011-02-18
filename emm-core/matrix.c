@@ -67,9 +67,9 @@ matrix* binaryMultiply(matrix* a, matrix* b)
 	matrix* c = newMatrix(a->rows, b->cols);
 
 	int i,j,k;
-    for(i = 0; i < a->cols; i++)
-        for( j = 0; j < b->rows; j++)
-            for( k = 0; k < 3; k++)
+    for(i = 0; i < c->rows; i++)
+        for( j = 0; j < c->cols; j++)
+            for( k = 0; k < b->rows; k++)
             {
             	c->data[i*c->cols+j] ^= a->data[i*a->cols+k] & b->data[k*b->cols+j];
             }
