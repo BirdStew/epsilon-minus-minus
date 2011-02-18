@@ -7,28 +7,16 @@
 #include "code.h"
 #include <stdio.h> //FIXME
 
-matrix* newGeneratorMatrix(int k, int n)
+matrix* newGeneratorMatrix(matrix* pce)
 {
-	//matrix* gen = newMatrix(k, n);
-	//setIdentity(gen);
+	matrix* identity = newMatrix(pce->rows, pce->rows);
+	setIdentity(identity);
 
-	//printAugMatrix(gen, 3);
-	//transposeMatrix(gen);
-	//printMatrix(gen);
+	matrix* gen = joinMatrix(identity, pce);
 
-	matrix* a = newMatrix(4,4);
-	matrix* b = newMatrix(4,4);
-	printf("\nA\n");
-	setIdentity(a);
-	printMatrix(a);
-	printf("\nB\n");
-	setIdentity(b);
-	printMatrix(b);
-	printf("\nC\n");
-	matrix* c = joinMatrix(a,b);
-	printAugMatrix(c, 3);
+	delMatrix(&identity);
 
-	return 0;
+	return gen;
 }
 
 
