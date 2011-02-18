@@ -40,7 +40,7 @@ int main( int argc, const char** argv )
 		switch(c)
 		{
 			case 'L':
-				newGeneratorMatrix(4,8);
+				//newGeneratorMatrix();
 			break;
 
 			case 'R':
