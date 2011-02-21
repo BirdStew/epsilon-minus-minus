@@ -40,9 +40,9 @@ matrix* newDenseParity(int rows, int cols)
 		for(j = 0; j < cols; j++)
 		{
 			if(i == j)
-				d->data[i * cols + j] = 1;
-			else
 				d->data[i * cols + j] = 0;
+			else
+				d->data[i * cols + j] = 1;
 		}
 	}
 	return d;
