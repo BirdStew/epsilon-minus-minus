@@ -199,3 +199,22 @@ void printMatrix(matrix* m)
 {
 	printAugMatrix(m, -1);
 }
+
+
+char* toString(matrix* m)
+{
+	int strLen = m->rows * m->cols * sizeof(char) + m->rows + 1;
+	char* str = (char*)malloc(strLen);
+	int i, j;
+	char asciiOffest = 48;
+	for(i = 0; i < m->rows; i++)
+	{
+		for(j = 0; j < m->cols; j++)
+		{
+			str[i * m->cols + j] = (char)(m->data[i * m->cols + j] + asciiOffest);
+		}
+		str[i * m->cols + j] = '\n';
+	}
+	str[strLen - 1] = '\0';
+	return str;
+}
