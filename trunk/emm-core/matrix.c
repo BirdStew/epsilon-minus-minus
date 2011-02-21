@@ -211,12 +211,12 @@ char* toString(matrix* m)
 	int strLen = m->rows * m->cols * sizeof(char) + m->rows + 1;
 	char* str = (char*)malloc(strLen);
 	int i, j;
-	const char asciiOffest = 48;
+	const char asciiOffset = 48;
 	for(i = 0; i < m->rows; i++)
 	{
 		for(j = 0; j < m->cols; j++)
 		{
-			str[i * m->cols + j + i] = (char)(m->data[i * m->cols + j] + asciiOffest);
+			str[i * m->cols + j + i] = (char)(m->data[i * m->cols + j] + asciiOffset);
 		}
 		str[i * m->cols + j + i] = '\n';
 	}
