@@ -24,16 +24,24 @@
  */
 matrix* newMatrix(int rows, int cols)
 {
+	if(rows < 1 || cols < 1)
+	{
+		fprintf(stderr,"error: Matrix dimensions less than 1.  Received %d,%d in 'newMatrix'\n", rows, cols);
+	}
+
 	matrix* m = (matrix*)malloc(sizeof(matrix));
 	if(m == NULL)
+	{
 		fprintf(stderr,"error: malloc failed for 'matrix' in 'newMatrix'\n");
-
+	}
 	m->rows = rows;
 	m->cols = cols;
 
 	char* d = (char*)calloc(rows*cols, sizeof(char));
 	if(d == NULL)
+	{
 		fprintf(stderr,"error: malloc failed for 'data' in 'newMatrix'\n");
+	}
 
 	m->data = d;
 	return m;
