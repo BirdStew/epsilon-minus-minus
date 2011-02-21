@@ -16,9 +16,27 @@ matrix* newGeneratorMatrix(matrix* pce)
 }
 
 
-matrix* setPCE(int method)
+matrix* setPCM(int method)
 {
- // j should always start at offset
- // offset = k-n
+
 	return 0;
+}
+
+
+matrix* denseParity(int rows, int cols)
+{
+	matrix* d = newMatrix(rows, cols);
+
+	int i, j;
+	for(i = 0; i < rows; i++)
+	{
+		for(j = 0; j < cols; j++)
+		{
+			if(i == j)
+				d->data[i * cols + j] = 1;
+			else
+				d->data[i * cols + j] = 0;
+		}
+	}
+	return d;
 }
