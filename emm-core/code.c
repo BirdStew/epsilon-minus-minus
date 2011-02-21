@@ -23,6 +23,13 @@ matrix* setPCM(int method)
 }
 
 
+/*
+ * Creates a matrix of dimension  rows, cols and fills it with ones.
+ * Starting from the upper left, the diagonal is set to zero's.  Although
+ * this function creates an inverted identity, it does not need to be a square
+ * matrix.  The result is intended to be used as a parity check matrix.
+ */
+
 matrix* denseParity(int rows, int cols)
 {
 	matrix* d = newMatrix(rows, cols);
