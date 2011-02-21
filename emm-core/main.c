@@ -31,7 +31,6 @@ int main( int argc, const char** argv )
 	int k = {0,0};
 	int p = .01;
 
-
 	if(argc <= 1 || strstr(argv[1],"help"))
 		printUsage();
 
@@ -40,8 +39,8 @@ int main( int argc, const char** argv )
 		switch(c)
 		{
 			case 'L':
-				//newGeneratorMatrix();
-				printf("dp: %s", toString(newDenseParity(4,3)));
+				//newGeneratorMatrix(NULL);
+
 			break;
 
 			case 'R':

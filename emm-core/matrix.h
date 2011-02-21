@@ -25,5 +25,6 @@ void transposeMatrix(matrix* m);
 matrix* joinMatrix(matrix* a, matrix* b);
 void printAugMatrix(matrix* m, int column);
 void printMatrix(matrix* m);
+char* toString(matrix* m);
 
 #endif /* MATRIX_H_ */

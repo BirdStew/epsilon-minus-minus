@@ -201,19 +201,24 @@ void printMatrix(matrix* m)
 }
 
 
+/*
+ * Returns the contents of a matrix represented as a string.
+ * Rows a delimited by a 'LF' (Line Feed) character.
+ */
+
 char* toString(matrix* m)
 {
 	int strLen = m->rows * m->cols * sizeof(char) + m->rows + 1;
 	char* str = (char*)malloc(strLen);
 	int i, j;
-	char asciiOffest = 48;
+	const char asciiOffest = 48;
 	for(i = 0; i < m->rows; i++)
 	{
 		for(j = 0; j < m->cols; j++)
 		{
-			str[i * m->cols + j] = (char)(m->data[i * m->cols + j] + asciiOffest);
+			str[i * m->cols + j + i] = (char)(m->data[i * m->cols + j] + asciiOffest);
 		}
-		str[i * m->cols + j] = '\n';
+		str[i * m->cols + j + i] = '\n';
 	}
 	str[strLen - 1] = '\0';
 	return str;
