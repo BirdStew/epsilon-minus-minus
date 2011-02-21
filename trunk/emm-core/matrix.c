@@ -8,7 +8,20 @@
 #include <stdlib.h>
 #include "matrix.h"
 
+/*
+ * Maintainers' Notes:
+ * It is very important that the matrix struct be unmodified in future revisions.
+ * Maintainers should note that many of the functions are depend on the present
+ * fields and the size of their data types.  It should also be understood that this
+ * matrix is intend to contain BINARY values only.
+ */
 
+
+
+/*
+ * Creates a matrix of dimensions rows, cols filled with zeros and
+ * returns a pointer to the matrix.  Matrix dimensions cannot be negative.
+ */
 matrix* newMatrix(int rows, int cols)
 {
 	matrix* m = (matrix*)malloc(sizeof(matrix));
@@ -26,6 +39,13 @@ matrix* newMatrix(int rows, int cols)
 	return m;
 }
 
+
+/*
+ * Receives a pointer to a matrix pointer and safely frees the matrix
+ * struct from the heap.   The passed pointer is then dereferenced and
+ * set to null to prevent users from reading unmanaged memory.
+ */
+
 void delMatrix(matrix** m)
 {
 	if(*m == NULL)
@@ -41,6 +61,12 @@ void delMatrix(matrix** m)
 
 }
 
+
+/*
+ * Creates an Identity matrix of dimensions rows, rows and
+ * returns a pointer to matrix.
+ */
+
 matrix* makeIdentity(int rows)
 {
 	matrix* m = newMatrix(rows, rows);
@@ -52,6 +78,16 @@ matrix* makeIdentity(int rows)
 	}
 	return m;
 }
+
+
+/*
+ * Multiplies two matrices together, but instead of computing with
+ * multiplication and addition operators, it uses binary AND and
+ * OR operations.  The dimensional constraints are the same as a regular
+ * matrix multiply.  This multiplication is based on the assumption that
+ * matrix operands A and B contain only binary values.  The return value
+ * is a newly created matrix resulting from the multiply.
+ */
 
 matrix* binaryMultiply(matrix* a, matrix* b)
 {
@@ -75,6 +111,10 @@ matrix* binaryMultiply(matrix* a, matrix* b)
 }
 
 
+/*
+ * This function transposes a matrix in-place.
+ */
+
 void transposeMatrix(matrix* m)
 {
 	int i, j, temp;
@@ -93,6 +133,13 @@ void transposeMatrix(matrix* m)
 	m->cols = temp;
 }
 
+
+/*
+ * Creates and returns a new matrix with dimensions rows,  A.cols + b.cols.
+ * In order to join both matrices A and B must the same number of rows.
+ * The return value is a third matrix.  It is the responsibility of the user
+ * to discard matrices A and B.
+ */
 
 matrix* joinMatrix(matrix* a, matrix* b)
 {
