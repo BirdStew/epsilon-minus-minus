@@ -41,6 +41,7 @@ int main( int argc, const char** argv )
 		{
 			case 'L':
 				//newGeneratorMatrix();
+				printf("dp: %s", toString(newDenseParity(4,3)));
 			break;
 
 			case 'R':

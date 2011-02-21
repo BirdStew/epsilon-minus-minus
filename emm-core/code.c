@@ -30,7 +30,7 @@ matrix* setPCM(int method)
  * matrix.  The result is intended to be used as a parity check matrix.
  */
 
-matrix* denseParity(int rows, int cols)
+matrix* newDenseParity(int rows, int cols)
 {
 	matrix* d = newMatrix(rows, cols);
 

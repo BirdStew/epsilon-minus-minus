@@ -12,6 +12,6 @@
 
 matrix* newGeneratorMatrix(matrix* pce);
 matrix* setPCE(int method);
-matrix* denseParity(int rows, int cols);
+matrix* newDenseParity(int rows, int cols);
 
 #endif /* CODE_H_ */
