@@ -26,6 +26,8 @@ enum PARITY_TYPE
 	RANDOM
 };
 
+Code* newCode(int wordLen, int parityLen, int parityType);
+void delCode(Code** c);
 Matrix* newGeneratorMatrix(Matrix* pce);
 Matrix* newControlMatrix(Matrix* pcm);
 Matrix* newSyndromeMatrix(int wordLen, int parityLen);
