@@ -12,15 +12,26 @@
 
 typedef struct Code
 {
+	int wordLen;
+	int parityLen;
 	Matrix* generator;
 	Matrix* control;
 	Matrix* syndrome;
 } Code;
 
+enum PARITY_TYPE
+{
+	DENSE,
+	LOW_DENSITY,
+	RANDOM
+};
+
 Matrix* newGeneratorMatrix(Matrix* pce);
 Matrix* newControlMatrix(Matrix* pcm);
+Matrix* newSyndromeMatrix(int wordLen, int parityLen);
 Matrix* newDenseParity(int rows, int cols);
-Matrix* newLowDenseParity(int rows, int cols);
+Matrix* newLowDensityParity(int rows, int cols);
+Matrix* newRandomParity(int rows, int cols);
 
 
 #endif /* CODE_H_ */
