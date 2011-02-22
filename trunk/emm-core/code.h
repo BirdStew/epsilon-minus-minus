@@ -10,8 +10,8 @@
 
 #include "matrix.h"
 
-matrix* newGeneratorMatrix(matrix* pce);
-matrix* setPCE(int method);
-matrix* newDenseParity(int rows, int cols);
+Matrix* newGeneratorMatrix(Matrix* pce);
+Matrix* setPCE(int method);
+Matrix* newDenseParity(int rows, int cols);
 
 #endif /* CODE_H_ */

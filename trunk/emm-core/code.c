@@ -7,16 +7,22 @@
 #include "code.h"
 #include <stdio.h> //FIXME
 
-matrix* newGeneratorMatrix(matrix* pce)
+typedef struct Code
 {
-	matrix* identity = makeIdentity(pce->rows);
-	matrix* gen = joinMatrix(identity, pce);
+	int x;
+} Code;
+
+
+Matrix* newGeneratorMatrix(Matrix* pce)
+{
+	Matrix* identity = makeIdentity(pce->rows);
+	Matrix* gen = joinMatrix(identity, pce);
 	delMatrix(&identity);
 	return gen;
 }
 
 
-matrix* setPCM(int method)
+Matrix* setPCM(int method)
 {
 
 	return 0;
@@ -30,9 +36,9 @@ matrix* setPCM(int method)
  * matrix.  The result is intended to be used as a parity check matrix.
  */
 
-matrix* newDenseParity(int rows, int cols)
+Matrix* newDenseParity(int rows, int cols)
 {
-	matrix* d = newMatrix(rows, cols);
+	Matrix* d = newMatrix(rows, cols);
 
 	int i, j;
 	for(i = 0; i < rows; i++)
