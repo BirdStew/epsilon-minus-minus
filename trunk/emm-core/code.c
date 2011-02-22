@@ -7,25 +7,13 @@
 #include "code.h"
 #include <stdio.h> //FIXME
 
-typedef struct Code
-{
-	int x;
-} Code;
 
-
-Matrix* newGeneratorMatrix(Matrix* pce)
+Matrix* newGeneratorMatrix(Matrix* pcm)
 {
-	Matrix* identity = makeIdentity(pce->rows);
-	Matrix* gen = joinMatrix(identity, pce);
+	Matrix* identity = makeIdentity(pcm->rows);
+	Matrix* gen = joinMatrix(identity, pcm);
 	delMatrix(&identity);
 	return gen;
-}
-
-
-Matrix* setPCM(int method)
-{
-
-	return 0;
 }
 
 
@@ -52,4 +40,15 @@ Matrix* newDenseParity(int rows, int cols)
 		}
 	}
 	return d;
+}
+
+
+
+Matrix* newControlMatrix(Matrix* pcm)
+{
+	transposeMatrix(pcm);
+	Matrix* identity = makeIdentity(pcm->rows);
+	Matrix* con = joinMatrix(pcm,identity);
+	delMatrix(&identity);
+	return con;
 }
