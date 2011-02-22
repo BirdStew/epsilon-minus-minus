@@ -10,8 +10,15 @@
 
 #include "matrix.h"
 
+typedef struct Code
+{
+	Matrix* generator;
+	Matrix* control;
+	Matrix* syndrome;
+} Code;
+
 Matrix* newGeneratorMatrix(Matrix* pce);
-Matrix* setPCE(int method);
 Matrix* newDenseParity(int rows, int cols);
+Matrix* newControlMatrix(Matrix* pcm);
 
 #endif /* CODE_H_ */
