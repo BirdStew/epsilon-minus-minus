@@ -17,47 +17,61 @@
 #define PROGRAM_NAME "emm-core"
 
 void printUsage();
+void parseRange(char* str, char delimiter, int* range);
 
 
-
-int main( int argc, const char** argv )
+int main( int argc, char** argv )
 {
 	signed char c;
 	char linFlag = 0;
 	char hamFlag = 0;
 	char lflag = 0;
 
-	int n = {0,0};
-	int k = {0,0};
-	int p = .01;
+	int wordLen[] = {0,0};
+	int parityLen[] = {0,0};
+	double errorProb = .01;
 
 	if(argc <= 1 || strstr(argv[1],"help"))
 		printUsage();
 
-	while ((c = getopt (argc, argv, "LRHhk:n:")) != -1)
+	while ((c = getopt (argc, argv, "LRHhw:p:e:")) != -1)
 	{
 		switch(c)
 		{
 			case 'L':
 				//newGeneratorMatrix(NULL);
 
-			break;
+				break;
 
 			case 'R':
-			break;
+				break;
 
 			case 'H':
-			break;
+				break;
 
 			case 'h':
 				printUsage();
-			break;
+				break;
 
-			case 'k':
-			break;
+			case 'w':
+				parseRange(optarg, ':', wordLen);
+				 printf("wordLen: %d,%d\n", wordLen[0], wordLen[1]); //FIXME testing only
+				break;
 
-			case 'n':
-			break;
+			case 'p':
+				parseRange(optarg, ':', parityLen);
+				printf("ParityLen: %d,%d\n",parityLen[0], parityLen[1]); //FIXME testing only
+				break;
+
+			case 'e':
+				errorProb = atof(optarg);
+				printf("P: %f", errorProb);
+				if(errorProb >= 1 || errorProb <= 0)
+				{
+					fprintf(stderr, "error: -%c most be between 0 and 1.\n"); //FIXME testing only
+					return EXIT_FAILURE;
+				}
+				break;
 
 			case ':':
 				fprintf(stderr, "Option -%c requires an operand\n", optopt);
@@ -75,6 +89,10 @@ int main( int argc, const char** argv )
 }
 
 
+/*
+ * Prints neatly formatted usage / help instructions to the console.
+ */
+
 void printUsage()
 {
 	char* usage=""
@@ -85,8 +103,11 @@ void printUsage()
 	" -R                use Reed–Muller encoding\n"
 	" -H                use Hamming encoding\n"
 	" -h                print help.\n"
-	" -k <number>       number of original bits\n"
-	" -n <number>       number of encoded bits\n"
+	" -w <integer>      number of word bits.\n"
+	" -p <integer>      number of parity bits.\n"
+	" -e <float>        error probability.\n"
+	//" -k <number>       number of original bits\n"
+	//" -n <number>       number of encoded bits\n"
 	"\n"
 	"Notes:\n"
 	" <number> can be a single be a unsigned integer or a colon separated range.\n"
@@ -94,4 +115,21 @@ void printUsage()
 
 	printf("%s", usage);
 
+}
+
+
+void parseRange(char* str, char delimiter, int* range)
+{
+	char* found = strchr(str, delimiter);
+	if(found == NULL)
+	{
+		range[0] = atoi(str);
+	}
+	else
+	{
+		found[0] = '\0';
+		found++;
+		range[0] = atoi(str);
+		range[1] = atoi(found);
+	}
 }
