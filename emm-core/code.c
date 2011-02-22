@@ -51,7 +51,13 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 	return c;
 }
 
-//FIXME
+
+/*
+ * Receives a pointer to a code pointer and safely frees the code
+ * struct from the heap.   The passed pointer is then dereferenced and
+ * set to null to prevent users from reading unmanaged memory.
+ */
+
 void delCode(Code** c)
 {
 	if(*c == NULL || c == NULL)
