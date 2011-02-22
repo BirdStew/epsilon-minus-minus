@@ -8,23 +8,22 @@
 #ifndef MATRIX_H_
 #define MATRIX_H_
 
-struct struc_mx
+typedef struct Matrix
 {
 	int rows;
 	int cols;
 	char* data;
-};
+} Matrix;
 
-typedef struct struc_mx matrix;
 
-matrix* newMatrix(int rows, int cols);
-void delMatrix(matrix** m);
-matrix* makeIdentity(int rows);
-matrix* binaryMultiply(matrix* a, matrix* b);
-void transposeMatrix(matrix* m);
-matrix* joinMatrix(matrix* a, matrix* b);
-void printAugMatrix(matrix* m, int column);
-void printMatrix(matrix* m);
-char* toString(matrix* m);
+Matrix* newMatrix(int rows, int cols);
+void delMatrix(Matrix** m);
+Matrix* makeIdentity(int rows);
+Matrix* binaryMultiply(Matrix* a, Matrix* b);
+void transposeMatrix(Matrix* m);
+Matrix* joinMatrix(Matrix* a, Matrix* b);
+void printAugMatrix(Matrix* m, int column);
+void printMatrix(Matrix* m);
+char* toString(Matrix* m);
 
 #endif /* MATRIX_H_ */

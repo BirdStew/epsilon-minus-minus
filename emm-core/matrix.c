@@ -22,14 +22,14 @@
  * Creates a matrix of dimensions rows, cols filled with zeros and
  * returns a pointer to the matrix.  Matrix dimensions cannot be negative.
  */
-matrix* newMatrix(int rows, int cols)
+Matrix* newMatrix(int rows, int cols)
 {
 	if(rows < 1 || cols < 1)
 	{
 		fprintf(stderr,"error: Matrix dimensions less than 1.  Received %d,%d in 'newMatrix'\n", rows, cols);
 	}
 
-	matrix* m = (matrix*)malloc(sizeof(matrix));
+	Matrix* m = (Matrix*)malloc(sizeof(Matrix));
 	if(m == NULL)
 	{
 		fprintf(stderr,"error: malloc failed for 'matrix' in 'newMatrix'\n");
@@ -54,7 +54,7 @@ matrix* newMatrix(int rows, int cols)
  * set to null to prevent users from reading unmanaged memory.
  */
 
-void delMatrix(matrix** m)
+void delMatrix(Matrix** m)
 {
 	if(*m == NULL)
 	{
@@ -75,9 +75,9 @@ void delMatrix(matrix** m)
  * returns a pointer to matrix.
  */
 
-matrix* makeIdentity(int rows)
+Matrix* makeIdentity(int rows)
 {
-	matrix* m = newMatrix(rows, rows);
+	Matrix* m = newMatrix(rows, rows);
 
 	int i;
 	for(i = 0; i < rows; i++)
@@ -97,7 +97,7 @@ matrix* makeIdentity(int rows)
  * is a newly created matrix resulting from the multiply.
  */
 
-matrix* binaryMultiply(matrix* a, matrix* b)
+Matrix* binaryMultiply(Matrix* a, Matrix* b)
 {
 	//r c  * r c
 	if(a->cols != b->rows)
@@ -105,7 +105,7 @@ matrix* binaryMultiply(matrix* a, matrix* b)
 		fprintf(stderr, "error: cannot multiply! A.rows != B.cols in 'binaryMultiply'\n");
 	}
 
-	matrix* c = newMatrix(a->rows, b->cols);
+	Matrix* c = newMatrix(a->rows, b->cols);
 
 	int i,j,k;
     for(i = 0; i < c->rows; i++)
@@ -123,7 +123,7 @@ matrix* binaryMultiply(matrix* a, matrix* b)
  * This function transposes a matrix in-place.
  */
 
-void transposeMatrix(matrix* m)
+void transposeMatrix(Matrix* m)
 {
 	int i, j, temp;
 	for(i = 0; i < m->rows; i++)
@@ -149,7 +149,7 @@ void transposeMatrix(matrix* m)
  * to discard matrices A and B.
  */
 
-matrix* joinMatrix(matrix* a, matrix* b)
+Matrix* joinMatrix(Matrix* a, Matrix* b)
 {
 	if(a->rows != b->rows)
 	{
@@ -157,7 +157,7 @@ matrix* joinMatrix(matrix* a, matrix* b)
 		exit(EXIT_FAILURE);
 	}
 
-	matrix* c = newMatrix(a->rows, a->cols + b->cols);
+	Matrix* c = newMatrix(a->rows, a->cols + b->cols);
 
 	int i, j;
 	for(i = 0; i < c->rows; i++)
@@ -179,7 +179,7 @@ matrix* joinMatrix(matrix* a, matrix* b)
 }
 
 
-void printAugMatrix(matrix* m, int column)
+void printAugMatrix(Matrix* m, int column)
 {
 	int i, j;
 	for(i = 0; i < m->rows; i++)
@@ -195,7 +195,7 @@ void printAugMatrix(matrix* m, int column)
 }
 
 
-void printMatrix(matrix* m)
+void printMatrix(Matrix* m)
 {
 	printAugMatrix(m, -1);
 }
@@ -206,7 +206,7 @@ void printMatrix(matrix* m)
  * Rows a delimited by a 'LF' (Line Feed) character.
  */
 
-char* toString(matrix* m)
+char* toString(Matrix* m)
 {
 	int strLen = m->rows * m->cols * sizeof(char) + m->rows + 1;
 	char* str = (char*)malloc(strLen);
