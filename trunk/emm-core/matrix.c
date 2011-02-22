@@ -56,7 +56,7 @@ Matrix* newMatrix(int rows, int cols)
 
 void delMatrix(Matrix** m)
 {
-	if(*m == NULL)
+	if(*m == NULL || m == NULL)
 	{
 		fprintf(stderr,"error: passed ptr is NULL in 'delMatrix'\n");
 	}
@@ -206,7 +206,7 @@ void printMatrix(Matrix* m)
  * Rows a delimited by a 'LF' (Line Feed) character.
  */
 
-char* toString(Matrix* m)
+char* matrixToString(Matrix* m)
 {
 	int strLen = m->rows * m->cols * sizeof(char) + m->rows + 1;
 	char* str = (char*)malloc(strLen);

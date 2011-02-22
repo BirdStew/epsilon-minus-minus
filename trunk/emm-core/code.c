@@ -54,9 +54,18 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 //FIXME
 void delCode(Code** c)
 {
-	delMatrix(&c->generator);
-	delMatrix(&c->control);
-	delMatrix(&c->syndrome);
+	if(*c == NULL || c == NULL)
+	{
+		fprintf(stderr,"error: passed ptr is NULL in 'delCode'\n");
+	}
+	else
+	{
+		delMatrix(&(*c)->generator);
+		delMatrix(&(*c)->control);
+		delMatrix(&(*c)->syndrome);
+		free(*c);
+		*c = NULL;
+	}
 }
 
 /*
