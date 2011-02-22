@@ -18,7 +18,9 @@ typedef struct Code
 } Code;
 
 Matrix* newGeneratorMatrix(Matrix* pce);
-Matrix* newDenseParity(int rows, int cols);
 Matrix* newControlMatrix(Matrix* pcm);
+Matrix* newDenseParity(int rows, int cols);
+Matrix* newLowDenseParity(int rows, int cols);
+
 
 #endif /* CODE_H_ */

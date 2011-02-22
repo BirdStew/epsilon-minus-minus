@@ -4,9 +4,24 @@
  *  Created on: Feb 17, 2011
  *      Author: James Bettke
  */
+#include <stdlib.h>
 #include "code.h"
 #include <stdio.h> //FIXME
 
+
+Code* newCode()
+{
+	Code* c = (Code*)malloc(sizeof(Code));
+
+	return c;
+}
+
+
+/*
+ * Creates and returns a new generator matrix.  A generator matrix is the
+ * result of joining an identity matrix on the left with a “parity check matrix”
+ * on the right.
+ */
 
 Matrix* newGeneratorMatrix(Matrix* pcm)
 {
@@ -15,6 +30,23 @@ Matrix* newGeneratorMatrix(Matrix* pcm)
 	delMatrix(&identity);
 	return gen;
 }
+
+
+/*
+ * Creates and returns a control matrix.  A control matrix is
+ * a transposed “parity check matrix” joined with an identity
+ * matrix on the right.
+ */
+
+Matrix* newControlMatrix(Matrix* pcm)
+{
+	transposeMatrix(pcm);
+	Matrix* identity = makeIdentity(pcm->rows);
+	Matrix* con = joinMatrix(pcm,identity);
+	delMatrix(&identity);
+	return con;
+}
+
 
 
 /*
@@ -43,12 +75,9 @@ Matrix* newDenseParity(int rows, int cols)
 }
 
 
-
-Matrix* newControlMatrix(Matrix* pcm)
+Matrix* newLowDenseParity(int rows, int cols)
 {
-	transposeMatrix(pcm);
-	Matrix* identity = makeIdentity(pcm->rows);
-	Matrix* con = joinMatrix(pcm,identity);
-	delMatrix(&identity);
-	return con;
+
+	return 0;
 }
+
