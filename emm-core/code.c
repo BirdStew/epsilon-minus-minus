@@ -12,6 +12,13 @@
 #include <time.h>	// Used for Rand()
 
 
+/*
+ * Creates a new code struct and fills all fields with the necessary matrices.
+ * This function receives the length of original word (bits) and the number of
+ * parity bits used.  The third argument specifies which method of parity check
+ * equations to use when making the Generator and Control matrices.
+ */
+
 Code* newCode(int wordLen, int parityLen, int parityType)
 {
 	Matrix* tempPCM;
@@ -44,6 +51,13 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 	return c;
 }
 
+//FIXME
+void delCode(Code** c)
+{
+	delMatrix(&c->generator);
+	delMatrix(&c->control);
+	delMatrix(&c->syndrome);
+}
 
 /*
  * Creates and returns a new generator matrix.  A generator matrix is the
@@ -76,11 +90,17 @@ Matrix* newControlMatrix(Matrix* pcm)
 }
 
 
+/*
+ * Creates a syndrome table represented as a matrix for linear decoding.
+ * The syndrome table will always be dimensions (2 ^ partiy length)
+ * by (word length + parity length).
+ */
+
 Matrix* newSyndromeMatrix(int wordLen, int parityLen)
 {
 	Matrix* syn = newMatrix((int)pow(2,parityLen), wordLen + parityLen);
 	fprintf(stderr, "error: newSyndromeMatrix Unimplemented!");
-	exit(1);
+	exit(1);//FIXME
 	return syn;
 }
 
@@ -111,9 +131,16 @@ Matrix* newDenseParity(int rows, int cols)
 }
 
 
+/*
+ * Creates a matrix of dimension rows, cols and fills it zeros and ones.
+ * The values in this case are dictated by the Low Density method of creating
+ * parity check equations.  The values in the matrix are entirely dependent on
+ * the dimensions of the matrix.
+ */
+
 Matrix* newLowDensityParity(int rows, int cols)
 {
-
+	//FIXME
 	return 0;
 }
 
