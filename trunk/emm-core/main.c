@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 				/* TESTING ONLY */
 				#include "code.h"
@@ -33,6 +34,9 @@ int main( int argc, char** argv )
 
 	if(argc <= 1 || strstr(argv[1],"help"))
 		printUsage();
+
+	// Seed Random number generator with system time.
+	srand(time(NULL));
 
 	while ((c = getopt (argc, argv, "LRHhw:p:e:")) != -1)
 	{
