@@ -50,7 +50,7 @@ Matrix* newMatrix(int rows, int cols)
 
 /*
  * Receives a pointer to a matrix pointer and safely frees the matrix
- * struct from the heap.   The passed pointer is then dereferenced and
+ * struct from the heap. The passed pointer is then dereferenced and
  * set to null to prevent users from reading unmanaged memory.
  */
 
