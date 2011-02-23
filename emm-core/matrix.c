@@ -93,8 +93,8 @@ Matrix* makeIdentity(int rows)
  * multiplication and addition operators, it uses binary AND and
  * OR operations.  The dimensional constraints are the same as a regular
  * matrix multiply.  This multiplication is based on the assumption that
- * matrix operands A and B contain only binary values.  The return value
- * is a newly created matrix resulting from the multiply.
+ * matrix operands A and B contain only binary values. The result is stored
+ * in matrix C.
  */
 
 void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
