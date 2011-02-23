@@ -4,6 +4,8 @@
  *  Created on: Feb 22, 2011
  *      Author: James Bettke
  */
+#include <stdlib.h>
+#include "harness.h"
 
 
 void transmit(Matrix* packet, double errorProbability)
