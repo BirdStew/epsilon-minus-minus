@@ -97,15 +97,19 @@ Matrix* makeIdentity(int rows)
  * is a newly created matrix resulting from the multiply.
  */
 
-Matrix* binaryMultiply(Matrix* a, Matrix* b)
+void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
 {
 	//r c  * r c
 	if(a->cols != b->rows)
 	{
-		fprintf(stderr, "error: cannot multiply! A.rows != B.cols in 'binaryMultiply'\n");
+		fprintf(stderr, "error: cannot multiply! A.rows != B.cols in 'bufferedBinaryMultiply'\n");
 	}
 
-	Matrix* c = newMatrix(a->rows, b->cols);
+	//Matrix* c = newMatrix(a->rows, b->cols); //Used for old BinaryMultiply were result is malloc'd on the fly
+	if(a->rows != c->rows || b->cols != c->cols)
+	{
+		fprintf(stderr, "error: cannot multiply! Result matrix of invalid dimensions 'bufferedBinaryMultiply'\n");
+	}
 
 	int i,j,k;
     for(i = 0; i < c->rows; i++)
@@ -114,8 +118,6 @@ Matrix* binaryMultiply(Matrix* a, Matrix* b)
             {
             	c->data[i*c->cols+j] ^= a->data[i*a->cols+k] & b->data[k*b->cols+j];
             }
-
-    return c;
 }
 
 
