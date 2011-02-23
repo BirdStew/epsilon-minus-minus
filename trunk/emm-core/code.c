@@ -181,8 +181,7 @@ Matrix* newRandomParity(int rows, int cols)
 }
 
 
-void encode(char* wordBuffer, *encodedBuffer, Code* c)
+void encode(Matrix* wordVector, Matrix* encodedVector, Code* c)
 {
 
-}
 }
