@@ -54,7 +54,7 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 
 /*
  * Receives a pointer to a code pointer and safely frees the code
- * struct from the heap.   The passed pointer is then dereferenced and
+ * struct from the heap. The passed pointer is then dereferenced and
  * set to null to prevent users from reading unmanaged memory.
  */
 
@@ -178,4 +178,11 @@ Matrix* newRandomParity(int rows, int cols)
 			m->data[i] = rand() % 2;
 		}
 		return m;
+}
+
+
+void encode(char* wordBuffer, *encodedBuffer, Code* c)
+{
+
+}
 }
