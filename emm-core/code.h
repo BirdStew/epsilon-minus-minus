@@ -34,7 +34,7 @@ Matrix* newSyndromeMatrix(int wordLen, int parityLen);
 Matrix* newDenseParity(int rows, int cols);
 Matrix* newLowDensityParity(int rows, int cols);
 Matrix* newRandomParity(int rows, int cols);
-void encode(char* wordBuffer, *encodedBuffer, Code* c);
+void encode(Matrix* wordVector, Matrix* encodedVector, Code* c);
 
 
 #endif /* CODE_H_ */
