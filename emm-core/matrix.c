@@ -91,8 +91,8 @@ Matrix* makeIdentity(int rows)
 /*
  * Multiplies two matrices together, but instead of computing with
  * multiplication and addition operators, it uses binary AND and
- * OR operations.  The dimensional constraints are the same as a regular
- * matrix multiply.  This multiplication is based on the assumption that
+ * OR operations. The dimensional constraints are the same as a regular
+ * matrix multiply. This multiplication is based on the assumption that
  * matrix operands A and B contain only binary values. The result is stored
  * in matrix C.
  */
