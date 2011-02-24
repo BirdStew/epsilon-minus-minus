@@ -41,7 +41,7 @@ int main( int argc, char** argv )
 	// Seed Random number generator with system time.
 	srand(time(NULL));
 
-	while ((c = getopt (argc, argv, "LRHhw:p:e:")) != -1)
+	while ((c = getopt (argc, argv, "LRHhw:p:e:t:")) != -1)
 	{
 		switch(c)
 		{
@@ -96,7 +96,6 @@ int main( int argc, char** argv )
 
 	}
 
-	printf("parity flasg: %d\n", parityFlags);
 	runHarness(wordLen, parityLen, errorProb, parityFlags);
 
 	return EXIT_SUCCESS;

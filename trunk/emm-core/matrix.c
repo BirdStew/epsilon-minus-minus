@@ -75,7 +75,7 @@ void delMatrix(Matrix** m)
  * returns a pointer to matrix.
  */
 
-Matrix* makeIdentity(int rows)
+Matrix* newIdentity(int rows)
 {
 	Matrix* m = newMatrix(rows, rows);
 
