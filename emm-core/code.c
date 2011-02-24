@@ -82,7 +82,12 @@ void delCode(Code** c)
 
 Matrix* newGeneratorMatrix(Matrix* pcm)
 {
-	Matrix* identity = makeIdentity(pcm->rows);
+	if(pcm == NULL)
+	{
+		fprintf(stderr, "error: pcm is null in 'newGeneratorMatrix'\n");
+	}
+
+	Matrix* identity = newIdentity(pcm->rows);
 	Matrix* gen = joinMatrix(identity, pcm);
 	delMatrix(&identity);
 	return gen;
@@ -98,7 +103,7 @@ Matrix* newGeneratorMatrix(Matrix* pcm)
 Matrix* newControlMatrix(Matrix* pcm)
 {
 	transposeMatrix(pcm);
-	Matrix* identity = makeIdentity(pcm->rows);
+	Matrix* identity = newIdentity(pcm->rows);
 	Matrix* con = joinMatrix(pcm,identity);
 	delMatrix(&identity);
 	return con;
@@ -115,7 +120,6 @@ Matrix* newSyndromeMatrix(int wordLen, int parityLen)
 {
 	Matrix* syn = newMatrix((int)pow(2,parityLen), wordLen + parityLen);
 	fprintf(stderr, "error: newSyndromeMatrix Unimplemented!\n");
-	//exit(1);//FIXME
 	return syn;
 }
 
@@ -155,8 +159,9 @@ Matrix* newDenseParity(int rows, int cols)
 
 Matrix* newLowDensityParity(int rows, int cols)
 {
-	//FIXME
-	return 0;
+	Matrix* m = newMatrix(rows, cols);
+	fprintf(stderr, "error: newLowDensityParity is Unimplemented\n");
+	return m;
 }
 
 

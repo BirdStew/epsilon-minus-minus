@@ -18,7 +18,7 @@ typedef struct Matrix
 
 Matrix* newMatrix(int rows, int cols);
 void delMatrix(Matrix** m);
-Matrix* makeIdentity(int rows);
+Matrix* newIdentity(int rows);
 void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c);
 void transposeMatrix(Matrix* m);
 Matrix* joinMatrix(Matrix* a, Matrix* b);

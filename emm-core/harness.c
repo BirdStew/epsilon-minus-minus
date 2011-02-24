@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include "harness.h"
 
+#include <stdio.h> /* Testing only */
 
 void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 {
@@ -20,7 +21,6 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 		{
 			for(pType = 1; pType <= PARITY_FLAG_MAX; pType <<= 1  )
 			{
-				printf("pType: %d,  PARITY_FLAG_MAX: %d, ParityFlags: %d, pType & parityFlags: %d\n",pType, PARITY_FLAG_MAX, parityFlags, pType & parityFlags);
 				if(pType & parityFlags)
 				{
 					Code* code = newCode(w, p, pType);
