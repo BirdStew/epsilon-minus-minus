@@ -10,12 +10,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
-
 #include "harness.h"
 
-				/* TESTING ONLY */
-				#include "code.h"
-				#include "matrix.h"
 
 #define PROGRAM_NAME "emm-core"
 
@@ -39,14 +35,13 @@ int main( int argc, char** argv )
 		printUsage();
 
 	// Seed Random number generator with system time.
-	srand(time(NULL));
+	//srand(time(NULL));
 
 	while ((c = getopt (argc, argv, "LRHhw:p:e:t:")) != -1)
 	{
 		switch(c)
 		{
 			case 'L':
-				//newGeneratorMatrix(NULL);
 
 				break;
 
@@ -133,6 +128,10 @@ void printUsage()
 
 }
 
+
+/*
+ *
+ */
 
 void parseRange(char* str, char delimiter, int* range)
 {
