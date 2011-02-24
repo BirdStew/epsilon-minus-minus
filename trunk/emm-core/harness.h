@@ -13,12 +13,16 @@
 
 typedef struct CodeStats
 {
-	int rows;
-	int cols;
-	char* data;
+	int packets;
+	int successfulDecodes;
+	int undetectedErrors;
+	int detectedErrors;
+	int codeTime;			/* (endDecode - startEncode) */
 } CodeStats;
 
-void testCode(int wordLen, int parityLen, int parityType, double errorProbability, CodeStats* stats);
-void transmit(Matrix* packet, double errorProbability);
+void runHarness(int* wordLen, int* parityLen, double errorProb);
+void testCode(Code* code, double errorProb, CodeStats* stats);
+void initCodeStats(CodeStats* codeStats);
+void transmit(Matrix* packet, double errorProb);
 
 #endif /* HARNESS_H_ */

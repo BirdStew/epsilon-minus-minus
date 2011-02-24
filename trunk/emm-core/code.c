@@ -115,7 +115,7 @@ Matrix* newSyndromeMatrix(int wordLen, int parityLen)
 {
 	Matrix* syn = newMatrix((int)pow(2,parityLen), wordLen + parityLen);
 	fprintf(stderr, "error: newSyndromeMatrix Unimplemented!");
-	exit(1);//FIXME
+	//exit(1);//FIXME
 	return syn;
 }
 
