@@ -19,11 +19,12 @@ typedef struct Code
 	Matrix* syndrome;
 } Code;
 
+#define PARITY_FLAG_MAX 7 /* Should always be 2^len(PARITY_TYPE) */
 enum PARITY_TYPE
 {
-	DENSE,
-	LOW_DENSITY,
-	RANDOM
+	DENSE = 1,
+	LOW_DENSITY = 2,
+	RANDOM = 4
 };
 
 Code* newCode(int wordLen, int parityLen, int parityType);
