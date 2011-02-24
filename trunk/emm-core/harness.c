@@ -8,6 +8,11 @@
 #include "harness.h"
 
 
+void testCode(int wordLen, int parityLen, int parityType, double errorProbability, CodeStats* stats)
+{
+
+}
+
 void transmit(Matrix* packet, double errorProbability)
 {
 	int i;
