@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <time.h>
 
+#include "harness.h"
+
 				/* TESTING ONLY */
 				#include "code.h"
 				#include "matrix.h"
@@ -69,10 +71,10 @@ int main( int argc, char** argv )
 
 			case 'e':
 				errorProb = atof(optarg);
-				printf("P: %f", errorProb);
+				printf("P: %f\n", errorProb);
 				if(errorProb >= 1 || errorProb <= 0)
 				{
-					fprintf(stderr, "error: -%c most be between 0 and 1.\n"); //FIXME testing only
+					fprintf(stderr, "error: -%c most be between 0 and 1.\n", c); //FIXME testing only
 					return EXIT_FAILURE;
 				}
 				break;
@@ -88,6 +90,8 @@ int main( int argc, char** argv )
 		}
 
 	}
+
+	runHarness(wordLen, parityLen, errorProb);
 
 	return EXIT_SUCCESS;
 }
@@ -128,6 +132,7 @@ void parseRange(char* str, char delimiter, int* range)
 	if(found == NULL)
 	{
 		range[0] = atoi(str);
+		range[1] = range[0];
 	}
 	else
 	{
