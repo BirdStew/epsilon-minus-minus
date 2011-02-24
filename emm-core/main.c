@@ -33,6 +33,7 @@ int main( int argc, char** argv )
 	int wordLen[] = {0,0};
 	int parityLen[] = {0,0};
 	double errorProb = .01;
+	int parityFlags = PARITY_FLAG_MAX;
 
 	if(argc <= 1 || strstr(argv[1],"help"))
 		printUsage();
@@ -79,6 +80,10 @@ int main( int argc, char** argv )
 				}
 				break;
 
+			case 't':
+				parityFlags = atoi(optarg);
+				break;
+
 			case ':':
 				fprintf(stderr, "Option -%c requires an operand\n", optopt);
 			break;
@@ -91,7 +96,8 @@ int main( int argc, char** argv )
 
 	}
 
-	runHarness(wordLen, parityLen, errorProb);
+	printf("parity flasg: %d\n", parityFlags);
+	runHarness(wordLen, parityLen, errorProb, parityFlags);
 
 	return EXIT_SUCCESS;
 }
@@ -104,22 +110,25 @@ int main( int argc, char** argv )
 void printUsage()
 {
 	char* usage=""
-	" Usage: " PROGRAM_NAME " [options] <message>\n"
+	" Usage: " PROGRAM_NAME " [options] <message file>\n"
 	"\n"
 	"Options:\n"
-	" -L                use linear encoding\n"
-	" -R                use Reed–Muller encoding\n"
-	" -H                use Hamming encoding\n"
+	//" -L                use linear encoding\n"
+	//" -R                use Reed–Muller encoding\n"
+	//" -H                use Hamming encoding\n"
 	" -h                print help.\n"
-	" -w <integer>      number of word bits.\n"
-	" -p <integer>      number of parity bits.\n"
+	" -w <number>       number of word bits.\n"
+	" -p <number>       number of parity bits.\n"
 	" -e <float>        error probability.\n"
+	" -t <number>       flags for parity type.\n"
+	" -o <path>         path to optional output file.\n"
 	//" -k <number>       number of original bits\n"
 	//" -n <number>       number of encoded bits\n"
 	"\n"
 	"Notes:\n"
 	" <number> can be a single be a unsigned integer or a colon separated range.\n"
-	" <message> is the path to the message file.\n";
+	"  .\n"
+	" <message file> is the path to the message file.\n";
 
 	printf("%s", usage);
 
@@ -142,3 +151,4 @@ void parseRange(char* str, char delimiter, int* range)
 		range[1] = atoi(found);
 	}
 }
+

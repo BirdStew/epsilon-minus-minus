@@ -20,7 +20,7 @@ typedef struct CodeStats
 	int codeTime;			/* (endDecode - startEncode) */
 } CodeStats;
 
-void runHarness(int* wordLen, int* parityLen, double errorProb);
+void runHarness(int* wordLen, int* parityLen, double errorProb,int parityFlags);
 void testCode(Code* code, double errorProb, CodeStats* stats);
 void initCodeStats(CodeStats* codeStats);
 void transmit(Matrix* packet, double errorProb);

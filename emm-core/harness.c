@@ -7,20 +7,27 @@
 #include <stdlib.h>
 #include "harness.h"
 
-void runHarness(int* wordLen, int* parityLen, double errorProb)
+
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 {
-	int pType = DENSE; /* FOR TESTING ONLY */
 
 	CodeStats stats;
 
-	int w, p;
+	int w, p, pType;
 	for(w = wordLen[0]; w <= wordLen[1]; w++)
 	{
 		for(p = parityLen[0]; p <= parityLen[1]; p++)
 		{
-			Code* code = newCode(w, p, pType);
-			testCode(code, errorProb, &stats);
-			delCode(&code);
+			for(pType = 1; pType <= PARITY_FLAG_MAX; pType <<= 1  )
+			{
+				printf("pType: %d,  PARITY_FLAG_MAX: %d, ParityFlags: %d, pType & parityFlags: %d\n",pType, PARITY_FLAG_MAX, parityFlags, pType & parityFlags);
+				if(pType & parityFlags)
+				{
+					Code* code = newCode(w, p, pType);
+					testCode(code, errorProb, &stats);
+					delCode(&code);
+				}
+			}
 		}
 	}
 }
@@ -28,7 +35,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb)
 
 void testCode(Code* code, double errorProb, CodeStats* stats)
 {
-	/* DEBUG */
+	/* DEBUG */ //FIXME
 	printAugMatrix(code->generator, code->wordLen-1);
 	printf("\n\n");
 }
