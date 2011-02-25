@@ -92,7 +92,7 @@ int main( int argc, char** argv )
 	}
 
 	runHarness(wordLen, parityLen, errorProb, parityFlags);
-
+	fprintf(stderr, "END\n"); //FIXME testing only
 	return EXIT_SUCCESS;
 }
 
