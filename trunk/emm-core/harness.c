@@ -23,7 +23,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 			{
 				if(pType & parityFlags)
 				{
-					printf("w: %d p: %d\n", w, p);
+					//printf("w: %d p: %d\n", w, p);
 					Code* code = newCode(w, p, pType);
 					testCode(code, errorProb, &stats);
 					delCode(&code);

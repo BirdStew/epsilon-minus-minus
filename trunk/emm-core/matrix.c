@@ -104,12 +104,14 @@ void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
 	if(a->cols != b->rows)
 	{
 		fprintf(stderr, "error: cannot multiply! A.rows != B.cols in 'bufferedBinaryMultiply'\n");
+		exit(EXIT_FAILURE);
 	}
 
 	//Matrix* c = newMatrix(a->rows, b->cols); //Used for old BinaryMultiply were result is malloc'd on the fly
 	if(a->rows != c->rows || b->cols != c->cols)
 	{
 		fprintf(stderr, "error: cannot multiply! Result matrix of invalid dimensions 'bufferedBinaryMultiply'\n");
+		exit(EXIT_FAILURE);
 	}
 
 	int i,j,k;
@@ -168,7 +170,7 @@ Matrix* joinMatrix(Matrix* a, Matrix* b)
 	}
 
 	Matrix* c = newMatrix(a->rows, a->cols + b->cols);
-
+	//fprintf(stderr, "a-rows: %d, a-cols: %d \nb-rows: %d, b-cols: %d \nc-rows: %d, c-cols: %d \n",a->rows,a->cols,b->rows,b->cols,c->rows,c->cols);
 	int i, j;
 	for(i = 0; i < c->rows; i++)
 	{
