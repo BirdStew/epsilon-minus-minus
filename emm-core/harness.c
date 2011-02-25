@@ -36,6 +36,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 void testCode(Code* code, double errorProb, CodeStats* stats)
 {
 	/* DEBUG */ //FIXME
+	printf("[%d, %d]\n", code->generator->rows, code->generator->cols);
 	printAugMatrix(code->generator, code->wordLen-1);
 	printf("\n\n");
 }
