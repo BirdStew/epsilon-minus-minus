@@ -118,7 +118,8 @@ Matrix* newControlMatrix(Matrix* pcm)
 
 Matrix* newSyndromeMatrix(int wordLen, int parityLen)
 {
-	Matrix* syn = newMatrix((int)pow(2,parityLen), wordLen + parityLen);
+	//Matrix* syn = newMatrix((int)pow(2,parityLen), wordLen + parityLen);
+	Matrix* syn = newMatrix(2,2);
 	fprintf(stderr, "error: newSyndromeMatrix Unimplemented!\n");
 	return syn;
 }

@@ -27,6 +27,7 @@ Matrix* newMatrix(int rows, int cols)
 	if(rows < 1 || cols < 1)
 	{
 		fprintf(stderr,"error: Matrix dimensions less than 1.  Received %d,%d in 'newMatrix'\n", rows, cols);
+		exit(EXIT_FAILURE);
 	}
 
 	Matrix* m = (Matrix*)malloc(sizeof(Matrix));
@@ -122,19 +123,26 @@ void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
 
 
 /*
- * This function transposes a matrix in-place.
+ * This function transposes a matrix in-place.  If either the
+ * rows or the columns is one then it is a one dimensional array.
+ * There is no need to transposed the values. Simply reverse reverse
+ * the dimensions.
  */
 
 void transposeMatrix(Matrix* m)
 {
 	int i, j, temp;
-	for(i = 0; i < m->rows; i++)
+
+	if(m->rows != 1 && m->cols != 1)
 	{
-		for(j = 0; j < m->cols; j++)
+		for(i = 0; i < m->rows; i++)
 		{
-			temp = m->data[i * m->cols + j];
-			m->data[i * m->cols + j] = m->data[j * m->rows + i];
-			m->data[j * m->rows + i] = temp;
+			for(j = 0; j < m->cols; j++)
+			{
+				temp = m->data[i * m->cols + j];
+				m->data[i * m->cols + j] = m->data[j * m->rows + i];
+				m->data[j * m->rows + i] = temp;
+			}
 		}
 	}
 
