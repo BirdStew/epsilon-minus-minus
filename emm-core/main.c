@@ -32,7 +32,10 @@ int main( int argc, char** argv )
 	int parityFlags = PARITY_FLAG_MAX;
 
 	if(argc <= 1 || strstr(argv[1],"help"))
+	{
 		printUsage();
+		return EXIT_SUCCESS;
+	}
 
 	// Seed Random number generator with system time.
 	//srand(time(NULL));
@@ -147,6 +150,14 @@ void parseRange(char* str, char delimiter, int* range)
 		found++;
 		range[0] = atoi(str);
 		range[1] = atoi(found);
+
+		if(range[0] > range[1])
+		{
+			printf("warning: invalid range of '%d:%d'.  Rewriting as '%d:%d'\n",range[0],range[1], range[1], range[0]);
+			int temp = range[0];
+			range[0] = range[1];
+			range[1] = temp;
+		}
 	}
 }
 

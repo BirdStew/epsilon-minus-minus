@@ -163,6 +163,13 @@ void transposeMatrix(Matrix* m)
 
 Matrix* joinMatrix(Matrix* a, Matrix* b)
 {
+	fprintf(stderr, "Start Join\n"); //FIXME
+	if(a == NULL || b == NULL)
+	{
+		fprintf(stderr, "error: passed null ptr in 'joinMatrix'\n");
+		exit(EXIT_FAILURE);
+	}
+
 	if(a->rows != b->rows)
 	{
 		fprintf(stderr, "error: Matrices must have the same number of rows 'joinMatrix'\n");
@@ -170,13 +177,14 @@ Matrix* joinMatrix(Matrix* a, Matrix* b)
 	}
 
 	Matrix* c = newMatrix(a->rows, a->cols + b->cols);
-	//fprintf(stderr, "a-rows: %d, a-cols: %d \nb-rows: %d, b-cols: %d \nc-rows: %d, c-cols: %d \n",a->rows,a->cols,b->rows,b->cols,c->rows,c->cols);
+	fprintf(stderr, "a-rows: %d, a-cols: %d \nb-rows: %d, b-cols: %d \nc-rows: %d, c-cols: %d \n",a->rows,a->cols,b->rows,b->cols,c->rows,c->cols);
 	int i, j;
 	for(i = 0; i < c->rows; i++)
 	{
 		for(j = 0; j < c->cols; j++)
 		{
-			if(j < a->rows)
+			fprintf(stderr, "I: %d, J: %d\n", i, j);
+			if(j < a->cols)
 			{
 				c->data[i * c->cols + j] = a->data[i * a->cols + j];
 			}
@@ -186,7 +194,7 @@ Matrix* joinMatrix(Matrix* a, Matrix* b)
 			}
 		}
 	}
-
+fprintf(stderr, "End Join\n"); //FIXME
 	return c;
 }
 
