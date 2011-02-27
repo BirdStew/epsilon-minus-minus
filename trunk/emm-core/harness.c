@@ -45,8 +45,15 @@ void testCode(Code* code, double errorProb, CodeStats* stats)
 	//encode packet - buffered
 	encode(packet, encodedPacket, code);
 
-	printMatrix(packet);
-	printMatrix(encodedPacket);
+	//printMatrix(packet);
+	//printMatrix(encodedPacket);
+
+	printf("Generator\n");
+	printAugMatrix(code->generator, code->wordLen - 1);
+	printf("\n\n");
+	printf("Control\n");
+	printAugMatrix(code->control, code->control->cols - code->control->rows - 1);
+	printf("\n\n");
 
 	transmit(encodedPacket, errorProb);
 
