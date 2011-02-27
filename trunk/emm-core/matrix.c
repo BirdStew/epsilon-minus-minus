@@ -24,9 +24,9 @@
  */
 Matrix* newMatrix(int rows, int cols)
 {
-	if(rows < 1 || cols < 1)
+	if(rows < 0 || cols < 0)
 	{
-		fprintf(stderr,"error: Matrix dimensions less than 1.  Received %d,%d in 'newMatrix'\n", rows, cols);
+		fprintf(stderr,"error: Matrix dimensions less than 0.  Received %d,%d in 'newMatrix'\n", rows, cols);
 		exit(EXIT_FAILURE);
 	}
 
@@ -157,13 +157,12 @@ void transposeMatrix(Matrix* m)
 /*
  * Creates and returns a new matrix with dimensions rows,  A.cols + b.cols.
  * In order to join both matrices A and B must the same number of rows.
- * The return value is a third matrix.  It is the responsibility of the user
+ * The return value is a third matrix. It is the responsibility of the user
  * to discard matrices A and B.
  */
 
 Matrix* joinMatrix(Matrix* a, Matrix* b)
 {
-	fprintf(stderr, "Start Join\n"); //FIXME
 	if(a == NULL || b == NULL)
 	{
 		fprintf(stderr, "error: passed null ptr in 'joinMatrix'\n");
@@ -177,13 +176,11 @@ Matrix* joinMatrix(Matrix* a, Matrix* b)
 	}
 
 	Matrix* c = newMatrix(a->rows, a->cols + b->cols);
-	fprintf(stderr, "a-rows: %d, a-cols: %d \nb-rows: %d, b-cols: %d \nc-rows: %d, c-cols: %d \n",a->rows,a->cols,b->rows,b->cols,c->rows,c->cols);
 	int i, j;
 	for(i = 0; i < c->rows; i++)
 	{
 		for(j = 0; j < c->cols; j++)
 		{
-			fprintf(stderr, "I: %d, J: %d\n", i, j);
 			if(j < a->cols)
 			{
 				c->data[i * c->cols + j] = a->data[i * a->cols + j];
@@ -194,7 +191,6 @@ Matrix* joinMatrix(Matrix* a, Matrix* b)
 			}
 		}
 	}
-fprintf(stderr, "End Join\n"); //FIXME
 	return c;
 }
 
