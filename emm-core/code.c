@@ -42,15 +42,10 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 	Code* c = (Code*)malloc(sizeof(Code));
 	c->wordLen = wordLen;
 	c->parityLen = parityLen;
-	//fprintf(stderr, "gen");
 	c->generator = newGeneratorMatrix(tempPCM);
-	//fprintf(stderr, "con");
 	c->control =  newControlMatrix(tempPCM);
-	//fprintf(stderr, "syn");
 	c->syndrome = newSyndromeMatrix(wordLen, parityLen);
-	//fprintf(stderr, "after-syn");
 	delMatrix(&tempPCM);
-	//fprintf(stderr, "after-del");
 	return c;
 }
 
@@ -105,15 +100,10 @@ Matrix* newGeneratorMatrix(Matrix* pcm)
 
 Matrix* newControlMatrix(Matrix* pcm)
 {
-	//fprintf(stderr, "in control");  //FIXME
 	transposeMatrix(pcm);
-	//fprintf(stderr, "after transpose");//FIXME
 	Matrix* identity = newIdentity(pcm->rows);
-	//fprintf(stderr, "after ident");//FIXME
 	Matrix* con = joinMatrix(pcm,identity);
-	//fprintf(stderr, "after join");//FIXME
 	delMatrix(&identity);
-	//fprintf(stderr, "end control");//FIXME
 	return con;
 }
 
@@ -195,7 +185,7 @@ Matrix* newRandomParity(int rows, int cols)
 }
 
 
-void encode(Matrix* wordVector, Matrix* encodedVector, Code* c)
+void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
 {
-
+	bufferedBinaryMultiply(packet, c->generator, encodedPacket);
 }

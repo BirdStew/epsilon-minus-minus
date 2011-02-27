@@ -36,10 +36,24 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 
 void testCode(Code* code, double errorProb, CodeStats* stats)
 {
-	/* DEBUG */ //FIXME
-	//printf("[%d, %d]\n", code->generator->rows, code->generator->cols);
-	//printAugMatrix(code->generator, code->wordLen-1);
-	//printf("\n\n");
+	//fprintf(stderr, "start testCode\n"); //FIXME
+	Matrix* packet = newMatrix(1, code->wordLen);
+	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);
+
+	//fill packet with message chunk?
+
+	//encode packet - buffered
+	encode(packet, encodedPacket, code);
+
+	printMatrix(packet);
+	printMatrix(encodedPacket);
+
+	transmit(encodedPacket, errorProb);
+
+	// decode
+	//fprintf(stderr, "end testCode\n"); //FIXME
+
+	//extract packet - aka go from vector back to bytes
 }
 
 
@@ -52,7 +66,7 @@ void initCodeStats(CodeStats* codeStats)
 void transmit(Matrix* packet, double errorProb)
 {
 	int i;
-	int n = packet->rows + packet->cols;
+	int n = packet->rows * packet->cols;
 	for(i = 0; i < n; i++)
 	{
 		if(rand() % 1 <= errorProb)
