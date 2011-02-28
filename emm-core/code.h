@@ -37,6 +37,7 @@ Matrix* newDenseParity(int rows, int cols);
 Matrix* newLowDensityParity(int rows, int cols);
 Matrix* newRandomParity(int rows, int cols);
 void encode(Matrix* packet, Matrix* encodedPacket, Code* c);
+int calcMinDistance(Matrix* validWords);
 
 
 #endif /* CODE_H_ */
