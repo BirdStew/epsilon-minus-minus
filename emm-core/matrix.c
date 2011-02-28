@@ -135,17 +135,22 @@ void transposeMatrix(Matrix* m)
 {
 	int i, j, temp;
 
-	//if(m->rows != 1 && m->cols != 1)
+	if(m->rows != 1 && m->cols != 1)
 	{
+		char* tData = malloc(m->rows * m->cols);
+
 		for(i = 0; i < m->rows; i++)
 		{
-			for(j = 0; j < m->cols; j++)
+			for(j = 0; j < m->cols ; j++)
 			{
-				temp = m->data[i * m->cols + j];
-				m->data[i * m->cols + j] = m->data[j * m->rows + i];
-				m->data[j * m->rows + i] = temp;
+				//temp = m->data[i * m->cols + j];
+				//m->data[i * m->cols + j] = m->data[j * m->cols + i];
+				//m->data[j * m->cols + i] = temp;
+				tData[j * m->rows + i] = m->data[i * m->cols + j];
 			}
 		}
+		free(m->data);
+		m->data = tData;
 	}
 
 	temp = m-> rows;
