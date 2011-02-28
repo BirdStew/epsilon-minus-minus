@@ -12,6 +12,7 @@
 #include <time.h>	// Used for Rand()
 
 
+
 /*
  * Creates a new code struct and fills all fields with the necessary matrices.
  * This function receives the length of original word (bits) and the number of
@@ -188,4 +189,33 @@ Matrix* newRandomParity(int rows, int cols)
 void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
 {
 	bufferedBinaryMultiply(packet, c->generator, encodedPacket);
+}
+
+
+int calcMinDistance(Matrix* validWords)
+{
+	int minDist = 0xFFFFFFFF;
+	int diffBits;
+	int i, j, k;
+
+	for(i = 0; i < validWords->rows; i++)
+	{
+		for(j = i + 1; j < validWords->rows; j++)
+		{
+			diffBits = 0;
+			for(k = 0; k <  validWords->cols; k++)
+			{
+				if(validWords->data[i * validWords->cols + k] != validWords->data[j * validWords->cols + k])
+				{
+					diffBits++;
+				}
+			}
+
+			if(minDist > diffBits)
+			{
+				minDist = diffBits;
+			}
+		}
+	}
+	return minDist;
 }
