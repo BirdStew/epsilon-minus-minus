@@ -116,11 +116,16 @@ void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
 
 	int i,j,k;
     for(i = 0; i < c->rows; i++)
-        for( j = 0; j < c->cols; j++)
-            for( k = 0; k < b->rows; k++)
+    {
+    	for( j = 0; j < c->cols; j++)
+        {
+    		//c->data[i*c->cols+j] = 0;
+        	for( k = 0; k < b->rows; k++)
             {
-            	c->data[i*c->cols+j] ^= a->data[i*a->cols+k] & b->data[k*b->cols+j];
-            }
+				c->data[i*c->cols+j] ^= a->data[i*a->cols+k] & b->data[k*b->cols+j];
+			}
+        }
+    }
 }
 
 
