@@ -198,7 +198,7 @@ int calcMinDistance(Matrix* validWords)
 	int diffBits;
 	int i, j, k;
 
-	for(i = 0; i < validWords->rows; i++)
+	for(i = 0; i < (validWords->rows)-1; i++)
 	{
 		for(j = i + 1; j < validWords->rows; j++)
 		{
@@ -260,5 +260,6 @@ Matrix* calcValidWords(Matrix* generator)
 	}
 
 	delMatrix(&buffer);
+	return validWords;
 }
 
