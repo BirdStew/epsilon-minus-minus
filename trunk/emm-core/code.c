@@ -219,3 +219,46 @@ int calcMinDistance(Matrix* validWords)
 	}
 	return minDist;
 }
+
+
+/*
+ * Spawns validWords stored as a matrix. Using the generator matrix
+ * it loops over all the values from 0 to word length -1. The validWords
+ * matrix will allays be 2^word length by encoded length.
+ */
+
+Matrix* calcValidWords(Matrix* generator)
+{
+	Matrix* validWords = newMatrix(pow(2,generator->rows),generator->cols);
+	Matrix* buffer = newMatrix(1, generator->cols);
+
+	Matrix r;
+	Matrix* result = &r;
+	result->rows = 1;
+	result->cols = validWords->cols;
+
+
+	int i, j, tempShift, temp;
+	int mask = 1;
+
+	for(i = 0; i < validWords->rows; i++)
+	{
+		/* Break i into bits and fill buffer */
+		tempShift = i;
+		for(j = buffer->cols; j >= 0 ; j--)
+		{
+			temp = tempShift & mask;
+			buffer->data[j] = (char)temp;
+			tempShift >>= 1;
+		}
+
+		/* Set result pointer to row in validWords matrix */
+		result->data = (char*)(validWords + (i * validWords->cols));
+
+		/* Multiply word through generator matrix and store in validWords */
+		bufferedBinaryMultiply(buffer, generator, result);
+	}
+
+	delMatrix(&buffer);
+}
+
