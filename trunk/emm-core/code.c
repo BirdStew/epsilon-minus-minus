@@ -257,12 +257,17 @@ Matrix* calcValidWords(Matrix* generator)
 			wordBuffer->data[j] = (char)temp;
 			tempShift >>= 1;
 		}
+		printf("\nBuffer %d\n", i);
+		printMatrix(wordBuffer);
 
 		/* Set result pointer to row in validWords matrix */
 		result->data = (char*)(validWords + (i * validWords->cols));
 
 		/* Multiply word through generator matrix and store in validWords */
-		bufferedBinaryMultiply(wordBuffer, generator, result);
+		//bufferedBinaryMultiply(wordBuffer, generator, result);
+
+		printf("\nResult %d\n", i);
+		printMatrix(result);
 	}
 
 	delMatrix(&wordBuffer);
