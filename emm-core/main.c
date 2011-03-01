@@ -12,6 +12,8 @@
 #include <time.h>
 #include "harness.h"
 
+	/* Testing */
+	#include "code.h"
 
 #define PROGRAM_NAME "emm-core"
 
@@ -94,7 +96,17 @@ int main( int argc, char** argv )
 
 	}
 
-	runHarness(wordLen, parityLen, errorProb, parityFlags);
+	//runHarness(wordLen, parityLen, errorProb, parityFlags);
+
+	Matrix* pcm = newDenseParity(2,3);
+	Matrix* g = newGeneratorMatrix(pcm);
+	printAugMatrix(g,2-1);
+	printf("\n\n");
+	Matrix* vw = calcValidWords(g);
+	printMatrix(vw);
+
+
+
 	fprintf(stderr, "END\n"); //FIXME testing only
 	return EXIT_SUCCESS;
 }

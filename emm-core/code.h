@@ -30,9 +30,9 @@ enum PARITY_TYPE
 
 Code* newCode(int wordLen, int parityLen, int parityType);
 void delCode(Code** c);
-Matrix* newGeneratorMatrix(Matrix* pce);
+Matrix* newGeneratorMatrix(Matrix* pcm);
 Matrix* newControlMatrix(Matrix* pcm);
-Matrix* newSyndromeMatrix(int wordLen, int parityLen);
+Matrix* newSyndromeMatrix(Matrix* validWords);
 Matrix* newDenseParity(int rows, int cols);
 Matrix* newLowDensityParity(int rows, int cols);
 Matrix* newRandomParity(int rows, int cols);
