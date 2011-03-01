@@ -98,13 +98,36 @@ int main( int argc, char** argv )
 
 	//runHarness(wordLen, parityLen, errorProb, parityFlags);
 
+	/*
 	Matrix* pcm = newDenseParity(2,3);
 	Matrix* g = newGeneratorMatrix(pcm);
 	printAugMatrix(g,2-1);
 	printf("\n\n");
 	Matrix* vw = calcValidWords(g);
 	printMatrix(vw);
+	*/
 
+	Matrix* ma = newRandomParity(1, 3);
+	Matrix* mb = newRandomParity(3, 5);
+	Matrix* mc = newMatrix(1,5);
+
+	printf("Matrix: A\n");
+	printMatrix(ma);
+	printf("\n\n");
+
+	printf("Matrix: B\n");
+	printMatrix(mb);
+	printf("\n\n");
+
+	bufferedBinaryMultiply(ma,mb,mc);
+	printf("Matrix: C\n");
+	printMatrix(mc);
+
+	printf("\n\n");
+	int i;
+	printf("Matrix: C (for loop)\n");
+	for(i=0; i<mc->cols; i++)
+		printf(" %d", mc->data[i]);
 
 
 	fprintf(stderr, "END\n"); //FIXME testing only
