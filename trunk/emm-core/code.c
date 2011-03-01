@@ -45,8 +45,13 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 	c->parityLen = parityLen;
 	c->generator = newGeneratorMatrix(tempPCM);
 	c->control =  newControlMatrix(tempPCM);
-	c->syndrome = newSyndromeMatrix(wordLen, parityLen);
+
+	//Matrix* validWords = calcValidWords(c->generator);
+	//c->distance = calcMinDistance(validWords);
+	c->syndrome = newSyndromeMatrix(NULL);
+
 	delMatrix(&tempPCM);
+	//delMatrix(&validWords);
 	return c;
 }
 
@@ -115,7 +120,7 @@ Matrix* newControlMatrix(Matrix* pcm)
  * by (word length + parity length).
  */
 
-Matrix* newSyndromeMatrix(int wordLen, int parityLen)
+Matrix* newSyndromeMatrix(Matrix* validWords)
 {
 	//Matrix* syn = newMatrix((int)pow(2,parityLen), wordLen + parityLen);
 	Matrix* syn = newMatrix(2,2);
@@ -225,12 +230,13 @@ int calcMinDistance(Matrix* validWords)
  * Spawns validWords stored as a matrix. Using the generator matrix
  * it loops over all the values from 0 to word length -1. The validWords
  * matrix will allays be 2^word length by encoded length.
+ * wordBuffer 1 X wordLen * Generator wordLen X (wordLen + parityLen)
  */
 
 Matrix* calcValidWords(Matrix* generator)
 {
 	Matrix* validWords = newMatrix(pow(2,generator->rows),generator->cols);
-	Matrix* buffer = newMatrix(1, generator->cols);
+	Matrix* wordBuffer = newMatrix(1, generator->rows);
 
 	Matrix r;
 	Matrix* result = &r;
@@ -245,10 +251,10 @@ Matrix* calcValidWords(Matrix* generator)
 	{
 		/* Break i into bits and fill buffer */
 		tempShift = i;
-		for(j = buffer->cols; j >= 0 ; j--)
+		for(j = wordBuffer->cols; j >= 0 ; j--)
 		{
 			temp = tempShift & mask;
-			buffer->data[j] = (char)temp;
+			wordBuffer->data[j] = (char)temp;
 			tempShift >>= 1;
 		}
 
@@ -256,10 +262,10 @@ Matrix* calcValidWords(Matrix* generator)
 		result->data = (char*)(validWords + (i * validWords->cols));
 
 		/* Multiply word through generator matrix and store in validWords */
-		bufferedBinaryMultiply(buffer, generator, result);
+		bufferedBinaryMultiply(wordBuffer, generator, result);
 	}
 
-	delMatrix(&buffer);
+	delMatrix(&wordBuffer);
 	return validWords;
 }
 

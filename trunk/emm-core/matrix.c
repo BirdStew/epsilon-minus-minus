@@ -103,11 +103,11 @@ void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
 	//r c  * r c
 	if(a->cols != b->rows)
 	{
-		fprintf(stderr, "error: cannot multiply! A.rows != B.cols in 'bufferedBinaryMultiply'\n");
+		fprintf(stderr, "error: cannot multiply! A.cols != B.rows in 'bufferedBinaryMultiply'\n");
 		exit(EXIT_FAILURE);
 	}
 
-	//Matrix* c = newMatrix(a->rows, b->cols); //Used for old BinaryMultiply were result is malloc'd on the fly
+	//Matrix* c = newMatrix(a->rows, b->cols); //Used for old BinaryMultiply where result is malloc'd on the fly
 	if(a->rows != c->rows || b->cols != c->cols)
 	{
 		fprintf(stderr, "error: cannot multiply! Result matrix of invalid dimensions 'bufferedBinaryMultiply'\n");
