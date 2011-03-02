@@ -6,13 +6,18 @@
  */
 #include <stdlib.h>
 #include "harness.h"
+#include <stdio.h> /* LoadMessage / exportJson */
 
-#include <stdio.h> /* Testing only */
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
+
+
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath)
 {
 
 	CodeStats stats;
+	Message msg;
+
+	loadMessage(msgPath, &msg);
 
 	int w, p, pType;
 	for(w = wordLen[0]; w <= wordLen[1]; w++)
@@ -23,9 +28,8 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 			{
 				if(pType & parityFlags)
 				{
-					//printf("w: %d p: %d\n", w, p);
 					Code* code = newCode(w, p, pType);
-					testCode(code, errorProb, &stats);
+					testCode(code, &msg, errorProb, &stats);
 					delCode(&code);
 				}
 			}
@@ -34,10 +38,10 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 }
 
 
-void testCode(Code* code, double errorProb, CodeStats* stats)
+void testCode(Code* code, Message* msg, double errorProb, CodeStats* stats)
 {
 	/*
-	 * Need to write util function to read message from file.
+	 * --Need to write util function to read message from file.
 	 * Need to write nextPacket function to consume message in parts.  track bits. byte boundry issue.
 	 * Need to write until function to export code/stats struct to JSON
 	 * Send fredo php constants for parity types
@@ -88,4 +92,49 @@ void transmit(Matrix* packet, double errorProb)
 			packet->data[i] ^= 1;
 		}
 	}
+}
+
+
+void loadMessage(char* filePath, Message* msg)
+{
+	FILE* fh = fopen(filePath, "rb");
+	if(fh)
+	{
+		/* Get File Size */
+		fseek(fh, 0, SEEK_END);
+		long fileSize = ftell(fh);
+		fseek(fh, 0, SEEK_SET);
+
+		char* buffer = (char*)malloc(fileSize);
+
+		if(buffer)
+		{
+			long result = fread(buffer, sizeof(char), fileSize, fh);
+
+			if(result == fileSize)
+			{
+				msg->len = fileSize;
+				msg->byteOffset = 0;
+				msg->bitOffset = 0;
+				msg->data = buffer;
+			}
+			else
+			{
+				fprintf(stderr, "error: only read %ld of %ld bytes in 'loadMessage'\n", result, fileSize );
+				exit(EXIT_FAILURE);
+			}
+		}
+		else
+		{
+			fprintf(stderr, "error: malloc failed in 'loadMessage'\n");
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		fprintf(stderr, "error: failed to open '%s' in 'loadMessage'\n", filePath);
+		exit(EXIT_FAILURE);
+	}
+
+	fclose(fh);
 }
