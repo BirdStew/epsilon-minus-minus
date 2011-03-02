@@ -46,12 +46,12 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 	c->generator = newGeneratorMatrix(tempPCM);
 	c->control =  newControlMatrix(tempPCM);
 
-	//Matrix* validWords = calcValidWords(c->generator);
-	//c->distance = calcMinDistance(validWords);
+	Matrix* validWords = calcValidWords(c->generator);
+	c->distance = calcMinDistance(validWords);
 	c->syndrome = newSyndromeMatrix(NULL);
 
 	delMatrix(&tempPCM);
-	//delMatrix(&validWords);
+	delMatrix(&validWords);
 	return c;
 }
 

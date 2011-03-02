@@ -96,9 +96,9 @@ int main( int argc, char** argv )
 
 	}
 
-	//runHarness(wordLen, parityLen, errorProb, parityFlags);
+	runHarness(wordLen, parityLen, errorProb, parityFlags);
 
-
+/*
 	Matrix* pcm = newDenseParity(3,3);
 	Matrix* g = newGeneratorMatrix(pcm);
 	printAugMatrix(g,2-1);
@@ -107,7 +107,7 @@ int main( int argc, char** argv )
 	printf("\n\n");
 	printMatrix(vw);
 
-
+*/
 	/*
 	Matrix* ma = newRandomParity(1, 3);
 	Matrix* mb = newRandomParity(3, 5);
@@ -155,7 +155,7 @@ void printUsage()
 	" -p <number>       number of parity bits.\n"
 	" -e <float>        error probability.\n"
 	" -t <number>       flags for parity type.\n"
-	" -o <path>         path to optional output file.\n"
+	" -o <path>         path to optional output file(s).\n"
 	//" -k <number>       number of original bits\n"
 	//" -n <number>       number of encoded bits\n"
 	"\n"

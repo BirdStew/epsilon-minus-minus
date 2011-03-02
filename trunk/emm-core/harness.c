@@ -36,6 +36,13 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags)
 
 void testCode(Code* code, double errorProb, CodeStats* stats)
 {
+	/*
+	 * Need to write util function to read message from file.
+	 * Need to write nextPacket function to consume message in parts.  track bits. byte boundry issue.
+	 * Need to write until function to export code/stats struct to JSON
+	 * Send fredo php constants for parity types
+	 */
+
 	//fprintf(stderr, "start testCode\n"); //FIXME
 	Matrix* packet = newMatrix(1, code->wordLen);
 	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);
