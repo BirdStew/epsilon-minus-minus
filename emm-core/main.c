@@ -99,7 +99,7 @@ int main( int argc, char** argv )
 	//runHarness(wordLen, parityLen, errorProb, parityFlags);
 
 
-	Matrix* pcm = newDenseParity(2,3);
+	Matrix* pcm = newDenseParity(3,3);
 	Matrix* g = newGeneratorMatrix(pcm);
 	printAugMatrix(g,2-1);
 	printf("\n\n");

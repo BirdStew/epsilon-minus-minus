@@ -251,7 +251,7 @@ Matrix* calcValidWords(Matrix* generator)
 	{
 		/* Break i into bits and fill buffer */
 		tempShift = i;
-		for(j = wordBuffer->cols; j >= 0 ; j--)
+		for(j = wordBuffer->cols-1; j >= 0 ; j--)
 		{
 			temp = tempShift & mask;
 			wordBuffer->data[j] = (char)temp;
@@ -266,8 +266,8 @@ Matrix* calcValidWords(Matrix* generator)
 		/* Multiply word through generator matrix and store in validWords */
 		//bufferedBinaryMultiply(wordBuffer, generator, result);
 
-		printf("\nResult %d\n", i);
-		printMatrix(result);
+		//printf("\nResult %d\n", i);
+		//printMatrix(result);
 	}
 
 	delMatrix(&wordBuffer);
