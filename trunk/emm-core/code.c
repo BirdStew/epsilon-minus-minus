@@ -191,41 +191,6 @@ Matrix* newRandomParity(int rows, int cols)
 }
 
 
-void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
-{
-	bufferedBinaryMultiply(packet, c->generator, encodedPacket);
-}
-
-
-int calcMinDistance(Matrix* validWords)
-{
-	int minDist = 0xFFFFFFFF;
-	int diffBits;
-	int i, j, k;
-
-	for(i = 0; i < (validWords->rows)-1; i++)
-	{
-		for(j = i + 1; j < validWords->rows; j++)
-		{
-			diffBits = 0;
-			for(k = 0; k <  validWords->cols; k++)
-			{
-				if(validWords->data[i * validWords->cols + k] != validWords->data[j * validWords->cols + k])
-				{
-					diffBits++;
-				}
-			}
-
-			if(minDist > diffBits)
-			{
-				minDist = diffBits;
-			}
-		}
-	}
-	return minDist;
-}
-
-
 /*
  * Spawns validWords stored as a matrix. Using the generator matrix
  * it loops over all the values from 0 to word length -1. The validWords
@@ -269,3 +234,43 @@ Matrix* calcValidWords(Matrix* generator)
 	return validWords;
 }
 
+
+int calcMinDistance(Matrix* validWords)
+{
+	int minDist = 0xFFFFFFFF;
+	int diffBits;
+	int i, j, k;
+
+	for(i = 0; i < (validWords->rows)-1; i++)
+	{
+		for(j = i + 1; j < validWords->rows; j++)
+		{
+			diffBits = 0;
+			for(k = 0; k <  validWords->cols; k++)
+			{
+				if(validWords->data[i * validWords->cols + k] != validWords->data[j * validWords->cols + k])
+				{
+					diffBits++;
+				}
+			}
+
+			if(minDist > diffBits)
+			{
+				minDist = diffBits;
+			}
+		}
+	}
+	return minDist;
+}
+
+
+void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
+{
+	bufferedBinaryMultiply(packet, c->generator, encodedPacket);
+}
+
+
+void decode(Matrix* encodedPacket, Matrix* decodedPacket, Code* c)
+{
+
+}

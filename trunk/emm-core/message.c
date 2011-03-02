@@ -45,7 +45,7 @@ Message* newMessage(char* filePath)
 		}
 		else
 		{
-			fprintf(stderr, "error: only read %ld of %ld bytes in 'newMessage'\n", result, fileSize );
+			fprintf(stderr, "error: only read %ld of %ld bytes in 'newMessage'\n", result, fileSize);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -60,17 +60,38 @@ Message* newMessage(char* filePath)
 }
 
 
-void delMessage(Message** m)
+void delMessage(Message** msg)
 {
-	if(*m == NULL || m == NULL)
+	if(*msg == NULL || msg == NULL)
 	{
 		fprintf(stderr,"error: passed ptr is NULL in 'delMessage'\n");
 	}
 	else
 	{
-		free((*m)->data);
-		free(*m);
-		*m = NULL;
+		free((*msg)->data);
+		free(*msg);
+		*msg = NULL;
 	}
 
+}
+
+
+void saveMessage(Message* msg, char* filePath)
+{
+	FILE* fh = fopen(filePath, "wb");
+	if(fh)
+	{
+		long result = fwrite(msg->data, sizeof(char), msg->len, fh);
+		if(result != msg->len)
+		{
+			fprintf(stderr, "error: only wrote %ld of %ld bytes in 'saveMessage'\n", result, msg->len);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		fprintf(stderr, "error: failed to open '%s' in 'saveMessage'\n", filePath);
+		exit(EXIT_FAILURE);
+	}
+	fclose(fh);
 }
