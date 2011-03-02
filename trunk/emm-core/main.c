@@ -24,15 +24,19 @@ void parseRange(char* str, char delimiter, int* range);
 int main( int argc, char** argv )
 {
 	signed char c;
+
+	/*
 	char linFlag = 0;
 	char hamFlag = 0;
 	char lflag = 0;
+	 */
 
 	int wordLen[] = {0,0};
 	int parityLen[] = {0,0};
 	double errorProb = .01;
 	int parityFlags = PARITY_FLAG_MAX;
-	char* msgPath = "demo.bmp";
+	char* msgPath = NULL;
+	char* outPath = NULL;
 
 	if(argc <= 1 || strstr(argv[1],"help"))
 	{
@@ -43,7 +47,7 @@ int main( int argc, char** argv )
 	// Seed Random number generator with system time.
 	//srand(time(NULL));
 
-	while ((c = getopt (argc, argv, "LRHhw:p:e:t:")) != -1)
+	while ((c = getopt (argc, argv, "LRHhw:p:e:t:o:")) != -1)
 	{
 		switch(c)
 		{
@@ -85,6 +89,10 @@ int main( int argc, char** argv )
 				parityFlags = atoi(optarg);
 				break;
 
+			case 'o':
+				outPath = optarg;
+				break;
+
 			case ':':
 				fprintf(stderr, "Option -%c requires an operand\n", optopt);
 			break;
@@ -108,7 +116,7 @@ int main( int argc, char** argv )
 		return EXIT_FAILURE;
 	}
 
-	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath);
+	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath, outPath);
 
 /*
 	Matrix* pcm = newDenseParity(3,3);

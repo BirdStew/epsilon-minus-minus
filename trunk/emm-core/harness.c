@@ -11,13 +11,11 @@
 
 
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath)
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath)
 {
 
 	CodeStats stats;
-	Message msg;
-
-	loadMessage(msgPath, &msg);
+	Message* msg = newMessage(msgPath);
 
 	int w, p, pType;
 	for(w = wordLen[0]; w <= wordLen[1]; w++)
@@ -29,22 +27,22 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 				if(pType & parityFlags)
 				{
 					Code* code = newCode(w, p, pType);
-					testCode(code, &msg, errorProb, &stats);
+					testCode(code, msg, errorProb, &stats);
 					delCode(&code);
 				}
 			}
 		}
 	}
+
+	delMessage(&msg);
 }
 
 
 void testCode(Code* code, Message* msg, double errorProb, CodeStats* stats)
 {
 	/*
-	 * --Need to write util function to read message from file.
 	 * Need to write nextPacket function to consume message in parts.  track bits. byte boundry issue.
 	 * Need to write until function to export code/stats struct to JSON
-	 * Send fredo php constants for parity types
 	 */
 
 	//fprintf(stderr, "start testCode\n"); //FIXME
@@ -95,8 +93,9 @@ void transmit(Matrix* packet, double errorProb)
 }
 
 
-void loadMessage(char* filePath, Message* msg)
+Message* newMessage(char* filePath)
 {
+	Message* msg;
 	FILE* fh = fopen(filePath, "rb");
 	if(fh)
 	{
@@ -105,36 +104,63 @@ void loadMessage(char* filePath, Message* msg)
 		long fileSize = ftell(fh);
 		fseek(fh, 0, SEEK_SET);
 
-		char* buffer = (char*)malloc(fileSize);
-
-		if(buffer)
+		msg = (Message*)malloc(sizeof(Message));
+		if(!msg)
 		{
-			long result = fread(buffer, sizeof(char), fileSize, fh);
+			fprintf(stderr, "error: malloc failed for 'msg' struct in 'newMessage'\n");
+			exit(EXIT_FAILURE);
+		}
 
-			if(result == fileSize)
-			{
-				msg->len = fileSize;
-				msg->byteOffset = 0;
-				msg->bitOffset = 0;
-				msg->data = buffer;
-			}
-			else
-			{
-				fprintf(stderr, "error: only read %ld of %ld bytes in 'loadMessage'\n", result, fileSize );
-				exit(EXIT_FAILURE);
-			}
+
+		char* buffer = (char*)malloc(fileSize);
+		if(!buffer)
+		{
+			fprintf(stderr, "error: malloc failed for 'buffer' in 'newMessage'\n");
+			exit(EXIT_FAILURE);
+		}
+
+		long result = fread(buffer, sizeof(char), fileSize, fh);
+
+		if(result == fileSize)
+		{
+			msg->len = fileSize;
+			msg->byteOffset = 0;
+			msg->bitOffset = 0;
+			msg->data = buffer;
 		}
 		else
 		{
-			fprintf(stderr, "error: malloc failed in 'loadMessage'\n");
+			fprintf(stderr, "error: only read %ld of %ld bytes in 'newMessage'\n", result, fileSize );
 			exit(EXIT_FAILURE);
 		}
 	}
 	else
 	{
-		fprintf(stderr, "error: failed to open '%s' in 'loadMessage'\n", filePath);
+		fprintf(stderr, "error: failed to open '%s' in 'newMessage'\n", filePath);
 		exit(EXIT_FAILURE);
 	}
 
 	fclose(fh);
+	return msg;
+}
+
+
+void delMessage(Message** m)
+{
+	if(*m == NULL || m == NULL)
+	{
+		fprintf(stderr,"error: passed ptr is NULL in 'delMessage'\n");
+	}
+	else
+	{
+		free((*m)->data);
+		free(*m);
+		*m = NULL;
+	}
+
+}
+
+int nextPacket(Matrix* packetBuffer, Message* msg)
+{
+
 }

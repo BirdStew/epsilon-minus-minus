@@ -29,10 +29,11 @@ typedef struct Message
 } Message;
 
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags, char* msgPath);
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags, char* msgPath, char* outPath);
 void testCode(Code* code, Message* msg, double errorProb, CodeStats* stats);
 void initCodeStats(CodeStats* codeStats);
 void transmit(Matrix* packet, double errorProb);
-void loadMessage(char* filePath, Message* msg);
+Message* newMessage(char* filePath);
+void delMessage(Message** m);
 
 #endif /* HARNESS_H_ */
