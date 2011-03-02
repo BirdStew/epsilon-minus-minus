@@ -162,5 +162,20 @@ void delMessage(Message** m)
 
 int nextPacket(Matrix* packetBuffer, Message* msg)
 {
+	int i, b;
+	int mask = 1;
+	char temp;
+	for(i = 0, b = 7 - msg->bitOffset; i < packetBuffer->cols; i++, b--)
+	{
+		temp = msg->data[msg->byteOffset];
 
+		packetBuffer->data[i] = (temp >> b) & mask;
+
+		if(b==0)
+			b=7;
+	}
+	msg->bitOffset = b;
+	msg->byteOffset += packetBuffer->cols;
+
+	return 0;
 }
