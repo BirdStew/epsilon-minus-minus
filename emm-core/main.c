@@ -32,6 +32,7 @@ int main( int argc, char** argv )
 	int parityLen[] = {0,0};
 	double errorProb = .01;
 	int parityFlags = PARITY_FLAG_MAX;
+	char* msgPath = "demo.bmp";
 
 	if(argc <= 1 || strstr(argv[1],"help"))
 	{
@@ -96,7 +97,18 @@ int main( int argc, char** argv )
 
 	}
 
-	runHarness(wordLen, parityLen, errorProb, parityFlags);
+	/* After getopt switches set required arguments */
+	if(argv[optind])
+	{
+		msgPath = argv[optind];
+	}
+	else
+	{
+		fprintf(stderr, "Missing required <message file> argument.\n");
+		return EXIT_FAILURE;
+	}
+
+	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath);
 
 /*
 	Matrix* pcm = newDenseParity(3,3);

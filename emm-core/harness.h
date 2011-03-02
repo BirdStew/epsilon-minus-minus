@@ -20,9 +20,19 @@ typedef struct CodeStats
 	int codeTime;			/* (endDecode - startEncode) */
 } CodeStats;
 
-void runHarness(int* wordLen, int* parityLen, double errorProb,int parityFlags);
-void testCode(Code* code, double errorProb, CodeStats* stats);
+typedef struct Message
+{
+	long len;
+	int byteOffset;
+	int bitOffset;
+	char* data;
+} Message;
+
+
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags, char* msgPath);
+void testCode(Code* code, Message* msg, double errorProb, CodeStats* stats);
 void initCodeStats(CodeStats* codeStats);
 void transmit(Matrix* packet, double errorProb);
+void loadMessage(char* filePath, Message* msg);
 
 #endif /* HARNESS_H_ */
