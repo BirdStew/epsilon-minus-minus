@@ -18,6 +18,7 @@ typedef struct Message
 
 
 Message* newMessage(char* filePath);
-void delMessage(Message** m);
+void delMessage(Message** msg);
+void saveMessage(Message* msg, char* filePath);
 
 #endif /* MESSAGE_H_ */

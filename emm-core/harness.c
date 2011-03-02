@@ -96,7 +96,7 @@ void transmit(Matrix* packet, double errorProb)
 int nextPacket(Matrix* packetBuffer, Message* msg)
 {
 	int mask = 1;
-	int i, j;
+	int i;
 	for(i = 0; i < packetBuffer->cols; i++)
 	{
 		if(msg->byteOffset >= msg->len)
