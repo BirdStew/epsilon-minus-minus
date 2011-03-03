@@ -8,6 +8,7 @@
  */
 
 #include "algor.h"
+#include "../emm-core/matrix.h"
 #include<stdlib.h>
 #include<stdio.h>
 #include<time.h>
@@ -29,14 +30,8 @@ int main(int argc, char **argv){
 	matrix *gen;
 	/ *setIdentity(ident); */
 
-	char words[3][8] = {
-			{1, 1, 1, 1, 1, 1, 1, 1},
-			{0, 0, 1, 1, 0, 0, 1, 1},
-			{0, 0, 0, 0, 0, 0, 0, 0}
-		};
 
-	int test = getMinDistance(words,3);
-	if(test != 4){ printf("fuck you min distance shithead.  Got: %d\n",test); }
+	int test = getMinDistance(ident);
 
 	scanf("%d",&test);
 	return EXIT_SUCCESS;
@@ -53,15 +48,17 @@ void chooseMajority(matrix *A,int asdf){
 
 }
 int getMinDistance(matrix *B){
-	int i,j,k,min=length,temp;
+	int i,j,k,min=B->cols,temp;
 	for(i=0;i<B->rows;i++){
 		for(j=i+1;j<(B->cols)-1;j++){
 			temp = 0;
 			for(k = 0; k < B->cols; k++){
-				if(B->data[i*(b->cols)+k]==B->)
+				if(B->data[i*(B->cols)+k] == B->data[j*(B->cols)+k]){
+					temp++;
+				}
 			}
+			min = (temp < min)? temp : min;
 		}
-		min = (temp < min)? temp : min;
 	}
 	return min;
 }

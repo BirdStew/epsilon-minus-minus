@@ -8,22 +8,39 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<math.h>
+#include"matrix.h"
+
+//#define wordLength 12
+#define encodeLength 16
+
+Matrix* wordsByWeight(int length);
+Matrix* newLowDensityParity(int rows, int cols);
 
 int main (int argc, char **argv){
-	unsigned long length = 40;
-	unsigned long iter;
-	unsigned long i,j;
-	unsigned long *weight;
-	unsigned long *words;
-	unsigned long mask;
-	unsigned long bits;
 
-	weight=(unsigned long*)malloc(pow(2,length)*sizeof(unsigned long));
-	words=(unsigned long*)malloc(pow(2,length)*sizeof(unsigned l));
+	//Matrix *asdf = newMatrix(pow(2,encodeLength),encodeLength);
+	Matrix *ldpc = newLowDensityParity(8,6);
 
-	for(iter = 0; iter < pow(2,length); iter++){
+	//wordsByWeight(asdf,encodeLength);
+
+	printMatrix(ldpc);
+
+	return EXIT_SUCCESS;
+}
+
+Matrix* wordsByWeight(int length){
+	unsigned int iter;
+	unsigned int i,j,k;
+	unsigned int *weight;
+	unsigned int mask;
+	unsigned int bits;
+	Matrix *allWords = newMatrix(pow(2,length),length);
+
+	weight=(unsigned int*)malloc((allWords->rows)*sizeof(unsigned int));
+
+	for(iter = 0; iter < allWords->rows; iter++){
 		bits = 0;
-		for(mask = 0x01; mask <= pow(2,length); mask<<=1){
+		for(mask = 0x01; mask <= allWords->rows; mask<<=1){
 			if(mask & iter){ bits++; }
 		}
 		weight[iter]=bits;
@@ -31,18 +48,29 @@ int main (int argc, char **argv){
 
 	i = 0;
 	for(j = 0; j<=length; j++){
-		for(iter = 0; iter < pow(2,length); iter++){
+		for(iter = 0; iter < allWords->rows; iter++){
 			if(j == weight[iter]){
-				words[i]=iter;
+				for(k = 0; k < (allWords->cols); k++){
+					allWords->data[(i*(allWords->cols))+k] = ((0x01<<k) & iter)? 1 : 0;
+				}
 				i++;
 			}
 		}
 	}
 
-	for(iter = 0; iter < pow(2,length); iter++){
-		printf("%x\t",words[iter]);
-		if(!(iter%10)){ printf("\n"); }
-	}
-	return EXIT_SUCCESS;
+	return allWords;
 }
 
+Matrix* newLowDensityParity(int rows, int cols){
+	int i,j;
+	Matrix *temp = newMatrix(rows,cols);
+	Matrix *valid = wordsByWeight(rows);
+
+	for(i = 0; i < cols; i++){
+		for(j = 0; j < rows; j++){
+			temp->data[j*cols+i] = valid->data[(valid->rows-1-i)*rows+j];
+		}
+	}
+
+	return temp;
+}
