@@ -9,11 +9,8 @@
 #include <stdio.h> /* LoadMessage / exportJson */
 
 
-
-
 void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath)
 {
-
 	CodeStats stats;
 	Message* msg = readMessage(msgPath);
 
@@ -26,8 +23,25 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 			{
 				if(pType & parityFlags)
 				{
+
+
+					clock_t startSetup = clock();
 					Code* code = newCode(w, p, pType);
-					testCode(code, msg, errorProb, &stats);
+					clock_t endSetup = clock();
+
+
+					initCodeStats(&stats);
+					stats.errorProb = errorProb;
+
+					clock_t startCodeExec = clock();
+					testCode(code, msg, &stats);
+					clock_t endCodeExec = clock();
+
+					stats.setupTime = getExecTime(endSetup,startSetup);
+					stats.codeExecTime = getExecTime(endCodeExec, startCodeExec);
+
+					//fprintf(stderr, "start %ld\n", startSetup);
+					//fprintf(stderr, "sned %ld\n", endSetup);
 					exportResults(code, &stats, outPath);
 					delCode(&code);
 				}
@@ -39,20 +53,17 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 }
 
 
-void testCode(Code* code, Message* msg, double errorProb, CodeStats* stats)
+void testCode(Code* code, Message* msg, CodeStats* stats)
 {
 	/* Allocate space for packet buffers*/
 	Matrix* packet = newMatrix(1, code->wordLen);
 	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);
 	Matrix* decodedPacket = newMatrix(1, code->wordLen);
 
-	initCodeStats(stats);
-	stats->errorProb = errorProb;
-
 	while(nextPacket(msg, packet))
 	{
 		encode(packet, encodedPacket, code);
-		transmit(encodedPacket, errorProb);
+		transmit(encodedPacket, stats->errorProb);
 		decode(packet, decodedPacket, code);
 		detectErrors(packet, decodedPacket, stats);
 	}

@@ -11,6 +11,8 @@
 #include "matrix.h"
 #include "code.h"
 #include "message.h"
+#include <time.h>
+#define getExecTime(e,s)((double)((e)-(s))/(double)CLOCKS_PER_SEC * 1000)
 
 /* JSON Constants for CodeStruct */
 #define PARITY_TYPE "pyt"
@@ -41,7 +43,7 @@ typedef struct CodeStats
 
 
 void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags, char* msgPath, char* outPath);
-void testCode(Code* code, Message* msg, double errorProb, CodeStats* stats);
+void testCode(Code* code, Message* msg, CodeStats* stats);
 void initCodeStats(CodeStats* stats);
 int nextPacket( Message* msg, Matrix* packetBuffer);
 void transmit(Matrix* packet, double errorProb);
