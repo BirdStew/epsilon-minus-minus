@@ -8,9 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "code.h"
-#include <math.h>	// used for pow()
-#include <time.h>	// Used for Rand()
-
+#include <math.h>		// used for pow()
+#include <time.h>		// Used for Rand()
 
 
 /*
