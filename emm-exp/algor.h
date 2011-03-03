@@ -12,11 +12,11 @@
 
 #include "../emm-core/matrix.h"
 
-void chooseRandom(matrix*,int);
-void chooseEven(matrix*,int);
-void chooseMajority(matrix*,int);
+//void chooseRandom(matrix*,int);
+//void chooseEven(matrix*,int);
+//void chooseMajority(matrix*,int);
 
-int getMinDistance(matrix*);
+//int getMinDistance(matrix*);
 
 
 #endif /* ALGOR_H_ */
