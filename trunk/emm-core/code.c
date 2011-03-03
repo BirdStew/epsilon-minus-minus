@@ -43,6 +43,7 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 	Code* c = (Code*)malloc(sizeof(Code));
 	c->wordLen = wordLen;
 	c->parityLen = parityLen;
+	c->parityType = parityType;
 	c->generator = newGeneratorMatrix(tempPCM);
 	c->control =  newControlMatrix(tempPCM);
 
@@ -237,7 +238,7 @@ Matrix* calcValidWords(Matrix* generator)
 
 int calcMinDistance(Matrix* validWords)
 {
-	int minDist = 0xFFFFFFFF;
+	unsigned int minDist = 0xFFFFFFFF; //FIXME bug: always -1 due to signed data type
 	int diffBits;
 	int i, j, k;
 

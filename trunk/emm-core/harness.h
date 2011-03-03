@@ -12,20 +12,40 @@
 #include "code.h"
 #include "message.h"
 
+/* JSON Constants for CodeStruct */
+#define PARITY_TYPE "pyt"
+#define GENERATOR "gen"
+#define CONTROL "con"
+#define SYNDROME "syn"
+
+/* JSON Constants for CodeStatsStruct */
+#define ERROR_PROB "p"
+#define PACKETS "pk"
+#define SUCCESSFUL_DECODES "sd"
+#define UNDETECTED_ERRORS "ue"
+#define DETECTED_ERRORS "de"
+#define SETUP_TIME "st"
+#define CODE_EXEC_TIME "ct"
+
+
 typedef struct CodeStats
 {
+	double errorProb;
 	int packets;
 	int successfulDecodes;
 	int undetectedErrors;
 	int detectedErrors;
-	int codeTime;			/* (endDecode - startEncode) */
+	int setupTime;	  /* endNewCode - startNewCode */
+	int codeExecTime; /* (endDecode - startEncode) */
 } CodeStats;
 
 
 void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags, char* msgPath, char* outPath);
 void testCode(Code* code, Message* msg, double errorProb, CodeStats* stats);
-void initCodeStats(CodeStats* codeStats);
+void initCodeStats(CodeStats* stats);
+int nextPacket( Message* msg, Matrix* packetBuffer);
 void transmit(Matrix* packet, double errorProb);
-
+void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats);
+void exportResults(Code* code, CodeStats* stats, char* filePath);
 
 #endif /* HARNESS_H_ */
