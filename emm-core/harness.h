@@ -12,7 +12,7 @@
 #include "code.h"
 #include "message.h"
 #include <time.h>
-#define getExecTime(e,s)((double)((e)-(s))/(double)CLOCKS_PER_SEC * 1000)
+#define getExecTime(e,s)((long)((double)((e)-(s))/(double)CLOCKS_PER_SEC * 1000))
 
 /* JSON Constants for CodeStruct */
 #define PARITY_TYPE "pyt"
