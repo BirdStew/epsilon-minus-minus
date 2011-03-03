@@ -38,13 +38,13 @@ Matrix* newMatrix(int rows, int cols)
 	m->rows = rows;
 	m->cols = cols;
 
-	char* d = (char*)calloc(rows*cols, sizeof(char));
-	if(d == NULL)
+	char* data = (char*)calloc(rows*cols, sizeof(char));
+	if(data == NULL)
 	{
 		fprintf(stderr,"error: malloc failed for 'data' in 'newMatrix'\n");
 	}
 
-	m->data = d;
+	m->data = data;
 	return m;
 }
 

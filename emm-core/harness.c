@@ -15,7 +15,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 {
 
 	CodeStats stats;
-	Message* msg = newMessage(msgPath);
+	Message* msg = readMessage(msgPath);
 
 	int w, p, pType;
 	for(w = wordLen[0]; w <= wordLen[1]; w++)
@@ -28,6 +28,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 				{
 					Code* code = newCode(w, p, pType);
 					testCode(code, msg, errorProb, &stats);
+					exportResults(code, &stats, outPath);
 					delCode(&code);
 				}
 			}
@@ -40,42 +41,68 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 
 void testCode(Code* code, Message* msg, double errorProb, CodeStats* stats)
 {
-	/*
-	 * Need to write nextPacket function to consume message in parts.  track bits. byte boundry issue.
-	 * Need to write until function to export code/stats struct to JSON
-	 */
-
-	//fprintf(stderr, "start testCode\n"); //FIXME
+	/* Allocate space for packet buffers*/
 	Matrix* packet = newMatrix(1, code->wordLen);
 	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);
+	Matrix* decodedPacket = newMatrix(1, code->wordLen);
 
-	//fill packet with message chunk?
+	initCodeStats(stats);
+	stats->errorProb = errorProb;
 
-	//encode packet - buffered
-	encode(packet, encodedPacket, code);
-
-	//printMatrix(packet);
-	//printMatrix(encodedPacket);
-
-	printf("Generator\n");
-	printAugMatrix(code->generator, code->wordLen - 1);
-	printf("\n\n");
-	printf("Control\n");
-	printAugMatrix(code->control, code->control->cols - code->control->rows - 1);
-	printf("\n\n");
-
-	transmit(encodedPacket, errorProb);
-
-	// decode
-	//fprintf(stderr, "end testCode\n"); //FIXME
+	while(nextPacket(msg, packet))
+	{
+		encode(packet, encodedPacket, code);
+		transmit(encodedPacket, errorProb);
+		decode(packet, decodedPacket, code);
+		detectErrors(packet, decodedPacket, stats);
+	}
 
 	//extract packet - aka go from vector back to bytes
+
+	delMatrix(&packet);
+	delMatrix(&encodedPacket);
+	delMatrix(&decodedPacket);
 }
 
 
-void initCodeStats(CodeStats* codeStats)
+void initCodeStats(CodeStats* stats)
 {
+	stats->errorProb = 0;
+	stats->packets = 0;
+	stats->successfulDecodes = 0;
+	stats->undetectedErrors = 0;
+	stats->detectedErrors = 0;
+	stats->setupTime = 0;
+	stats->codeExecTime = 0;
+}
 
+
+int nextPacket(Message* msg, Matrix* packetBuffer)
+{
+	int mask = 1;
+	int run = 1;
+	int i;
+	for(i = 0; i < packetBuffer->cols; i++)
+	{
+		if(msg->byteOffset < msg->len)
+		{
+			packetBuffer->data[i] = (msg->data[msg->byteOffset] >> (7 - msg->bitOffset)) & mask;
+
+			msg->bitOffset++;
+			if(msg->bitOffset >= 8)
+			{
+				msg->bitOffset = 0;
+				msg->byteOffset++;
+			}
+		}
+		else
+		{
+			packetBuffer->data[i] = 0;
+			run = 0;
+		}
+	}
+
+	return run;
 }
 
 
@@ -93,26 +120,50 @@ void transmit(Matrix* packet, double errorProb)
 }
 
 
-int nextPacket(Matrix* packetBuffer, Message* msg)
+void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats)
 {
-	int mask = 1;
-	int i;
-	for(i = 0; i < packetBuffer->cols; i++)
+
+}
+
+
+void exportResults(Code* code, CodeStats* stats, char* filePath)
+{
+
+	FILE* fh;
+
+	if(filePath)
 	{
-		if(msg->byteOffset >= msg->len)
-		{
-			return 0;
-		}
-
-		packetBuffer->data[i] = (msg->data[msg->byteOffset] >> (7 - msg->bitOffset)) & mask;
-
-		msg->bitOffset++;
-		if(msg->bitOffset >= 8)
-		{
-			msg->bitOffset = 0;
-			msg->byteOffset++;
-		}
+		fh = fopen(filePath, "w");
+	}
+	else
+	{
+		fh = stdout;
 	}
 
-	return 1;
+	/* setup JSON format string */
+	char* jsonCode  = "%s:{n:%d,k:%d,d:%d," PARITY_TYPE ":%d," GENERATOR ":\"%s\"," CONTROL":\"%s\"," SYNDROME ":\"%s\"}";
+	char* jsonStats = "%s:{" ERROR_PROB ":%f," PACKETS ":%d," SUCCESSFUL_DECODES ":%d," UNDETECTED_ERRORS ":%d," DETECTED_ERRORS ":%d,"
+					  SETUP_TIME ":%d," CODE_EXEC_TIME ":%d}";
+
+	/* Allocate matrices as strings */
+	char* gen = matrixToString(code->generator);
+	char* con = matrixToString(code->control);
+	char* syn = matrixToString(code->syndrome);
+
+	fprintf(fh,"{");
+	fprintf(fh,jsonCode,  "code", code->wordLen, code->wordLen+code->parityLen, code->distance, code->parityType , gen, con, syn);
+	fprintf(fh,",");
+	fprintf(fh,jsonStats, "stats", stats->errorProb, stats->packets, stats->successfulDecodes, stats->undetectedErrors,
+						  stats->detectedErrors, stats->setupTime, stats->codeExecTime);
+	fprintf(fh,"}");
+
+	/* Deallocate matrix strings */
+	free(gen);
+	free(con);
+	free(syn);
+
+	if(filePath)
+	{
+		fclose(fh);
+	}
 }

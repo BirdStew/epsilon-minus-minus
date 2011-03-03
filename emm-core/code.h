@@ -15,6 +15,7 @@ typedef struct Code
 	int wordLen;
 	int parityLen;
 	int distance;
+	int parityType;
 	Matrix* generator;
 	Matrix* control;
 	Matrix* syndrome;
