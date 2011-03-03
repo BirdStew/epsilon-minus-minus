@@ -11,6 +11,7 @@
 
 void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath)
 {
+	clock_t startHarness = clock();
 	CodeStats stats;
 	Message* msg = readMessage(msgPath);
 
@@ -50,6 +51,8 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 	}
 
 	delMessage(&msg);
+	clock_t endHarness = clock();
+	printf("Total execution time: %d", getExecTime(endHarness, startHarness));
 }
 
 
@@ -60,12 +63,17 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);
 	Matrix* decodedPacket = newMatrix(1, code->wordLen);
 
+	/* Reset message byte offset */
+	msg->byteOffset = 0;
+	msg->bitOffset = 0;
+
 	while(nextPacket(msg, packet))
 	{
 		encode(packet, encodedPacket, code);
 		transmit(encodedPacket, stats->errorProb);
 		decode(packet, decodedPacket, code);
 		detectErrors(packet, decodedPacket, stats);
+		stats->packets++;
 	}
 
 	//extract packet - aka go from vector back to bytes
