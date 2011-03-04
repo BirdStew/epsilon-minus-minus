@@ -38,10 +38,11 @@ Matrix* newDenseParity(int rows, int cols);
 Matrix* newLowDensityParity(int rows, int cols);
 Matrix* newRandomParity(int rows, int cols);
 Matrix* calcValidWords(Matrix* generator);
+Matrix* wordsByWeight(int wordLen);
 int calcMinDistance(Matrix* validWords);
 void encode(Matrix* packet, Matrix* encodedPacket, Code* c);
 void decode(Matrix* encodedPacket, Matrix* decodedPacket, Code* c);
-Matrix* wordsByWeight(int wordLen);
+
 
 
 

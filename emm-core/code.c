@@ -272,16 +272,6 @@ int calcMinDistance(Matrix* validWords)
 }
 
 
-void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
-{
-	bufferedBinaryMultiply(packet, c->generator, encodedPacket);
-}
-
-
-void decode(Matrix* encodedPacket, Matrix* decodedPacket, Code* c)
-{
-
-}
 Matrix* wordsByWeight(int wordLen){
 	unsigned int iter;
 	unsigned int i,j,k;
@@ -314,3 +304,17 @@ Matrix* wordsByWeight(int wordLen){
 
 	return allWords;
 }
+
+
+
+void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
+{
+	bufferedBinaryMultiply(packet, c->generator, encodedPacket);
+}
+
+
+void decode(Matrix* encodedPacket, Matrix* decodedPacket, Code* c)
+{
+
+}
+
