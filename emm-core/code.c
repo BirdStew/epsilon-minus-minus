@@ -164,9 +164,17 @@ Matrix* newDenseParity(int rows, int cols)
 
 Matrix* newLowDensityParity(int rows, int cols)
 {
-	Matrix* m = newMatrix(rows, cols);
-	//fprintf(stderr, "error: newLowDensityParity is Unimplemented\n"); //FIXME
-	return m;
+	int i,j;
+	Matrix *temp = newMatrix(rows,cols);
+	Matrix *valid = wordsByWeight(rows);
+	for(i = 0; i < cols; i++)
+	{
+		for(j = 0; j < rows; j++)
+		{
+			temp->data[j*cols+i] = valid->data[(valid->rows-1-i)*rows+j];
+		}
+	}
+	return temp;
 }
 
 
@@ -273,4 +281,36 @@ void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
 void decode(Matrix* encodedPacket, Matrix* decodedPacket, Code* c)
 {
 
+}
+Matrix* wordsByWeight(int length){
+	unsigned int iter;
+	unsigned int i,j,k;
+	unsigned int *weight;
+	unsigned int mask;
+	unsigned int bits;
+	Matrix *allWords = newMatrix(pow(2,length),length);
+
+	weight=(unsigned int*)malloc((allWords->rows)*sizeof(unsigned int));
+
+	for(iter = 0; iter < allWords->rows; iter++){
+		bits = 0;
+		for(mask = 0x01; mask <= allWords->rows; mask<<=1){
+			if(mask & iter){ bits++; }
+		}
+		weight[iter]=bits;
+	}
+
+	i = 0;
+	for(j = 0; j<=length; j++){
+		for(iter = 0; iter < allWords->rows; iter++){
+			if(j == weight[iter]){
+				for(k = 0; k < (allWords->cols); k++){
+					allWords->data[(i*(allWords->cols))+k] = ((0x01<<k) & iter)? 1 : 0;
+				}
+				i++;
+			}
+		}
+	}
+
+	return allWords;
 }
