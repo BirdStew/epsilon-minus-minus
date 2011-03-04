@@ -33,7 +33,7 @@ Code* newCode(int wordLen, int parityLen, int parityType);
 void delCode(Code** c);
 Matrix* newGeneratorMatrix(Matrix* pcm);
 Matrix* newControlMatrix(Matrix* pcm);
-Matrix* newSyndromeMatrix(Matrix* validWords);
+Matrix* newSyndromeMatrix(Matrix* control);
 Matrix* newDenseParity(int rows, int cols);
 Matrix* newLowDensityParity(int rows, int cols);
 Matrix* newRandomParity(int rows, int cols);

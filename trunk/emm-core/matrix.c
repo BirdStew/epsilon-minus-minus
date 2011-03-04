@@ -249,3 +249,21 @@ char* matrixToString(Matrix* m)
 	str[strLen - 1] = '\0';
 	return str;
 }
+
+
+int vectorAsInt(Matrix* m)
+{
+	int value = 0;
+	if(m->rows != 1)
+	{
+		fprintf(stderr, "warning: passed matrix has more than one row in 'vectorAsInt'\n");
+	}
+
+	int i, b;
+	for(i = m->cols-1, b=0; i >= 0; i--, b++)
+	{
+		value = value | (m->data[i] << b);
+	}
+
+	return value;
+}

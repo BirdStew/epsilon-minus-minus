@@ -67,17 +67,14 @@ int main( int argc, char** argv )
 
 			case 'w':
 				parseRange(optarg, ':', wordLen);
-				 printf("wordLen: %d,%d\n", wordLen[0], wordLen[1]); //FIXME testing only
 				break;
 
 			case 'p':
 				parseRange(optarg, ':', parityLen);
-				printf("ParityLen: %d,%d\n",parityLen[0], parityLen[1]); //FIXME testing only
 				break;
 
 			case 'e':
 				errorProb = atof(optarg);
-				printf("P: %f\n", errorProb);
 				if(errorProb >= 1 || errorProb <= 0)
 				{
 					fprintf(stderr, "error: -%c most be between 0 and 1.\n", c); //FIXME testing only

@@ -48,10 +48,12 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 
 	Matrix* validWords = calcValidWords(c->generator);
 	c->distance = calcMinDistance(validWords);
-	c->syndrome = newSyndromeMatrix(NULL);
+	delMatrix(&validWords);
+
+	c->syndrome = newSyndromeMatrix(c->control);
 
 	delMatrix(&tempPCM);
-	delMatrix(&validWords);
+
 	return c;
 }
 
@@ -120,11 +122,37 @@ Matrix* newControlMatrix(Matrix* pcm)
  * by (word length + parity length).
  */
 
-Matrix* newSyndromeMatrix(Matrix* validWords)
+Matrix* newSyndromeMatrix(Matrix* control)
 {
-	//Matrix* syn = newMatrix((int)pow(2,parityLen), wordLen + parityLen);
-	Matrix* syn = newMatrix(2,2);
-	//fprintf(stderr, "error: newSyndromeMatrix Unimplemented!\n"); //FIXME
+	/* Con->rows = parityLen */
+	/* Con->cols = wordLen + parityLen*/
+	/* wordLen = Con->cols - parityLen*/
+
+	Matrix* syn = newMatrix(pow(2,control->rows), control->cols);
+	Matrix* allWords = wordsByWeight(control->cols);
+	Matrix* temp = newMatrix(1, control->cols);
+
+	Matrix w;
+	w.rows = 1;
+	w.cols = allWords->cols;
+	Matrix* word = &w;
+
+	int i, index;
+	for(i = 1; i < allWords->rows; i++)
+	{
+		word->data = (allWords->data + i*allWords->cols);
+		bufferedBinaryMultiply(word, control, temp);
+
+		/* Resolve vector to int */
+		index = vectorAsInt(temp);
+
+		//See if that row is in syndrome else copy temp into syndrome
+
+		//if number of copies into syn = syn->rows then break
+	}
+
+	delMatrix(&allWords);
+	delMatrix(&temp);
 	return syn;
 }
 
@@ -253,19 +281,28 @@ Matrix* wordsByWeight(int wordLen){
 
 	weight=(unsigned int*)malloc((allWords->rows)*sizeof(unsigned int));
 
-	for(iter = 0; iter < allWords->rows; iter++){
+	for(iter = 0; iter < allWords->rows; iter++)
+	{
 		bits = 0;
-		for(mask = 0x01; mask <= allWords->rows; mask<<=1){
-			if(mask & iter){ bits++; }
+		for(mask = 0x01; mask <= allWords->rows; mask<<=1)
+		{
+			if(mask & iter)
+			{
+				bits++;
+			}
 		}
 		weight[iter]=bits;
 	}
 
 	i = 0;
-	for(j = 0; j<=wordLen; j++){
-		for(iter = 0; iter < allWords->rows; iter++){
-			if(j == weight[iter]){
-				for(k = 0; k < (allWords->cols); k++){
+	for(j = 0; j<=wordLen; j++)
+	{
+		for(iter = 0; iter < allWords->rows; iter++)
+		{
+			if(j == weight[iter])
+			{
+				for(k = 0; k < (allWords->cols); k++)
+				{
 					allWords->data[(i*(allWords->cols))+k] = ((0x01<<k) & iter)? 1 : 0;
 				}
 				i++;
@@ -278,7 +315,7 @@ Matrix* wordsByWeight(int wordLen){
 
 int calcMinDistance(Matrix* validWords)
 {
-	unsigned int minDist = 0xFFFFFFFF; //FIXME bug: always -1 due to signed data type
+	unsigned int minDist = 0xFFFFFFFF;
 	int diffBits;
 	int i, j, k;
 
