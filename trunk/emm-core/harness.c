@@ -160,21 +160,18 @@ void exportResults(Code* code, CodeStats* stats, char* filePath)
 	}
 
 	/* setup JSON format string */
-	char* jsonCode  = "%s:{n:%d,k:%d,d:%d," PARITY_TYPE ":%d," GENERATOR ":\"%s\"," CONTROL":\"%s\"," SYNDROME ":\"%s\"}";
-	char* jsonStats = "%s:{" ERROR_PROB ":%f," PACKETS ":%d," SUCCESSFUL_DECODES ":%d," UNDETECTED_ERRORS ":%d," DETECTED_ERRORS ":%d,"
-					  SETUP_TIME ":%d," CODE_EXEC_TIME ":%d}";
+	char* json1  = "{n:%d,k:%d,d:%d," PARITY_TYPE ":%d," GENERATOR ":\"%s\"," CONTROL":\"%s\"," SYNDROME ":\"%s\","
+					ERROR_PROB ":%f," PACKETS ":%d," SUCCESSFUL_DECODES ":%d," UNDETECTED_ERRORS ":%d," DETECTED_ERRORS ":%d,"
+					SETUP_TIME ":%d," CODE_EXEC_TIME ":%d}";
 
 	/* Allocate matrices as strings */
 	char* gen = matrixToString(code->generator);
 	char* con = matrixToString(code->control);
 	char* syn = matrixToString(code->syndrome);
 
-	fprintf(fh,"{");
-	fprintf(fh,jsonCode,  "code", code->wordLen, code->wordLen+code->parityLen, code->distance, code->parityType , gen, con, syn);
-	fprintf(fh,",");
-	fprintf(fh,jsonStats, "stats", stats->errorProb, stats->packets, stats->successfulDecodes, stats->undetectedErrors,
-						  stats->detectedErrors, stats->setupTime, stats->codeExecTime);
-	fprintf(fh,"}");
+	fprintf(fh,json1, code->wordLen, code->wordLen+code->parityLen, code->distance, code->parityType , gen, con, syn,
+					   stats->errorProb, stats->packets, stats->successfulDecodes, stats->undetectedErrors, stats->detectedErrors,
+					   stats->setupTime, stats->codeExecTime);
 
 	/* Deallocate matrix strings */
 	free(gen);
