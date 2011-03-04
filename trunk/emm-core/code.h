@@ -41,7 +41,7 @@ Matrix* calcValidWords(Matrix* generator);
 int calcMinDistance(Matrix* validWords);
 void encode(Matrix* packet, Matrix* encodedPacket, Code* c);
 void decode(Matrix* encodedPacket, Matrix* decodedPacket, Code* c);
-Matrix* wordsByWeight(int length);
+Matrix* wordsByWeight(int wordLen);
 
 
 

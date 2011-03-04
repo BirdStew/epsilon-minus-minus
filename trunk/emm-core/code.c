@@ -282,13 +282,13 @@ void decode(Matrix* encodedPacket, Matrix* decodedPacket, Code* c)
 {
 
 }
-Matrix* wordsByWeight(int length){
+Matrix* wordsByWeight(int wordLen){
 	unsigned int iter;
 	unsigned int i,j,k;
 	unsigned int *weight;
 	unsigned int mask;
 	unsigned int bits;
-	Matrix *allWords = newMatrix(pow(2,length),length);
+	Matrix *allWords = newMatrix(pow(2,wordLen),wordLen);
 
 	weight=(unsigned int*)malloc((allWords->rows)*sizeof(unsigned int));
 
@@ -301,7 +301,7 @@ Matrix* wordsByWeight(int length){
 	}
 
 	i = 0;
-	for(j = 0; j<=length; j++){
+	for(j = 0; j<=wordLen; j++){
 		for(iter = 0; iter < allWords->rows; iter++){
 			if(j == weight[iter]){
 				for(k = 0; k < (allWords->cols); k++){
