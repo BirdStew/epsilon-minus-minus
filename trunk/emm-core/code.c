@@ -243,35 +243,6 @@ Matrix* calcValidWords(Matrix* generator)
 }
 
 
-int calcMinDistance(Matrix* validWords)
-{
-	unsigned int minDist = 0xFFFFFFFF; //FIXME bug: always -1 due to signed data type
-	int diffBits;
-	int i, j, k;
-
-	for(i = 0; i < (validWords->rows)-1; i++)
-	{
-		for(j = i + 1; j < validWords->rows; j++)
-		{
-			diffBits = 0;
-			for(k = 0; k <  validWords->cols; k++)
-			{
-				if(validWords->data[i * validWords->cols + k] != validWords->data[j * validWords->cols + k])
-				{
-					diffBits++;
-				}
-			}
-
-			if(minDist > diffBits)
-			{
-				minDist = diffBits;
-			}
-		}
-	}
-	return minDist;
-}
-
-
 Matrix* wordsByWeight(int wordLen){
 	unsigned int iter;
 	unsigned int i,j,k;
@@ -303,6 +274,34 @@ Matrix* wordsByWeight(int wordLen){
 	}
 
 	return allWords;
+}
+
+int calcMinDistance(Matrix* validWords)
+{
+	unsigned int minDist = 0xFFFFFFFF; //FIXME bug: always -1 due to signed data type
+	int diffBits;
+	int i, j, k;
+
+	for(i = 0; i < (validWords->rows)-1; i++)
+	{
+		for(j = i + 1; j < validWords->rows; j++)
+		{
+			diffBits = 0;
+			for(k = 0; k <  validWords->cols; k++)
+			{
+				if(validWords->data[i * validWords->cols + k] != validWords->data[j * validWords->cols + k])
+				{
+					diffBits++;
+				}
+			}
+
+			if(minDist > diffBits)
+			{
+				minDist = diffBits;
+			}
+		}
+	}
+	return minDist;
 }
 
 
