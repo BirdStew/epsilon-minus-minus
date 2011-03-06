@@ -52,7 +52,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 
 	delMessage(&msg);
 	clock_t endHarness = clock();
-	printf("Total execution time: %d", getExecTime(endHarness, startHarness));
+	//printf("Total execution time: %ld\n", getExecTime(endHarness, startHarness));
 }
 
 
@@ -160,9 +160,9 @@ void exportResults(Code* code, CodeStats* stats, char* filePath)
 	}
 
 	/* setup JSON format string */
-	char* json1  = "{n:%d,k:%d,d:%d," PARITY_TYPE ":%d," GENERATOR ":\"%s\"," CONTROL":\"%s\"," SYNDROME ":\"%s\","
-					ERROR_PROB ":%f," PACKETS ":%d," SUCCESSFUL_DECODES ":%d," UNDETECTED_ERRORS ":%d," DETECTED_ERRORS ":%d,"
-					SETUP_TIME ":%d," CODE_EXEC_TIME ":%d}";
+	char* json1  = "{\"n\":%d,\"k\":%d,\"d\":%d,\"" PARITY_TYPE "\":%d,\"" GENERATOR "\":\"%s\",\"" CONTROL"\":\"%s\",\"" SYNDROME "\":\"%s\",\""
+					ERROR_PROB "\":%f,\"" PACKETS "\":%d,\"" SUCCESSFUL_DECODES "\":%d,\"" UNDETECTED_ERRORS "\":%d,\"" DETECTED_ERRORS "\":%d,\""
+					SETUP_TIME "\":%d,\"" CODE_EXEC_TIME "\":%d}";
 
 	/* Allocate matrices as strings */
 	char* gen = matrixToString(code->generator);

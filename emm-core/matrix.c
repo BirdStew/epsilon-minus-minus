@@ -229,7 +229,7 @@ void printMatrix(Matrix* m)
 
 /*
  * Returns the contents of a matrix represented as a string.
- * Rows a delimited by a 'LF' (Line Feed) character.
+ * Rows a delimited by a commas.
  */
 
 char* matrixToString(Matrix* m)
@@ -244,7 +244,7 @@ char* matrixToString(Matrix* m)
 		{
 			str[i * m->cols + j + i] = (char)(m->data[i * m->cols + j] + asciiOffset);
 		}
-		str[i * m->cols + j + i] = '\n';
+		str[i * m->cols + j + i] = ',';
 	}
 	str[strLen - 1] = '\0';
 	return str;
