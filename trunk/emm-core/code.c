@@ -157,7 +157,7 @@ Matrix* newSyndromeMatrix(Matrix* control)
 		/* Set result pointer to row in syndrome table */
 		result->data = (char*)(syn->data + (index * syn->cols));
 
-		/* Copy into syndrome table if rows does not exist */
+		/* Copy into syndrome table if row does not exist */
 		if(vectorAsInt(result) == 0)
 		{
 			for(j = 0; j < result->cols; j++)
