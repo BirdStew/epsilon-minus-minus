@@ -124,6 +124,7 @@ Matrix* newControlMatrix(Matrix* pcm)
 
 Matrix* newSyndromeMatrix(Matrix* control)
 {
+	fprintf(stderr, "start newSyn\n");
 	/* Con->rows = parityLen */
 	/* Con->cols = wordLen + parityLen*/
 	/* wordLen = Con->cols - parityLen*/
@@ -143,16 +144,27 @@ Matrix* newSyndromeMatrix(Matrix* control)
 	r.rows = 1;
 	r.cols = syn->cols;
 	Matrix* result = &r;
-
-	int i, j, index;
+	fprintf(stderr, "synRows: %d\n", syn->rows);
+	int i, j;
+	unsigned int index;
 	int insertions = 0;
 	for(i = 1; i < allWords->rows && insertions < syn->rows; i++)
 	{
 		word->data = (allWords->data + i*allWords->cols);
+		fprintf(stderr, "before multiply\n");
 		bufferedBinaryMultiply(word, control, temp);
+		fprintf(stderr, "after multiply\n");
+
+		fprintf(stdout, "word:\n");
+		printMatrix(word);
+		fprintf(stdout, "control:\n");
+		printMatrix(control);
+		fprintf(stdout, "Temp:\n");
+		printMatrix(temp);
 
 		/* Resolve vector to int */
 		index = vectorAsInt(temp);
+		fprintf(stderr, "index: %d\n", index);
 
 		/* Set result pointer to row in syndrome table */
 		result->data = (char*)(syn->data + (index * syn->cols));
@@ -170,6 +182,8 @@ Matrix* newSyndromeMatrix(Matrix* control)
 
 	delMatrix(&allWords);
 	delMatrix(&temp);
+
+	fprintf(stderr, "end newSyn\n");
 	return syn;
 }
 
