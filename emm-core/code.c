@@ -129,16 +129,24 @@ Matrix* newSyndromeMatrix(Matrix* control)
 	/* wordLen = Con->cols - parityLen*/
 
 	Matrix* syn = newMatrix(pow(2,control->rows), control->cols);
-	Matrix* allWords = wordsByWeight(control->cols);
+	Matrix* allWords = wordsByWeight(control->rows);
 	Matrix* temp = newMatrix(1, control->cols);
 
+	/* Pseudo vector - row in allWords */
 	Matrix w;
 	w.rows = 1;
 	w.cols = allWords->cols;
 	Matrix* word = &w;
 
-	int i, index;
-	for(i = 1; i < allWords->rows; i++)
+	/* Pseudo vector - row in syndrome */
+	Matrix r;
+	r.rows = 1;
+	r.cols = syn->cols;
+	Matrix* result = &r;
+
+	int i, j, index;
+	int insertions = 0;
+	for(i = 1; i < allWords->rows && insertions < syn->rows; i++)
 	{
 		word->data = (allWords->data + i*allWords->cols);
 		bufferedBinaryMultiply(word, control, temp);
@@ -146,9 +154,18 @@ Matrix* newSyndromeMatrix(Matrix* control)
 		/* Resolve vector to int */
 		index = vectorAsInt(temp);
 
-		//See if that row is in syndrome else copy temp into syndrome
+		/* Set result pointer to row in syndrome table */
+		result->data = (char*)(syn->data + (index * syn->cols));
 
-		//if number of copies into syn = syn->rows then break
+		/* Copy into syndrome table if rows does not exist */
+		if(vectorAsInt(result) == 0)
+		{
+			for(j = 0; j < result->cols; j++)
+			{
+				result->data[j] = temp->data[j];
+			}
+			insertions++;
+		}
 	}
 
 	delMatrix(&allWords);
