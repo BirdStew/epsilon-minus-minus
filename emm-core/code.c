@@ -380,8 +380,35 @@ void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
 }
 
 
-void decode(Matrix* encodedPacket, Matrix* decodedPacket, Code* c)
+void decode(Matrix* encodedPacket, Matrix* encodedBuffer, Matrix* decodedPacket, Code* c)
 {
+	/* Pseudo vector - row in syndrome table */
+	Matrix co;
+	co.rows = encodedPacket->cols;
+	co.cols = 1;
+	Matrix* cosetLeader = &co;
 
+	printf("Con %d x %d\n", c->control->rows, c->control->cols);
+	printf("enp %d x %d\n", cosetLeader->rows, cosetLeader->cols);
+
+	/* Store resulting syndrome in encodedBuffer */
+	bufferedBinaryMultiply(c->control, encodedPacket, encodedBuffer);
+
+	int i;
+	int index = vectorAsInt(encodedBuffer);
+	if( index == 0) /* Valid word */
+	{
+		cosetLeader->data = c->syndrome->data + index * c->syndrome->cols;
+		for(i = 0; i < cosetLeader->cols; i++)
+		{
+			encodedBuffer->data[i] = cosetLeader->data[i] ^ encodedPacket->data[i];
+		}
+	}
+
+	/* write bits into decodedPacket (No Parity bits)  */
+	for(i = 0; i <  decodedPacket->cols; i++)
+	{
+		decodedPacket->data[i] = encodedBuffer->data[i];
+	}
 }
 

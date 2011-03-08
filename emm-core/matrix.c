@@ -104,6 +104,7 @@ void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
 	if(a->cols != b->rows)
 	{
 		fprintf(stderr, "error: cannot multiply! A.cols != B.rows in 'bufferedBinaryMultiply'\n");
+		fprintf(stderr, "       Trying to multiply A[%d x %d] * B[%d x %d] \n", a->rows, a->cols, b->rows, b->cols);
 		exit(EXIT_FAILURE);
 	}
 
