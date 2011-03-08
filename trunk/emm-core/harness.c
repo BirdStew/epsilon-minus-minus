@@ -61,6 +61,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 	/* Allocate space for packet buffers*/
 	Matrix* packet = newMatrix(1, code->wordLen);
 	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);
+	Matrix* encodedBuffer = newMatrix(1, code->wordLen + code->parityLen);
 	Matrix* decodedPacket = newMatrix(1, code->wordLen);
 
 	/* Reset message byte offset */
@@ -71,7 +72,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 	{
 		encode(packet, encodedPacket, code);
 		transmit(encodedPacket, stats->errorProb);
-		decode(packet, decodedPacket, code);
+		decode(encodedPacket, encodedBuffer, decodedPacket, code);
 		detectErrors(packet, decodedPacket, stats);
 		stats->packets++;
 	}
@@ -80,6 +81,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 
 	delMatrix(&packet);
 	delMatrix(&encodedPacket);
+	delMatrix(&encodedBuffer);
 	delMatrix(&decodedPacket);
 }
 
