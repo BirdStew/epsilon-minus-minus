@@ -384,8 +384,8 @@ void decode(Matrix* encodedPacket, Matrix* encodedBuffer, Matrix* decodedPacket,
 {
 	/* Pseudo vector - row in syndrome table */
 	Matrix co;
-	co.rows = encodedPacket->cols;
-	co.cols = 1;
+	co.rows = 1;
+	co.cols = encodedPacket->cols;
 	Matrix* cosetLeader = &co;
 
 	printf("Con %d x %d\n", c->control->rows, c->control->cols);

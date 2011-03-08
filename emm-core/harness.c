@@ -60,9 +60,9 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 {
 	/* Allocate space for packet buffers*/
 	Matrix* packet = newMatrix(1, code->wordLen);
-	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);
-	Matrix* encodedBuffer = newMatrix(1, code->wordLen + code->parityLen);
-	Matrix* decodedPacket = newMatrix(1, code->wordLen);
+	Matrix* encodedPacket = newMatrix(code->wordLen + code->parityLen, 1); /* Must be N x 1 Matrix*/
+	Matrix* encodedBuffer = newMatrix(1, code->wordLen + code->parityLen); //FIXME
+	Matrix* decodedPacket = newMatrix(code->wordLen, 1);
 
 	/* Reset message byte offset */
 	msg->byteOffset = 0;
