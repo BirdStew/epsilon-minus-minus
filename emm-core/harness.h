@@ -33,9 +33,6 @@
 /* JSON Constants program record */
 #define HARNESS_EXEC_TIME "ht"
 
-/* Modes for exportResults */
-#define INTERACTIVE 0
-#define REPORT 1
 
 typedef struct CodeStats
 {
@@ -49,12 +46,12 @@ typedef struct CodeStats
 } CodeStats;
 
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char mode, char* outPath);
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath);
 void testCode(Code* code, Message* msg, CodeStats* stats);
 void initCodeStats(CodeStats* stats);
 int nextPacket( Message* msg, Matrix* packetBuffer);
 void transmit(Matrix* packet, double errorProb);
 void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats);
-void exportResults(Code* code, CodeStats* stats, char mode, FILE* fh);
+void exportResults(Code* code, CodeStats* stats, FILE* fh);
 
 #endif /* HARNESS_H_ */

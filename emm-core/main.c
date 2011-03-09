@@ -36,7 +36,6 @@ int main( int argc, char** argv )
 	double errorProb = .01;
 	int parityFlags = PARITY_FLAG_MAX;
 	char* msgPath = NULL;
-	char mode = INTERACTIVE;
 	char* outPath = NULL;
 
 	if(argc <= 1 || strstr(argv[1],"help"))
@@ -48,7 +47,7 @@ int main( int argc, char** argv )
 	// Seed Random number generator with system time.
 	//srand(time(NULL));
 
-	while ((c = getopt (argc, argv, "LRHhw:p:e:t:ro:")) != -1)
+	while ((c = getopt (argc, argv, "LRHhw:p:e:t:o:")) != -1)
 	{
 		switch(c)
 		{
@@ -87,10 +86,6 @@ int main( int argc, char** argv )
 				parityFlags = atoi(optarg);
 				break;
 
-			case 'r':
-				mode = REPORT;
-				break;
-
 			case 'o':
 				outPath = optarg;
 				break;
@@ -118,7 +113,7 @@ int main( int argc, char** argv )
 		return EXIT_FAILURE;
 	}
 
-	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath, mode, outPath);
+	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath, outPath);
 
 /*
 	Matrix* pcm = newDenseParity(3,3);
@@ -177,7 +172,6 @@ void printUsage()
 	" -p <number>       number of parity bits.\n"
 	" -e <float>        error probability.\n"
 	" -t <number>       flags for parity type.\n"
-	" -r                Report mode. Exclude matrices from report.\n"
 	" -o <path>         path to optional output file(s).\n"
 	//" -k <number>       number of original bits\n"
 	//" -n <number>       number of encoded bits\n"
