@@ -48,7 +48,7 @@ int main( int argc, char** argv )
 	// Seed Random number generator with system time.
 	//srand(time(NULL));
 
-	while ((c = getopt (argc, argv, "LRHhw:p:e:t:o:")) != -1)
+	while ((c = getopt (argc, argv, "LRHhw:p:e:t:ro:")) != -1)
 	{
 		switch(c)
 		{
