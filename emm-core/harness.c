@@ -6,15 +6,37 @@
  */
 #include <stdlib.h>
 #include "harness.h"
-#include <stdio.h> /* LoadMessage / exportJson */
 
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath)
+
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char mode, char* outPath)
 {
 	clock_t startHarness = clock();
 	CodeStats stats;
 	Message* msg = readMessage(msgPath);
 
+	/* initialize for for writing otherwise set file descriptor to stdout */
+	FILE* fh;
+	if(outPath)
+	{
+		fh = fopen(outPath, "w");
+		if(fh == NULL)
+		{
+			fprintf(stderr, "Failed to open '%s' for writing in 'runHarness'.\n",outPath);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		fh = stdout;
+	}
+
+
+	/* Write start record array for JSON */
+	fprintf(fh, "[");
+
+
+	/* Run test ranges */
 	int w, p, pType;
 	for(w = wordLen[0]; w <= wordLen[1]; w++)
 	{
@@ -41,9 +63,8 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 					stats.setupTime = getExecTime(endSetup,startSetup);
 					stats.codeExecTime = getExecTime(endCodeExec, startCodeExec);
 
-					//fprintf(stderr, "start %ld\n", startSetup);
-					//fprintf(stderr, "sned %ld\n", endSetup);
-					exportResults(code, &stats, outPath);
+					exportResults(code, &stats, mode, fh);
+					fprintf(fh, ",");
 					delCode(&code);
 				}
 			}
@@ -52,7 +73,18 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 
 	delMessage(&msg);
 	clock_t endHarness = clock();
-	//printf("Total execution time: %ld\n", getExecTime(endHarness, startHarness));
+
+	/* Last record is program execution time */
+	fprintf(fh, "{\"" HARNESS_EXEC_TIME "\":%ld}", getExecTime(endHarness, startHarness));
+
+	/* Write end record array for JSON */
+	fprintf(fh, "]");
+
+	/* Close file if we're not using stdout */
+	if(outPath)
+	{
+		fclose(fh);
+	}
 }
 
 
@@ -70,9 +102,9 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 
 	while(nextPacket(msg, packet))
 	{
-		encode(packet, encodedPacket, code);
+		//encode(packet, encodedPacket, code);
 		transmit(encodedPacket, stats->errorProb);
-		decode(encodedPacket, encodedBuffer, decodedPacket, code);
+		//decode(encodedPacket, encodedBuffer, decodedPacket, code);
 		detectErrors(packet, decodedPacket, stats);
 		stats->packets++;
 	}
@@ -147,41 +179,35 @@ void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats)
 }
 
 
-void exportResults(Code* code, CodeStats* stats, char* filePath)
+void exportResults(Code* code, CodeStats* stats, char mode, FILE* fh)
 {
-
-	FILE* fh;
-
-	if(filePath)
-	{
-		fh = fopen(filePath, "w");
-	}
-	else
-	{
-		fh = stdout;
-	}
-
 	/* setup JSON format string */
-	char* json1  = "{\"n\":%d,\"k\":%d,\"d\":%d,\"" PARITY_TYPE "\":%d,\"" GENERATOR "\":\"%s\",\"" CONTROL"\":\"%s\",\"" SYNDROME "\":\"%s\",\""
-					ERROR_PROB "\":%f,\"" PACKETS "\":%d,\"" SUCCESSFUL_DECODES "\":%d,\"" UNDETECTED_ERRORS "\":%d,\"" DETECTED_ERRORS "\":%d,\""
-					SETUP_TIME "\":%d,\"" CODE_EXEC_TIME "\":%d}";
+	char* jStats  = "{\"n\":%d,\"k\":%d,\"d\":%d,\"" PARITY_TYPE "\":%d," ERROR_PROB "\":%f,\"" PACKETS "\":%d,\"" SUCCESSFUL_DECODES "\":%d,\""
+					UNDETECTED_ERRORS "\":%d,\"" DETECTED_ERRORS "\":%d,\"" SETUP_TIME "\":%d,\"" CODE_EXEC_TIME "\":%d";
 
-	/* Allocate matrices as strings */
-	char* gen = matrixToString(code->generator);
-	char* con = matrixToString(code->control);
-	char* syn = matrixToString(code->syndrome);
+	char* jMatrices= "\"" GENERATOR "\":\"%s\",\"" CONTROL"\":\"%s\",\"" SYNDROME "\":\"%s\"";
 
-	fprintf(fh,json1, code->wordLen, code->wordLen+code->parityLen, code->distance, code->parityType , gen, con, syn,
+
+
+	fprintf(fh,jStats, code->wordLen, code->wordLen+code->parityLen, code->distance, code->parityType,
 					   stats->errorProb, stats->packets, stats->successfulDecodes, stats->undetectedErrors, stats->detectedErrors,
 					   stats->setupTime, stats->codeExecTime);
 
-	/* Deallocate matrix strings */
-	free(gen);
-	free(con);
-	free(syn);
-
-	if(filePath)
+	if(mode == INTERACTIVE)
 	{
-		fclose(fh);
+		/* Allocate matrices as strings */
+		char* gen = matrixToString(code->generator);
+		char* con = matrixToString(code->control);
+		char* syn = matrixToString(code->syndrome);
+
+		fprintf(fh, ",");
+		fprintf(fh, jMatrices, gen, con, syn);
+
+		/* Deallocate matrix strings */
+		free(gen);
+		free(con);
+		free(syn);
 	}
+
+	fprintf(fh, "}");
 }
