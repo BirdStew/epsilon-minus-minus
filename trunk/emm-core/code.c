@@ -144,29 +144,29 @@ Matrix* newSyndromeMatrix(Matrix* control)
 	r.rows = 1;
 	r.cols = syn->cols;
 	Matrix* result = &r;
-	//fprintf(stderr, "synRows: %d\n", syn->rows);
+//fprintf(stderr, "synRows: %d\n", syn->rows);
 	int i, j;
 	unsigned int index;
 	int insertions = 0;
 	for(i = 1; i < allWords->rows && insertions < syn->rows; i++)
 	{
 		word->data = (allWords->data + i*allWords->cols);
-	//	fprintf(stderr, "before multiply\n");
-	//	bufferedBinaryMultiply(word, control, temp);
-	//	fprintf(stderr, "after multiply\n");
-/*
-		fprintf(stdout, "word:\n");
-		printMatrix(word);
-		fprintf(stdout, "control:\n");
-		printMatrix(control);
-		fprintf(stdout, "Temp:\n");
-		printMatrix(temp);
-*/
+	//fprintf(stderr, "before multiply\n");
+		bufferedBinaryMultiply(word, control, temp);
+//	fprintf(stderr, "after multiply\n");
 
-	//	fprintf(stdout, "syn rows: %d\n", syn->rows);
+//		fprintf(stdout, "word:\n");
+//		printMatrix(word);
+	//	fprintf(stdout, "control:\n");
+	//	printMatrix(control);
+	//	fprintf(stdout, "Temp:\n");
+	//	printMatrix(temp);
+
+
+//	fprintf(stdout, "syn rows: %d\n", syn->rows);
 		/* Resolve vector to int */
 		index = vectorAsInt(temp);
-		//fprintf(stderr, "index: %d\n", index);
+//	fprintf(stderr, "index: %d\n", index);
 
 		/* Set result pointer to row in syndrome table */
 		result->data = (char*)(syn->data + (index * syn->cols));
@@ -384,6 +384,7 @@ void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
 
 void decode(Matrix* encodedPacket, Matrix* encodedBuffer, Matrix* decodedPacket, Code* c)
 {
+	fprintf(stderr, "start decode\n");
 	/* Pseudo vector - row in syndrome table */
 	Matrix co;
 	co.rows = 1;
@@ -412,6 +413,6 @@ void decode(Matrix* encodedPacket, Matrix* encodedBuffer, Matrix* decodedPacket,
 	{
 		decodedPacket->data[i] = encodedBuffer->data[i];
 	}
-
+	fprintf(stderr, "end decode\n");
 }
 

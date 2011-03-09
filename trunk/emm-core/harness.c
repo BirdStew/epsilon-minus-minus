@@ -9,7 +9,7 @@
 
 
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char mode, char* outPath)
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath)
 {
 	clock_t startHarness = clock();
 	CodeStats stats;
@@ -63,7 +63,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 					stats.setupTime = getExecTime(endSetup,startSetup);
 					stats.codeExecTime = getExecTime(endCodeExec, startCodeExec);
 
-					exportResults(code, &stats, mode, fh);
+					exportResults(code, &stats, fh);
 					fprintf(fh, ",");
 					delCode(&code);
 				}
@@ -104,7 +104,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 	{
 		//encode(packet, encodedPacket, code);
 		transmit(encodedPacket, stats->errorProb);
-		//decode(encodedPacket, encodedBuffer, decodedPacket, code);
+		decode(encodedPacket, encodedBuffer, decodedPacket, code);
 		detectErrors(packet, decodedPacket, stats);
 		stats->packets++;
 	}
@@ -179,7 +179,7 @@ void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats)
 }
 
 
-void exportResults(Code* code, CodeStats* stats, char mode, FILE* fh)
+void exportResults(Code* code, CodeStats* stats, FILE* fh)
 {
 	/* setup JSON format string */
 	char* jStats  = "{\"n\":%d,\"k\":%d,\"d\":%d,\"" PARITY_TYPE "\":%d," ERROR_PROB "\":%f,\"" PACKETS "\":%d,\"" SUCCESSFUL_DECODES "\":%d,\""
@@ -193,21 +193,19 @@ void exportResults(Code* code, CodeStats* stats, char mode, FILE* fh)
 					   stats->errorProb, stats->packets, stats->successfulDecodes, stats->undetectedErrors, stats->detectedErrors,
 					   stats->setupTime, stats->codeExecTime);
 
-	if(mode == INTERACTIVE)
-	{
-		/* Allocate matrices as strings */
-		char* gen = matrixToString(code->generator);
-		char* con = matrixToString(code->control);
-		char* syn = matrixToString(code->syndrome);
 
-		fprintf(fh, ",");
-		fprintf(fh, jMatrices, gen, con, syn);
+	/* Allocate matrices as strings */
+	char* gen = matrixToString(code->generator);
+	char* con = matrixToString(code->control);
+	char* syn = matrixToString(code->syndrome);
 
-		/* Deallocate matrix strings */
-		free(gen);
-		free(con);
-		free(syn);
-	}
+	fprintf(fh, ",");
+	fprintf(fh, jMatrices, gen, con, syn);
+
+	/* Deallocate matrix strings */
+	free(gen);
+	free(con);
+	free(syn);
 
 	fprintf(fh, "}");
 }
