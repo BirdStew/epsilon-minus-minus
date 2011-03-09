@@ -112,6 +112,7 @@ void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
 	if(a->rows != c->rows || b->cols != c->cols)
 	{
 		fprintf(stderr, "error: cannot multiply! Result matrix of invalid dimensions 'bufferedBinaryMultiply'\n");
+		fprintf(stderr, "       Product should be %d x %d, given %d x %d.\n", a->rows, b->cols, c->rows, c->cols);
 		exit(EXIT_FAILURE);
 	}
 
