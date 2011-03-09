@@ -102,7 +102,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 
 	while(nextPacket(msg, packet))
 	{
-		//encode(packet, encodedPacket, code);
+		encode(packet, encodedPacket, code);
 		transmit(encodedPacket, stats->errorProb);
 		decode(encodedPacket, encodedBuffer, decodedPacket, code);
 		detectErrors(packet, decodedPacket, stats);
