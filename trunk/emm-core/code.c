@@ -128,11 +128,11 @@ Matrix* newSyndromeMatrix(Matrix* control)
 	/* Con->rows = parityLen */
 	/* Con->cols = wordLen + parityLen*/
 	/* wordLen = Con->cols - parityLen*/
-
-	Matrix* syn = newMatrix(pow(2,control->cols), control->cols); //?  are these even the right dimmesions?!!!
+//Badlwin says syndrome will be 2^pairty x encoded length
+	Matrix* syn = newMatrix(pow(2,control->rows), control->cols); //?  are these even the right dimmesions?!!!
 	Matrix* allWords = wordsByWeight(control->rows);
 	Matrix* temp = newMatrix(1, control->cols);
-
+fprintf(stderr,"in syn\n");
 	/* Pseudo vector - row in allWords */
 	Matrix w;
 	w.rows = 1;
@@ -151,20 +151,22 @@ Matrix* newSyndromeMatrix(Matrix* control)
 	for(i = 1; i < allWords->rows && insertions < syn->rows; i++)
 	{
 		word->data = (allWords->data + i*allWords->cols);
-		//fprintf(stderr, "before multiply\n");
+		fprintf(stderr, "before multiply\n");
 		bufferedBinaryMultiply(word, control, temp);
-		//fprintf(stderr, "after multiply\n");
-/*
+		fprintf(stderr, "after multiply\n");
+
 		fprintf(stdout, "word:\n");
 		printMatrix(word);
 		fprintf(stdout, "control:\n");
 		printMatrix(control);
 		fprintf(stdout, "Temp:\n");
 		printMatrix(temp);
-*/
+
+
+		fprintf(stdout, "syn rows: %d\n", syn->rows);
 		/* Resolve vector to int */
 		index = vectorAsInt(temp);
-		//fprintf(stderr, "index: %d\n", index);
+		fprintf(stderr, "index: %d\n", index);
 
 		/* Set result pointer to row in syndrome table */
 		result->data = (char*)(syn->data + (index * syn->cols));
@@ -183,7 +185,7 @@ Matrix* newSyndromeMatrix(Matrix* control)
 	delMatrix(&allWords);
 	delMatrix(&temp);
 
-	//fprintf(stderr, "end newSyn\n");
+	fprintf(stderr, "end newSyn\n");
 	return syn;
 }
 
