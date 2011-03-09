@@ -92,7 +92,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 {
 	/* Allocate space for packet buffers*/
 	Matrix* packet = newMatrix(1, code->wordLen);
-	Matrix* encodedPacket = newMatrix(code->wordLen + code->parityLen, 1); /* Must be N x 1 Matrix*/
+	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen); /* Must be N x 1 Matrix*/
 	Matrix* encodedBuffer = newMatrix(1, code->wordLen + code->parityLen); //FIXME
 	Matrix* decodedPacket = newMatrix(code->wordLen, 1);
 
@@ -102,9 +102,15 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 
 	while(nextPacket(msg, packet))
 	{
+		fprintf(stderr, "start encode\n");
 		encode(packet, encodedPacket, code);
+		fprintf(stderr, "end encode\n");
 		transmit(encodedPacket, stats->errorProb);
+
+		transposeMatrix(encodedPacket);
+
 		decode(encodedPacket, encodedBuffer, decodedPacket, code);
+		//transposeMatrix(encodedBuffer);
 		detectErrors(packet, decodedPacket, stats);
 		stats->packets++;
 	}

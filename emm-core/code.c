@@ -388,11 +388,11 @@ void decode(Matrix* encodedPacket, Matrix* encodedBuffer, Matrix* decodedPacket,
 	/* Pseudo vector - row in syndrome table */
 	Matrix co;
 	co.rows = 1;
-	co.cols = encodedPacket->cols;
+	co.cols = encodedBuffer->cols;
 	Matrix* cosetLeader = &co;
 
-	printf("Con %d x %d\n", c->control->rows, c->control->cols);
-	printf("enp %d x %d\n", cosetLeader->rows, cosetLeader->cols);
+	fprintf(stderr,"Con %d x %d\n", c->control->rows, c->control->cols);
+	fprintf(stderr,"enp %d x %d\n", cosetLeader->rows, cosetLeader->cols);
 
 	/* Store resulting syndrome in encodedBuffer */
 	bufferedBinaryMultiply(c->control, encodedPacket, encodedBuffer);
