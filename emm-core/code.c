@@ -384,6 +384,8 @@ void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
 
 void decode(Matrix* encodedPacket, Matrix* encodedBuffer, Matrix* decodedPacket, Code* c)
 {
+	transposeMatrix(encodedPacket);
+
 	fprintf(stderr, "start decode\n");
 	/* Pseudo vector - row in syndrome table */
 	Matrix co;
@@ -414,5 +416,7 @@ void decode(Matrix* encodedPacket, Matrix* encodedBuffer, Matrix* decodedPacket,
 		decodedPacket->data[i] = encodedBuffer->data[i];
 	}
 	fprintf(stderr, "end decode\n");
+
+	transposeMatrix(encodedPacket);
 }
 
