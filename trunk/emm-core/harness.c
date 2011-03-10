@@ -100,14 +100,14 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 	msg->byteOffset = 0;
 	msg->bitOffset = 0;
 
+	//printMatrix(code->generator);
+
 	while(nextPacket(msg, packet))
 	{
 		fprintf(stderr, "start encode\n");
 		encode(packet, encodedPacket, code);
 		fprintf(stderr, "end encode\n");
 		transmit(encodedPacket, stats->errorProb);
-
-		transposeMatrix(encodedPacket);
 
 		decode(encodedPacket, encodedBuffer, decodedPacket, code);
 		//transposeMatrix(encodedBuffer);
