@@ -256,9 +256,9 @@ char* matrixToString(Matrix* m)
 int vectorAsInt(Matrix* m)
 {
 	int value = 0;
-	if(m->rows != 1)
+	if(m->rows != 1 && m->cols != 1)
 	{
-		fprintf(stderr, "warning: passed matrix has more than one row in 'vectorAsInt'\n");
+		fprintf(stderr, "warning: passed matrix [%d, %d] is not a vector in 'vectorAsInt'\n", m->rows, m->cols);
 	}
 
 	int i, b;
