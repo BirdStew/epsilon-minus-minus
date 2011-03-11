@@ -1,0 +1,79 @@
+<html> 
+<head> 
+<title>epsilon-minus-minus</title> 
+<script type="text/javascript"> 
+var page=0;
+ 
+function next()
+{
+if(page < 0){page = 0;}
+page++;
+//page = (page < 0) ? 0 : page++;
+var xmlhttp;
+if(window.XMLHttpRequest)
+{//code for IE7+, Firefox, Chrome, Opera, Safari
+xmlhttp=new XMLHttpRequest();
+}
+else
+{//code for IE6, IE5
+xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+}
+ 
+xmlhttp.onreadystatechange=function(){
+if(xmlhttp.readyState==4 && xmlhttp.status==200){
+document.getElementById("instr").innerHTML=(eval(xmlhttp.responseText));
+}
+//other readyStates available
+}
+xmlhttp.open("GET","http://en.wikipedia.org/w/index.php?action=render&format=json&title=Main_Page",false);
+xmlHttp.setRequestHeader('epsilon-minus-minus', 'ww2.coastal.edu/akimper/wikified.htm');
+xmlhttp.send();
+}
+ 
+function last()
+{
+if(page <= 0){page=0;}else{page--;}
+//page = (page <= 0) ? 0 : page--;
+var xmlhttp;
+if(window.XMLHttpRequest)
+{//code for IE7+, Firefox, Chrome, Opera, Safari
+xmlhttp=new XMLHttpRequest();
+}
+else
+{//code for IE6, IE5
+xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+}
+ 
+xmlhttp.onreadystatechange=function(){
+if(xmlhttp.readyState==4 && xmlhttp.status==200){
+document.getElementById("instr").innerHTML=(xmlhttp.responseText);
+}
+//other readyStates available
+}
+xmlhttp.open("GET","http://en.wikipedia.org/w/index.php?action=render&f&title=Main_Page",false);
+xmlHttp.setRequestHeader('epsilon-minus-minus', 'ww2.coastal.edu/akimper/wikified.htm');
+xmlhttp.send();
+}
+ 
+</script> 
+<noscript>We're sorry, but your browser does not support Javascript.</noscript> 
+</head> 
+<body style="color:white;background:black"> 
+<h1 style="text-align:center">epsilon-minus-minus</h1> 
+<div id="instr"><h2 style="text-align:center">Instructional</h2> 
+<p>welcome to the epsilon-minus-minus instructional!<br/> 
+<br/> 
+ 
+epsilon-minus-minus is an open Source project that explores the properties of error-detection schemes in linear codes. Within this instructional you will find the following:</br></br> 
+What is Coding Theory?</br> 
+Linear Codes</br></br> 
+</p> 
+</br></br></br></br> 
+</div> 
+<div id = nav> 
+<button type="button" onclick="last()">What's last?</button> 
+<button type="button" onclick="next()">What's next?</button> 
+</div> 
+</body> 
+</html> 
+ 
