@@ -91,10 +91,10 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 void testCode(Code* code, Message* msg, CodeStats* stats)
 {
 	/* Allocate space for packet buffers*/
-	Matrix* packet = newMatrix(1, code->wordLen);
-	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen); /* Must be N x 1 Matrix*/
-	Matrix* encodedBuffer = newMatrix(1, code->wordLen + code->parityLen); //FIXME
-	Matrix* decodedPacket = newMatrix(code->wordLen, 1);
+	Matrix* packet = newMatrix(1, code->wordLen);						   /* Must be 1 x W Matrix */
+	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen); /* Must be 1 x (W + P) Matrix */
+	Matrix* syndromeIndexBuffer = newMatrix(code->parityLen, 1); 		   /* Must be P x 1 Matrix */
+	Matrix* decodedPacket = newMatrix(code->wordLen, 1);				   /* Must be W x 1 Matrix */
 
 	/* Reset message byte offset */
 	msg->byteOffset = 0;
@@ -104,13 +104,9 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 
 	while(nextPacket(msg, packet))
 	{
-		fprintf(stderr, "start encode\n");
 		encode(packet, encodedPacket, code);
-		fprintf(stderr, "end encode\n");
 		transmit(encodedPacket, stats->errorProb);
-
-		decode(encodedPacket, encodedBuffer, decodedPacket, code);
-		//transposeMatrix(encodedBuffer);
+		decode(encodedPacket, syndromeIndexBuffer, decodedPacket, code);
 		detectErrors(packet, decodedPacket, stats);
 		stats->packets++;
 	}
@@ -119,7 +115,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 
 	delMatrix(&packet);
 	delMatrix(&encodedPacket);
-	delMatrix(&encodedBuffer);
+	delMatrix(&syndromeIndexBuffer);
 	delMatrix(&decodedPacket);
 }
 
