@@ -104,13 +104,16 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 
 	while(nextPacket(msg, packet))
 	{
+		//fprintf(stderr,"start encode\n");
 		encode(packet, encodedPacket, code);
+		//fprintf(stderr,"end encode\n");
 		transmit(encodedPacket, stats->errorProb);
+		//fprintf(stderr,"start decode\n");
 		decode(encodedPacket, syndromeIndexBuffer, decodedPacket, code);
+		//fprintf(stderr,"end decode\n");
 		detectErrors(packet, decodedPacket, stats);
 		stats->packets++;
 	}
-
 	//extract packet - aka go from vector back to bytes
 
 	delMatrix(&packet);
