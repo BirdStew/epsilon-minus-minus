@@ -177,17 +177,37 @@ void transmit(Matrix* packet, double errorProb)
 	}
 }
 
-
+//FIXME !!! is this even right? !!!
 void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats)
 {
 
+	int diff = 0;
+	int i;
+	int n = packet->rows * packet->cols;
+
+	for(i = 0; i < n; i++)
+	{
+		if(packet->data[i] != decodedPacket->data[i])
+		{
+			diff++;
+		}
+	}
+
+	/* Decoded Successfully */
+	if(diff == 0)
+	{
+		stats->successfulDecodes++;
+	}
+
+	/* Undetected Errors - number of bits that differ between original/decoded */
+	stats->undetectedErrors += diff;
 }
 
 
 void exportResults(Code* code, CodeStats* stats, FILE* fh)
 {
 	/* setup JSON format string */
-	char* jStats  = "{\"n\":%d,\"k\":%d,\"d\":%d,\"" PARITY_TYPE "\":%d," ERROR_PROB "\":%f,\"" PACKETS "\":%d,\"" SUCCESSFUL_DECODES "\":%d,\""
+	char* jStats  = "{\"n\":%d,\"k\":%d,\"d\":%d,\"" PARITY_TYPE "\":%d,\"" ERROR_PROB "\":%f,\"" PACKETS "\":%d,\"" SUCCESSFUL_DECODES "\":%d,\""
 					UNDETECTED_ERRORS "\":%d,\"" DETECTED_ERRORS "\":%d,\"" SETUP_TIME "\":%d,\"" CODE_EXEC_TIME "\":%d";
 
 	char* jMatrices= "\"" GENERATOR "\":\"%s\",\"" CONTROL"\":\"%s\",\"" SYNDROME "\":\"%s\"";
