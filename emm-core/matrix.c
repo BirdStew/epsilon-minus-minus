@@ -262,7 +262,8 @@ int vectorAsInt(Matrix* m)
 	}
 
 	int i, b;
-	for(i = m->cols-1, b=0; i >= 0; i--, b++)
+	int n = m->cols * m->rows;
+	for(i = n-1, b=0; i >= 0; i--, b++)
 	{
 		value = value | (m->data[i] << b);
 	}

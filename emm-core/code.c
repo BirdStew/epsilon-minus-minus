@@ -157,9 +157,9 @@ Matrix* newSyndromeMatrix(Matrix* control)
 //	fprintf(stderr, "after multiply\n");
 
 //		fprintf(stdout, "word:\n");
-//		printMatrix(word);
-	//	fprintf(stdout, "control:\n");
-	//	printMatrix(control);
+//	printMatrix(word);
+//		fprintf(stdout, "control:\n");
+//		printMatrix(control);
 //		fprintf(stdout, "Temp:\n");
 //		printMatrix(temp);
 
@@ -167,7 +167,7 @@ Matrix* newSyndromeMatrix(Matrix* control)
 //	fprintf(stdout, "syn rows: %d\n", syn->rows);
 		/* Resolve vector to int */
 		index = vectorAsInt(temp);
-	//fprintf(stderr, "index: %d\n", index);
+//	fprintf(stdout, "index: %d\n", index);
 
 		/* Set result pointer to row in syndrome table */
 		result->data = (char*)(syn->data + (index * syn->cols));
