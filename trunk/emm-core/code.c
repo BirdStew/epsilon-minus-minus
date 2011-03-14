@@ -405,7 +405,7 @@ void decode(Matrix* encodedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedP
 	{
 
 		/* write bits into decodedPacket (No Parity bits)
-		 * Note: decodePacke is a vertical vector.  Therefore element count equals the rows
+		 * Note: decodePacket is a vertical vector.  Therefore element count equals the rows
 		 */
 		for(i = 0; i <  decodedPacket->rows; i++)
 		{
@@ -415,7 +415,11 @@ void decode(Matrix* encodedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedP
 	else
 	{
 		cosetLeader->data = c->syndrome->data + index * c->syndrome->cols;
-		for(i = 0; i < decodedPacket->cols; i++)
+
+		fprintf(stdout, "CosetLeader:\n");
+		printMatrix(cosetLeader);
+
+		for(i = 0; i < decodedPacket->rows; i++)
 		{
 			decodedPacket->data[i] = cosetLeader->data[i] ^ encodedPacket->data[i];
 		}
