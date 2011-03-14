@@ -137,7 +137,7 @@ void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
  * There is no need to transposed the values. Simply reverse reverse
  * the dimensions.
  */
-//FIXME Does even transpose work?!
+
 void transposeMatrix(Matrix* m)
 {
 	int i, j, temp;
@@ -150,9 +150,6 @@ void transposeMatrix(Matrix* m)
 		{
 			for(j = 0; j < m->cols ; j++)
 			{
-				//temp = m->data[i * m->cols + j];
-				//m->data[i * m->cols + j] = m->data[j * m->cols + i];
-				//m->data[j * m->cols + i] = temp;
 				tData[j * m->rows + i] = m->data[i * m->cols + j];
 			}
 		}
