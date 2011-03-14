@@ -105,11 +105,27 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 	while(nextPacket(msg, packet))
 	{
 		//fprintf(stderr,"start encode\n");
+
+		fprintf(stdout, "Packet:\n");
+		printMatrix(packet);
+
 		encode(packet, encodedPacket, code);
+
+		fprintf(stdout, "Encoded Packet:\n");
+		printMatrix(encodedPacket);
+
 		//fprintf(stderr,"end encode\n");
 		transmit(encodedPacket, stats->errorProb);
 		//fprintf(stderr,"start decode\n");
+
+		fprintf(stdout, "Received encoded Packet:\n");
+		printMatrix(encodedPacket);
+
 		decode(encodedPacket, syndromeIndexBuffer, decodedPacket, code);
+
+		fprintf(stdout, "Decoded Packet:\n");
+		printMatrix(decodedPacket);
+
 		//fprintf(stderr,"end decode\n");
 		detectErrors(packet, decodedPacket, stats);
 		stats->packets++;
@@ -167,10 +183,11 @@ int nextPacket(Message* msg, Matrix* packetBuffer)
 void transmit(Matrix* packet, double errorProb)
 {
 	int i;
+	int prob = errorProb * 100;
 	int n = packet->rows * packet->cols;
 	for(i = 0; i < n; i++)
 	{
-		if(rand() % 1 <= errorProb)
+		if( rand() % 100 <= prob)
 		{
 			packet->data[i] ^= 1;
 		}

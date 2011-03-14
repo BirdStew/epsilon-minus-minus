@@ -75,10 +75,17 @@ int main( int argc, char** argv )
 
 			case 'e':
 				errorProb = atof(optarg);
+
 				if(errorProb >= 1 || errorProb <= 0)
 				{
-					fprintf(stderr, "error: -%c most be between 0 and 1.\n", c); //FIXME testing only
+					fprintf(stderr, "error: -%c must be between 0 and 1.\n", c);
 					return EXIT_FAILURE;
+				}
+
+				if(errorProb*100 != (int)(errorProb*100))
+				{
+					errorProb = ((double)((int)(errorProb * 100)) / 100);
+					fprintf(stderr, "warning: -%c rounds to precision 2 decimal places.\n", c);
 				}
 				break;
 
@@ -115,39 +122,6 @@ int main( int argc, char** argv )
 
 	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath, outPath);
 
-/*
-	Matrix* pcm = newDenseParity(3,3);
-	Matrix* g = newGeneratorMatrix(pcm);
-	printAugMatrix(g,2-1);
-	printf("\n\n");
-	Matrix* vw = calcValidWords(g);
-	printf("\n\n");
-	printMatrix(vw);
-
-*/
-	/*
-	Matrix* ma = newRandomParity(1, 3);
-	Matrix* mb = newRandomParity(3, 5);
-	Matrix* mc = newMatrix(1,5);
-
-	printf("Matrix: A\n");
-	printMatrix(ma);
-	printf("\n\n");
-
-	printf("Matrix: B\n");
-	printMatrix(mb);
-	printf("\n\n");
-
-	bufferedBinaryMultiply(ma,mb,mc);
-	printf("Matrix: C\n");
-	printMatrix(mc);
-
-	printf("\n\n");
-	int i;
-	printf("Matrix: C (for loop)\n");
-	for(i=0; i<mc->cols; i++)
-		printf(" %d", mc->data[i]);
-	*/
 
 	fprintf(stderr, "END\n"); //FIXME testing only
 	return EXIT_SUCCESS;
@@ -178,7 +152,7 @@ void printUsage()
 	"\n"
 	"Notes:\n"
 	" <number> can be a single be a unsigned integer or a colon separated range.\n"
-	"  .\n"
+	" <float> is a floating point number with a precision of 2 decimal places."
 	" <message file> is the path to the message file.\n";
 
 	printf("%s", usage);
