@@ -120,16 +120,17 @@ Matrix* newControlMatrix(Matrix* pcm)
  * Creates a syndrome table represented as a matrix for linear decoding.
  * The syndrome table will always be dimensions (2 ^ partiy length)
  * by (word length + parity length).
+ * Additional Notes:
+ * Con->rows = parityLen
+ * Con->cols = wordLen + parityLen
+ * wordLen = Con->cols - parityLen
  */
 
 Matrix* newSyndromeMatrix(Matrix* control)
 {
 	//fprintf(stderr, "start newSyn\n");
-	/* Con->rows = parityLen */
-	/* Con->cols = wordLen + parityLen*/
-	/* wordLen = Con->cols - parityLen*/
-//Badlwin says syndrome will be 2^pairty x encoded length
-	Matrix* syn = newMatrix(pow(2,control->rows), control->cols); //?  are these even the right dimmesions?!!!
+
+	Matrix* syn = newMatrix(pow(2,control->rows), control->cols); //?  are these even the right dimensions?!!!
 	Matrix* allWords = wordsByWeight(control->cols);
 	Matrix* temp = newMatrix(control->rows, 1);
 //fprintf(stderr,"in syn\n");
