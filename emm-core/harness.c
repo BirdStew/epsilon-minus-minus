@@ -127,7 +127,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 		printMatrix(decodedPacket);
 
 		//fprintf(stderr,"end decode\n");
-		detectErrors(packet, decodedPacket, stats);
+		detectErrors(packet, encodedPacket, decodedPacket, stats);
 		stats->packets++;
 	}
 	//extract packet - aka go from vector back to bytes
@@ -195,10 +195,11 @@ void transmit(Matrix* packet, double errorProb)
 }
 
 //FIXME !!! is this even right? !!!
-void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats)
+void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* decodedPacket, CodeStats* stats)
 {
 
-	int diff = 0;
+	int diffPD = 0;
+	int diffED = 0;
 	int i;
 	int n = packet->rows * packet->cols;
 
@@ -206,25 +207,36 @@ void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats)
 	{
 		if(packet->data[i] != decodedPacket->data[i])
 		{
-			diff++;
+			diffPD++;
 		}
 	}
 
 	/* Decoded Successfully */
-	if(diff == 0)
+	if(diffPD == 0)
 	{
 		stats->successfulDecodes++;
 	}
 
 	/* Undetected Errors - number of bits that differ between original/decoded */
-	stats->undetectedErrors += diff;
+	stats->undetectedErrors += diffPD;
+
+	for(i = 0; i < n; i++)
+	{
+		if(encodedPacket->data[i] != decodedPacket->data[i])
+		{
+			diffED++;
+		}
+	}
+
+	/* DetectedErrors - number of bits that differ between encoded / decoded (corrected bits)*/
+	stats->detectedErrors += diffED;
 }
 
 
 void exportResults(Code* code, CodeStats* stats, FILE* fh)
 {
 	/* setup JSON format string */
-	char* jStats  = "{\"n\":%d,\"k\":%d,\"d\":%d,\"" PARITY_TYPE "\":%d,\"" ERROR_PROB "\":%f,\"" PACKETS "\":%d,\"" SUCCESSFUL_DECODES "\":%d,\""
+	char* jStats  = "{\"n\":%d,\"k\":%d,\"d\":%d,\"" PARITY_TYPE "\":%d,\"" ERROR_PROB "\":%.2f,\"" PACKETS "\":%d,\"" SUCCESSFUL_DECODES "\":%d,\""
 					UNDETECTED_ERRORS "\":%d,\"" DETECTED_ERRORS "\":%d,\"" SETUP_TIME "\":%d,\"" CODE_EXEC_TIME "\":%d";
 
 	char* jMatrices= "\"" GENERATOR "\":\"%s\",\"" CONTROL"\":\"%s\",\"" SYNDROME "\":\"%s\"";

@@ -51,7 +51,7 @@ void testCode(Code* code, Message* msg, CodeStats* stats);
 void initCodeStats(CodeStats* stats);
 int nextPacket( Message* msg, Matrix* packetBuffer);
 void transmit(Matrix* packet, double errorProb);
-void detectErrors(Matrix* packet, Matrix* decodedPacket, CodeStats* stats);
+void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* decodedPacket, CodeStats* stats);
 void exportResults(Code* code, CodeStats* stats, FILE* fh);
 
 #endif /* HARNESS_H_ */

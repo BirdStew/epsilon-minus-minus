@@ -404,8 +404,10 @@ void decode(Matrix* encodedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedP
 	if( index == 0) /* Valid word */
 	{
 
-		/* write bits into decodedPacket (No Parity bits)  */
-		for(i = 0; i <  decodedPacket->cols; i++)
+		/* write bits into decodedPacket (No Parity bits)
+		 * Note: decodePacke is a vertical vector.  Therefore element count equals the rows
+		 */
+		for(i = 0; i <  decodedPacket->rows; i++)
 		{
 			decodedPacket->data[i] = encodedPacket->data[i];
 		}
