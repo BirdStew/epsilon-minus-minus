@@ -15,25 +15,16 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 	CodeStats stats;
 	Message* msg = readMessage(msgPath);
 
+	char buffer[1024];
+
 	/* initialize for for writing otherwise set file descriptor to stdout */
 	FILE* fh;
-	if(outPath)
-	{
-		fh = fopen(outPath, "w");
-		if(fh == NULL)
-		{
-			fprintf(stderr, "Failed to open '%s' for writing in 'runHarness'.\n",outPath);
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
+	if(!outPath)
 	{
 		fh = stdout;
+		/* Write start record array for JSON */
+		fprintf(fh, "[");
 	}
-
-
-	/* Write start record array for JSON */
-	fprintf(fh, "[");
 
 
 	/* Run test ranges */
@@ -42,11 +33,23 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 	{
 		for(p = parityLen[0]; p <= parityLen[1]; p++)
 		{
-			for(pType = 1; pType <= PARITY_FLAG_MAX; pType <<= 1  )
+			for(pType = 1; pType <= PARITY_FLAG_MAX; pType <<= 1 )
 			{
 				if(pType & parityFlags)
 				{
 
+					if(outPath)
+					{
+						/* Open output file for writing */
+						sprintf(buffer, "%s/%d-%d-%d-%d.json", outPath, w, p, pType, (int)(errorProb*100));
+
+						fh = fopen(buffer, "w");
+						if(!fh)
+						{
+							fprintf(stderr, "error: failed to open '%s' for writing 'runHarness'\n", buffer);
+							exit(EXIT_FAILURE);
+						}
+					}
 
 					clock_t startSetup = clock();
 					Code* code = newCode(w, p, pType);
@@ -64,27 +67,33 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 					stats.codeExecTime = getExecTime(endCodeExec, startCodeExec);
 
 					exportResults(code, &stats, fh);
-					fprintf(fh, ",");
 					delCode(&code);
+
+					/* Close file if we're not using stdout */
+					if(outPath)
+					{
+						fclose(fh);
+					}
+					else
+					{
+						/* stdout*/
+						fprintf(fh, ",");
+					}
 				}
-			}
-		}
-	}
+			} /* parity type */
+		} /* parity */
+	} /* word */
 
 	delMessage(&msg);
 	clock_t endHarness = clock();
 
-	/* Last record is program execution time */
-	fprintf(fh, "{\"" HARNESS_EXEC_TIME "\":%ld}", getExecTime(endHarness, startHarness));
-
-	/* Write end record array for JSON */
-	fprintf(fh, "]");
-
-	/* Close file if we're not using stdout */
-	if(outPath)
+	/* stdout */
+	if(!outPath)
 	{
-		fclose(fh);
+		fprintf(fh, "{\"" HARNESS_EXEC_TIME "\":%ld}", getExecTime(endHarness, startHarness));
+		fprintf(fh, "]");
 	}
+
 }
 
 
