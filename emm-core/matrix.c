@@ -267,3 +267,22 @@ int vectorAsInt(Matrix* m)
 
 	return value;
 }
+
+
+void copyMatrix(Matrix* src, Matrix* dst)
+{
+	if(src->rows != dst->rows || src->cols != dst->cols)
+	{
+		fprintf(stderr, "error: Matrices must have the same dimensions in 'copyMatrix'\n");
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		int i;
+		int n = src->rows * src->cols;
+		for(i = 0; i < n; i++)
+		{
+			dst->data[i] = src->data[i];
+		}
+	}
+}

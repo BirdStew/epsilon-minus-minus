@@ -26,5 +26,6 @@ void printAugMatrix(Matrix* m, int column);
 void printMatrix(Matrix* m);
 char* matrixToString(Matrix* m);
 int vectorAsInt(Matrix* m);
+void copyMatrix(Matrix* src, Matrix* dst);
 
 #endif /* MATRIX_H_ */

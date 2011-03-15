@@ -50,8 +50,8 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 void testCode(Code* code, Message* msg, CodeStats* stats);
 void initCodeStats(CodeStats* stats);
 int nextPacket( Message* msg, Matrix* packetBuffer);
-void transmit(Matrix* packet, double errorProb);
-void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* decodedPacket, CodeStats* stats);
+void transmit(Matrix* encodedPacket, double errorProb);
+void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* receivedPacket, Matrix* decodedPacket, Code* code, CodeStats* stats);
 void exportResults(Code* code, CodeStats* stats, FILE* fh);
 
 #endif /* HARNESS_H_ */
