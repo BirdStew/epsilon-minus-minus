@@ -9,13 +9,13 @@
 
 
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath)
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath, int offset)
 {
 	clock_t startHarness = clock();
 	CodeStats stats;
 	Message* msg = readMessage(msgPath);
-
-	char buffer[1024];
+	Message* decodedMsg = copyMessage(msg);
+	char pathBuffer[1024];
 
 	/* initialize for for writing otherwise set file descriptor to stdout */
 	FILE* fh;
@@ -25,7 +25,6 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 		/* Write start record array for JSON */
 		fprintf(fh, "[");
 	}
-
 
 	/* Run test ranges */
 	int w, p, pType;
@@ -41,31 +40,41 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 					if(outPath)
 					{
 						/* Open output file for writing */
-						sprintf(buffer, "%s/%d-%d-%d-%d.json", outPath, w, p, pType, (int)(errorProb*100));
+						sprintf(pathBuffer, "%s/%d-%d-%d-%d.json", outPath, w, p, pType, (int)(errorProb*100));
 
-						fh = fopen(buffer, "w");
+						fh = fopen(pathBuffer, "w");
 						if(!fh)
 						{
-							fprintf(stderr, "error: failed to open '%s' for writing 'runHarness'\n", buffer);
+							fprintf(stderr, "error: failed to open '%s' for writing 'runHarness'\n", pathBuffer);
 							exit(EXIT_FAILURE);
 						}
 					}
 
+					/* Create code */
 					clock_t startSetup = clock();
 					Code* code = newCode(w, p, pType);
 					clock_t endSetup = clock();
 
-
+					/* Clear stats struct and probabiltiy*/
 					initCodeStats(&stats);
 					stats.errorProb = errorProb;
 
+
+					/* Run the code through encode/decode tests */
 					clock_t startCodeExec = clock();
-					testCode(code, msg, &stats);
+					testCode(code, msg, decodedMsg, offset, &stats);
 					clock_t endCodeExec = clock();
 
+					/* write decoded message to file */
+					sprintf(pathBuffer, "%s/%d-%d-%d-%d.msg", outPath, w, p, pType, (int)(errorProb*100));
+					saveMessage(decodedMsg, pathBuffer);
+					delMessage(&decodedMsg);
+
+					/* save execution measures in stats struct */
 					stats.setupTime = getExecTime(endSetup,startSetup);
 					stats.codeExecTime = getExecTime(endCodeExec, startCodeExec);
 
+					/* write JSON output to output steam */
 					exportResults(code, &stats, fh);
 					delCode(&code);
 
@@ -97,7 +106,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 }
 
 
-void testCode(Code* code, Message* msg, CodeStats* stats)
+void testCode(Code* code, Message* msg, Message* decodedMsg, int offset, CodeStats* stats)
 {
 	/* Allocate space for packet buffers*/
 	Matrix* packet = newMatrix(1, code->wordLen);						    /* Must be 1 x W Matrix */
@@ -107,45 +116,50 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 	Matrix* decodedPacket = newMatrix(code->wordLen, 1);				    /* Must be W x 1 Matrix */
 
 	/* Reset message byte offset */
-	msg->byteOffset = 0;
+	msg->byteOffset = offset;
 	msg->bitOffset = 0;
 
-	//printMatrix(code->generator);
+	/* Reset decoded message byte offset */
+	decodedMsg->byteOffset = offset;
+	decodedMsg->bitOffset = 0;
 
 	while(nextPacket(msg, packet))
 	{
 		//fprintf(stderr,"start encode\n");
 
-		fprintf(stdout, "Packet:\n");
-		printMatrix(packet);
+	//	fprintf(stdout, "Packet:\n");
+	//	printMatrix(packet);
 
 		encode(packet, encodedPacket, code);
 
-		fprintf(stdout, "Encoded Packet:\n");
-		printMatrix(encodedPacket);
+	//	fprintf(stdout, "Encoded Packet:\n");
+	//	printMatrix(encodedPacket);
 
 		copyMatrix(encodedPacket, receivedPacket);
 
-		fprintf(stdout, "Received Packet b4 trasnmit:\n");
-		printMatrix(receivedPacket);
+	//	fprintf(stdout, "Received Packet b4 trasnmit:\n");
+	//	printMatrix(receivedPacket);
 
 		//fprintf(stderr,"end encode\n");
 		transmit(receivedPacket, stats->errorProb);
 		//fprintf(stderr,"start decode\n");
 
-		fprintf(stdout, "Received encoded Packet:\n");
-		printMatrix(receivedPacket);
+	//	fprintf(stdout, "Received encoded Packet:\n");
+	//	printMatrix(receivedPacket);
 
 		decode(receivedPacket, syndromeIndexBuffer, decodedPacket, code);
 
-		fprintf(stdout, "Decoded Packet:\n");
-		printMatrix(decodedPacket);
+	//	fprintf(stdout, "Decoded Packet:\n");
+	//	printMatrix(decodedPacket);
 
 		//fprintf(stderr,"end decode\n");
 		detectErrors(packet, encodedPacket, receivedPacket, decodedPacket, code, stats);
+
+		packetToMessage(decodedPacket, decodedMsg);
+
 		stats->packets++;
 	}
-	//extract packet - aka go from vector back to bytes
+
 
 	delMatrix(&packet);
 	delMatrix(&encodedPacket);
@@ -205,7 +219,7 @@ void transmit(Matrix* encodedPacket, double errorProb)
 	{
 		if( rand() % 100 <= prob)
 		{
-			printf("flip: %d\n", i);
+			//printf("flip: %d\n", i);
 			encodedPacket->data[i] ^= 1;
 		}
 	}
@@ -280,6 +294,36 @@ void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* receivedPacket,
 }
 
 
+int packetToMessage(Matrix* packetBuffer, Message* msg)
+{
+	int run = 1;
+	int i;
+	for(i = 0; i < packetBuffer->cols; i++)
+	{
+		if(msg->byteOffset < msg->len)
+		{
+			//packetBuffer->data[i] = (msg->data[msg->byteOffset] >> (7 - msg->bitOffset)) & mask;
+
+			msg->data[msg->byteOffset] = msg->data[msg->byteOffset] | (packetBuffer->data[i] >> (7 - msg->bitOffset));
+
+			msg->bitOffset++;
+			if(msg->bitOffset >= 8)
+			{
+				msg->bitOffset = 0;
+				msg->byteOffset++;
+			}
+		}
+		else
+		{
+			run = 0;
+		}
+	}
+
+	return run;
+}
+
+
+
 void exportResults(Code* code, CodeStats* stats, FILE* fh)
 {
 	/* setup JSON format string */
@@ -288,12 +332,10 @@ void exportResults(Code* code, CodeStats* stats, FILE* fh)
 
 	char* jMatrices= "\"" GENERATOR "\":\"%s\",\"" CONTROL"\":\"%s\",\"" SYNDROME "\":\"%s\"";
 
-
-
+	/* Writes statistics portion to file stream */
 	fprintf(fh,jStats, code->wordLen, code->wordLen+code->parityLen, code->distance, code->parityType,
 					   stats->errorProb, stats->packets, stats->successfulDecodes, stats->undetectedErrors, stats->detectedErrors,
 					   stats->setupTime, stats->codeExecTime);
-
 
 	/* Allocate matrices as strings */
 	char* gen = matrixToString(code->generator);
@@ -308,5 +350,6 @@ void exportResults(Code* code, CodeStats* stats, FILE* fh)
 	free(con);
 	free(syn);
 
+	/* close JSON string  */
 	fprintf(fh, "}");
 }
