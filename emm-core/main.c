@@ -152,8 +152,8 @@ void printUsage()
 	"\n"
 	"Notes:\n"
 	" <number> can be a single be a unsigned integer or a colon separated range.\n"
-	" <float> is a floating point number with a precision of 2 decimal places.\n"
-	" <path> A file path to the output directory.  Do not terminate with path separator.\n"
+	" <float> is a floating point number with a precision of 2 decimal places between 0 and 1.\n"
+	" <path> A file path to the output directory. Do not terminate with path separator.\n"
 	" <message file> is the path to the message file.\n";
 
 	printf("%s", usage);

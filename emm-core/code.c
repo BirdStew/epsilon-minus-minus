@@ -178,7 +178,7 @@ Matrix* newSyndromeMatrix(Matrix* control)
 		{
 			for(j = 0; j < result->cols; j++)
 			{
-				result->data[j] = temp->data[j];
+				result->data[j] = word->data[j];
 			}
 			insertions++;
 		}
