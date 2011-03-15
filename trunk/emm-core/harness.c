@@ -186,7 +186,8 @@ int nextPacket(Message* msg, Matrix* packetBuffer)
 	int mask = 1;
 	int run = 1;
 	int i;
-	for(i = 0; i < packetBuffer->cols; i++)
+	int n = packetBuffer->rows * packetBuffer->cols;
+	for(i = 0; i < n; i++)
 	{
 		if(msg->byteOffset < msg->len)
 		{
@@ -297,14 +298,16 @@ void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* receivedPacket,
 int packetToMessage(Matrix* packetBuffer, Message* msg)
 {
 	int run = 1;
+	int shift;
 	int i;
-	for(i = 0; i < packetBuffer->cols; i++)
+	int n = packetBuffer->rows * packetBuffer->cols;
+	for(i = 0; i < n; i++)
 	{
 		if(msg->byteOffset < msg->len)
 		{
-			//packetBuffer->data[i] = (msg->data[msg->byteOffset] >> (7 - msg->bitOffset)) & mask;
-
-			msg->data[msg->byteOffset] = msg->data[msg->byteOffset] | (packetBuffer->data[i] >> (7 - msg->bitOffset));
+			shift = (7 - msg->bitOffset);
+			msg->data[msg->byteOffset] = msg->data[msg->byteOffset] & (0xFF ^ (1 << shift));
+			msg->data[msg->byteOffset] = msg->data[msg->byteOffset] | (packetBuffer->data[i] << shift);
 
 			msg->bitOffset++;
 			if(msg->bitOffset >= 8)
