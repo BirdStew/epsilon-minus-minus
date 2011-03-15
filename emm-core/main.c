@@ -45,8 +45,8 @@ int main( int argc, char** argv )
 		return EXIT_SUCCESS;
 	}
 
-	// Seed Random number generator with system time.
-	//srand(time(NULL));
+	//Seed Random number generator with system time.
+	srand(time(NULL));
 
 	while ((c = getopt (argc, argv, "LRHhw:p:e:t:o:s:")) != -1)
 	{
@@ -99,7 +99,7 @@ int main( int argc, char** argv )
 				break;
 
 			case 's':
-				offset = optarg;
+				offset = atoi(optarg);
 				break;
 
 			case ':':
