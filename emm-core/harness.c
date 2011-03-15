@@ -17,6 +17,12 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 	Message* decodedMsg = copyMessage(msg);
 	char pathBuffer[1024];
 
+	if(offset >= msg->len)
+	{
+		fprintf(stderr, "error: offset cannot be greater than or equal to message length in 'runHarness'\n");
+		exit(EXIT_FAILURE);
+	}
+
 	/* initialize for for writing otherwise set file descriptor to stdout */
 	FILE* fh;
 	if(!outPath)
@@ -68,7 +74,6 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 					/* write decoded message to file */
 					sprintf(pathBuffer, "%s/%d-%d-%d-%d.msg", outPath, w, p, pType, (int)(errorProb*100));
 					saveMessage(decodedMsg, pathBuffer);
-					delMessage(&decodedMsg);
 
 					/* save execution measures in stats struct */
 					stats.setupTime = getExecTime(endSetup,startSetup);
@@ -93,7 +98,9 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 		} /* parity */
 	} /* word */
 
+	/* Delete message buffers now that we're done with them */
 	delMessage(&msg);
+	delMessage(&decodedMsg);
 	clock_t endHarness = clock();
 
 	/* stdout */
@@ -159,7 +166,6 @@ void testCode(Code* code, Message* msg, Message* decodedMsg, int offset, CodeSta
 
 		stats->packets++;
 	}
-
 
 	delMatrix(&packet);
 	delMatrix(&encodedPacket);
