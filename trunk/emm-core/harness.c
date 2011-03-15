@@ -100,10 +100,11 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 void testCode(Code* code, Message* msg, CodeStats* stats)
 {
 	/* Allocate space for packet buffers*/
-	Matrix* packet = newMatrix(1, code->wordLen);						   /* Must be 1 x W Matrix */
-	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen); /* Must be 1 x (W + P) Matrix */
-	Matrix* syndromeIndexBuffer = newMatrix(code->parityLen, 1); 		   /* Must be P x 1 Matrix */
-	Matrix* decodedPacket = newMatrix(code->wordLen, 1);				   /* Must be W x 1 Matrix */
+	Matrix* packet = newMatrix(1, code->wordLen);						    /* Must be 1 x W Matrix */
+	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);  /* Must be 1 x (W + P) Matrix */
+	Matrix* receivedPacket = newMatrix(1, code->wordLen + code->parityLen); /* Must be 1 x (W + P) Matrix */
+	Matrix* syndromeIndexBuffer = newMatrix(code->parityLen, 1); 		    /* Must be P x 1 Matrix */
+	Matrix* decodedPacket = newMatrix(code->wordLen, 1);				    /* Must be W x 1 Matrix */
 
 	/* Reset message byte offset */
 	msg->byteOffset = 0;
@@ -123,26 +124,32 @@ void testCode(Code* code, Message* msg, CodeStats* stats)
 		fprintf(stdout, "Encoded Packet:\n");
 		printMatrix(encodedPacket);
 
+		copyMatrix(encodedPacket, receivedPacket);
+
+		fprintf(stdout, "Received Packet b4 trasnmit:\n");
+		printMatrix(receivedPacket);
+
 		//fprintf(stderr,"end encode\n");
-		transmit(encodedPacket, stats->errorProb);
+		transmit(receivedPacket, stats->errorProb);
 		//fprintf(stderr,"start decode\n");
 
 		fprintf(stdout, "Received encoded Packet:\n");
-		printMatrix(encodedPacket);
+		printMatrix(receivedPacket);
 
-		decode(encodedPacket, syndromeIndexBuffer, decodedPacket, code);
+		decode(receivedPacket, syndromeIndexBuffer, decodedPacket, code);
 
 		fprintf(stdout, "Decoded Packet:\n");
 		printMatrix(decodedPacket);
 
 		//fprintf(stderr,"end decode\n");
-		detectErrors(packet, encodedPacket, decodedPacket, stats);
+		detectErrors(packet, encodedPacket, receivedPacket, decodedPacket, code, stats);
 		stats->packets++;
 	}
 	//extract packet - aka go from vector back to bytes
 
 	delMatrix(&packet);
 	delMatrix(&encodedPacket);
+	delMatrix(&receivedPacket);
 	delMatrix(&syndromeIndexBuffer);
 	delMatrix(&decodedPacket);
 }
@@ -189,56 +196,87 @@ int nextPacket(Message* msg, Matrix* packetBuffer)
 }
 
 
-void transmit(Matrix* packet, double errorProb)
+void transmit(Matrix* encodedPacket, double errorProb)
 {
 	int i;
 	int prob = errorProb * 100;
-	int n = packet->rows * packet->cols;
+	int n = encodedPacket->rows * encodedPacket->cols;
 	for(i = 0; i < n; i++)
 	{
 		if( rand() % 100 <= prob)
 		{
-			packet->data[i] ^= 1;
+			printf("flip: %d\n", i);
+			encodedPacket->data[i] ^= 1;
 		}
 	}
 }
 
-//FIXME !!! is this even right? !!!
-void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* decodedPacket, CodeStats* stats)
+void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* receivedPacket, Matrix* decodedPacket, Code* code, CodeStats* stats)
 {
-
 	int diffPD = 0;
-	int diffED = 0;
-	int i;
-	int n = packet->rows * packet->cols;
+	int diffER = 0;
+	int wordLen = packet->rows * packet->cols;
+	int encodedLen = encodedPacket->rows * encodedPacket->cols;
 
-	for(i = 0; i < n; i++)
+	/* Pseudo vertical vector N x 1*/
+	Matrix r;
+	r.rows = code->control->rows;
+	r.cols = 1;
+	char d[r.rows];
+	r.data = (char*)d;
+	Matrix* result = &r;
+
+	int i;
+	for(i = 0; i < wordLen; i++)
 	{
 		if(packet->data[i] != decodedPacket->data[i])
-		{
 			diffPD++;
-		}
 	}
 
-	/* Decoded Successfully */
-	if(diffPD == 0)
+	for(i = 0; i < encodedLen; i++)
 	{
-		stats->successfulDecodes++;
+		if(encodedPacket->data[i] != receivedPacket->data[i])
+			diffER++;
 	}
 
-	/* Undetected Errors - number of bits that differ between original/decoded */
-	stats->undetectedErrors += diffPD;
-
-	for(i = 0; i < n; i++)
+	/* we only care about packets corrupted, uncorrupted packets are irrelevant */
+	if(diffER != 0)
 	{
-		if(encodedPacket->data[i] != decodedPacket->data[i])
+		/*
+		if the received pack is a valid word (ie control * received == 0 )
+		and we know that encoded and received are different in here
+		then the error must have been undetected
+		*/
+		transposeMatrix(receivedPacket);
+		bufferedBinaryMultiply(code->control, receivedPacket, result);
+		transposeMatrix(receivedPacket);
+
+		if(vectorAsInt(result) == 0)
 		{
-			diffED++;
+			stats->undetectedErrors++;
+		}
+		else /* otherwise the error has at least been detected */
+		{
+			/*
+			 *here the original and the decoded are the same
+			 *but we know that encoded and received are different in here
+			 *therefore we must have successfully decoded
+			 */
+			if(diffPD == 0)
+			{
+				stats->successfulDecodes++;
+			}
+			else
+			{
+				/* otherwise we have at least detected an error
+				 * even though we were not able to recover properly from it
+				 * this will happen if it decodes improperly
+				 */
+				stats->detectedErrors++;
+			}
 		}
 	}
 
-	/* DetectedErrors - number of bits that differ between encoded / decoded (corrected bits)*/
-	stats->detectedErrors += diffED;
 }
 
 

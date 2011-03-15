@@ -384,11 +384,11 @@ void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
 }
 
 
-void decode(Matrix* encodedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedPacket, Code* c)
+void decode(Matrix* receivedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedPacket, Code* c)
 {
 
 	/* convert matrix to N X 1 form */
-	transposeMatrix(encodedPacket);
+	transposeMatrix(receivedPacket);
 
 	/* Pseudo vector - row in syndrome table */
 	Matrix co;
@@ -397,7 +397,7 @@ void decode(Matrix* encodedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedP
 	Matrix* cosetLeader = &co;
 
 	/* Store resulting syndrome in encodedBuffer */
-	bufferedBinaryMultiply(c->control, encodedPacket, syndromeIndexBuffer);
+	bufferedBinaryMultiply(c->control, receivedPacket, syndromeIndexBuffer);
 
 	int i;
 	int index = vectorAsInt(syndromeIndexBuffer);
@@ -409,7 +409,7 @@ void decode(Matrix* encodedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedP
 		 */
 		for(i = 0; i <  decodedPacket->rows; i++)
 		{
-			decodedPacket->data[i] = encodedPacket->data[i];
+			decodedPacket->data[i] = receivedPacket->data[i];
 		}
 	}
 	else
@@ -421,11 +421,11 @@ void decode(Matrix* encodedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedP
 
 		for(i = 0; i < decodedPacket->rows; i++)
 		{
-			decodedPacket->data[i] = cosetLeader->data[i] ^ encodedPacket->data[i];
+			decodedPacket->data[i] = cosetLeader->data[i] ^ receivedPacket->data[i];
 		}
 	}
 
 	/* return matrix back 1 X N form */
-	transposeMatrix(encodedPacket);
+	transposeMatrix(receivedPacket);
 }
 
