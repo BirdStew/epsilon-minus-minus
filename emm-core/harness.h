@@ -46,12 +46,13 @@ typedef struct CodeStats
 } CodeStats;
 
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath);
-void testCode(Code* code, Message* msg, CodeStats* stats);
+void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath, int offset);
+void testCode(Code* code, Message* msg, Message* decodedMsg, int offset, CodeStats* stats);
 void initCodeStats(CodeStats* stats);
 int nextPacket( Message* msg, Matrix* packetBuffer);
 void transmit(Matrix* encodedPacket, double errorProb);
 void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* receivedPacket, Matrix* decodedPacket, Code* code, CodeStats* stats);
+int packetToMessage(Matrix* packetBuffer, Message* msg);
 void exportResults(Code* code, CodeStats* stats, FILE* fh);
 
 #endif /* HARNESS_H_ */

@@ -37,6 +37,7 @@ int main( int argc, char** argv )
 	int parityFlags = PARITY_FLAG_MAX;
 	char* msgPath = NULL;
 	char* outPath = NULL;
+	int offset = 0;
 
 	if(argc <= 1 || strstr(argv[1],"help"))
 	{
@@ -47,7 +48,7 @@ int main( int argc, char** argv )
 	// Seed Random number generator with system time.
 	//srand(time(NULL));
 
-	while ((c = getopt (argc, argv, "LRHhw:p:e:t:o:")) != -1)
+	while ((c = getopt (argc, argv, "LRHhw:p:e:t:o:s:")) != -1)
 	{
 		switch(c)
 		{
@@ -97,6 +98,10 @@ int main( int argc, char** argv )
 				outPath = optarg;
 				break;
 
+			case 's':
+				offset = optarg;
+				break;
+
 			case ':':
 				fprintf(stderr, "Option -%c requires an operand\n", optopt);
 			break;
@@ -107,6 +112,12 @@ int main( int argc, char** argv )
 			break;
 		}
 
+	}
+
+	if(outPath == NULL)
+	{
+		fprintf(stderr, "Missing required -o <output directory> argument.\n");
+		return EXIT_FAILURE;
 	}
 
 	/* After getopt switches set required arguments */
@@ -120,7 +131,7 @@ int main( int argc, char** argv )
 		return EXIT_FAILURE;
 	}
 
-	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath, outPath);
+	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath, outPath, offset);
 
 
 	fprintf(stderr, "END\n"); //FIXME testing only
@@ -146,7 +157,8 @@ void printUsage()
 	" -p <number>       number of parity bits.\n"
 	" -e <float>        error probability.\n"
 	" -t <number>       flags for parity type.\n"
-	" -o <path>         path to optional output file(s).\n"
+	" -o <path>         path to output directory.\n"
+	" -s <number>       Offset to start message file.\n"
 	//" -k <number>       number of original bits\n"
 	//" -n <number>       number of encoded bits\n"
 	"\n"

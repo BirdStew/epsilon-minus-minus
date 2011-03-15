@@ -4,8 +4,7 @@
  *  Created on: Mar 2, 2011
  *      Author: James Bettke
  */
-#include <stdio.h>
-#include <stdlib.h>
+
 #include "message.h"
 
 Message* newMessage(long size)
@@ -99,4 +98,13 @@ void saveMessage(Message* msg, char* filePath)
 		exit(EXIT_FAILURE);
 	}
 	fclose(fh);
+}
+
+Message* copyMessage(Message* msg)
+{
+	Message* copy = newMessage(msg->len);
+	copy->byteOffset = msg->byteOffset;
+	copy->bitOffset = msg->bitOffset;
+	memcpy(copy->data, msg->data, msg->len);
+	return copy;
 }

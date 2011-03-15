@@ -416,8 +416,8 @@ void decode(Matrix* receivedPacket, Matrix* syndromeIndexBuffer, Matrix* decoded
 	{
 		cosetLeader->data = c->syndrome->data + index * c->syndrome->cols;
 
-		fprintf(stdout, "CosetLeader:\n");
-		printMatrix(cosetLeader);
+		//fprintf(stdout, "CosetLeader:\n");
+		//printMatrix(cosetLeader);
 
 		for(i = 0; i < decodedPacket->rows; i++)
 		{
