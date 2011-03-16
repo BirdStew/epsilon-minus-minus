@@ -118,7 +118,7 @@ void testCode(Code* code, Message* msg, Message* decodedMsg, int offset, CodeSta
 	/* Allocate space for packet buffers*/
 	Matrix* packet = newMatrix(1, code->wordLen);						    /* Must be 1 x W Matrix */
 	Matrix* encodedPacket = newMatrix(1, code->wordLen + code->parityLen);  /* Must be 1 x (W + P) Matrix */
-	Matrix* receivedPacket = newMatrix(1, code->wordLen + code->parityLen); /* Must be 1 x (W + P) Matrix */
+	Matrix* receivedPacket = newMatrix(code->wordLen + code->parityLen, 1); /* Must be (W + P) x 1Matrix */
 	Matrix* syndromeIndexBuffer = newMatrix(code->parityLen, 1); 		    /* Must be P x 1 Matrix */
 	Matrix* decodedPacket = newMatrix(code->wordLen, 1);				    /* Must be W x 1 Matrix */
 
@@ -151,12 +151,12 @@ void testCode(Code* code, Message* msg, Message* decodedMsg, int offset, CodeSta
 		transmit(receivedPacket, stats->errorProb);
 		//fprintf(stderr,"start decode\n");
 
-	//	fprintf(stdout, "Received encoded Packet:\n");
+	//fprintf(stdout, "Received encoded Packet:\n");
 	//	printMatrix(receivedPacket);
 
 		decode(receivedPacket, syndromeIndexBuffer, decodedPacket, code);
 
-	//	fprintf(stdout, "Decoded Packet:\n");
+		//fprintf(stdout, "Decoded Packet:\n");
 	//	printMatrix(decodedPacket);
 
 		//fprintf(stderr,"end decode\n");
@@ -268,9 +268,7 @@ void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* receivedPacket,
 		and we know that encoded and received are different in here
 		then the error must have been undetected
 		*/
-		transposeMatrix(receivedPacket);
 		bufferedBinaryMultiply(code->control, receivedPacket, result);
-		transposeMatrix(receivedPacket);
 
 		if(vectorAsInt(result) == 0)
 		{
