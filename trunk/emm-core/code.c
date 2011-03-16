@@ -297,6 +297,11 @@ Matrix* calcValidWords(Matrix* generator)
 }
 
 
+/*
+ * Generates a large table (matrix) of dimensions 2^N x N.
+ * This is one of the most costly memory functions in emm-core.
+ */
+
 Matrix* wordsByWeight(int wordLen){
 	unsigned int iter;
 	unsigned int i,j,k;
@@ -339,6 +344,14 @@ Matrix* wordsByWeight(int wordLen){
 	return allWords;
 }
 
+
+/*
+ * Function to calculate the minimum distance between valid words. This
+ * function requires that validWords be pre-computed. The calculation
+ * is very expensive because it does N X N comparison of rows that are
+ * length M. The return value is single integer that represents the fewest
+ * number of bit differences between the comparisons.
+ */
 
 int calcMinDistance(Matrix* validWords)
 {
@@ -386,17 +399,13 @@ void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
  * Function to produce a decoded packet. A prerequisite to this function is a
  * code struct where the generator matrix and syndrome table have already been
  * computed. Due to nature of matrix multiplication, both input and output buffers
- * (matrices) must be the correct dimensions.  ReceivedPacket must be a 1 x (W+P)
+ * (matrices) must be the correct dimensions.  ReceivedPacket must be a (W+P) x 1
  * matrix. SyndromeIndexBuffer must be P x 1. DecodedPacket must be a W x 1 matrix.
  * W represents word length while represents parity length.
  */
 
 void decode(Matrix* receivedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedPacket, Code* c)
 {
-
-	/* convert matrix to N X 1 form */
-	transposeMatrix(receivedPacket);
-
 	/* Pseudo vector - row in syndrome table */
 	Matrix co;
 	co.rows = 1;
@@ -428,8 +437,5 @@ void decode(Matrix* receivedPacket, Matrix* syndromeIndexBuffer, Matrix* decoded
 			decodedPacket->data[i] = cosetLeader->data[i] ^ receivedPacket->data[i];
 		}
 	}
-
-	/* return matrix back 1 X N form */
-	transposeMatrix(receivedPacket);
 }
 

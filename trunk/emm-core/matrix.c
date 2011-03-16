@@ -271,16 +271,18 @@ int vectorAsInt(Matrix* m)
 
 void copyMatrix(Matrix* src, Matrix* dst)
 {
-	if(src->rows != dst->rows || src->cols != dst->cols)
+	int srcLen  = src->rows * src->cols;
+	int dstLen  = dst->rows * dst->cols;
+	if(srcLen != dstLen)
 	{
-		fprintf(stderr, "error: Matrices must have the same dimensions in 'copyMatrix'\n");
+		fprintf(stderr, "error: Matrices are of different sizes in 'copyMatrix'\n");
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
 		int i;
-		int n = src->rows * src->cols;
-		for(i = 0; i < n; i++)
+
+		for(i = 0; i < srcLen; i++)
 		{
 			dst->data[i] = src->data[i];
 		}
