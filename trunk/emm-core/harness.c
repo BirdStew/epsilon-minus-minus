@@ -9,15 +9,15 @@
 
 
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath, int offset)
+void runHarness(harnessOptions* hop)
 {
 	clock_t startHarness = clock();
 	CodeStats stats;
-	Message* msg = readMessage(msgPath);
+	Message* msg = readMessage(hop->msgPath);
 	Message* decodedMsg = copyMessage(msg);
 	char pathBuffer[1024];
 
-	if(offset >= msg->len)
+	if(hop->offset >= msg->len)
 	{
 		fprintf(stderr, "error: offset cannot be greater than or equal to message length in 'runHarness'\n");
 		exit(EXIT_FAILURE);
@@ -25,7 +25,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 
 	/* initialize for for writing otherwise set file descriptor to stdout */
 	FILE* fh;
-	if(!outPath)
+	if(!hop->outPath)
 	{
 		fh = stdout;
 		/* Write start record array for JSON */
@@ -34,19 +34,24 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 
 	/* Run test ranges */
 	int w, p, pType;
-	for(w = wordLen[0]; w <= wordLen[1]; w++)
+	for(w = hop->wordLen[0]; w <= hop->wordLen[1]; w++)
 	{
-		for(p = parityLen[0]; p <= parityLen[1]; p++)
+		for(p = hop->parityLen[0]; p <= hop->parityLen[1]; p++)
 		{
 			for(pType = 1; pType <= PARITY_FLAG_MAX; pType <<= 1 )
 			{
-				if(pType & parityFlags)
+				if(pType & hop->parityFlags || pType == CUSTOM)
 				{
 
-					if(outPath)
+					/* Create code */
+					clock_t startSetup = clock();
+					Code* code = newCode(w, p, pType, hop->customMatrixPath);
+					clock_t endSetup = clock();
+
+					if(hop->outPath)
 					{
 						/* Open output file for writing */
-						sprintf(pathBuffer, "%s/%d-%d-%d-%02d.json", outPath, w, p, pType, (int)(errorProb*100));
+						sprintf(pathBuffer, "%s/%d-%d-%d-%02d.json", hop->outPath, code->wordLen, code->parityLen, pType, (int)(hop->errorProb*100));
 
 						fh = fopen(pathBuffer, "w");
 						if(!fh)
@@ -56,23 +61,18 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 						}
 					}
 
-					/* Create code */
-					clock_t startSetup = clock();
-					Code* code = newCode(w, p, pType);
-					clock_t endSetup = clock();
-
 					/* Clear stats struct and probabiltiy*/
 					initCodeStats(&stats);
-					stats.errorProb = errorProb;
+					stats.errorProb = hop->errorProb;
 
 
 					/* Run the code through encode/decode tests */
 					clock_t startCodeExec = clock();
-					testCode(code, msg, decodedMsg, offset, &stats);
+					testCode(code, msg, decodedMsg, hop->offset, &stats);
 					clock_t endCodeExec = clock();
 
 					/* write decoded message to file */
-					sprintf(pathBuffer, "%s/%d-%d-%d-%02d%s", outPath, w, p, pType, (int)(errorProb*100), strrchr(msgPath,'.'));
+					sprintf(pathBuffer, "%s/%d-%d-%d-%02d%s", hop->outPath, code->wordLen, code->parityLen, pType, (int)(hop->errorProb*100), strrchr(hop->msgPath,'.'));
 					saveMessage(decodedMsg, pathBuffer);
 
 					/* save execution measures in stats struct */
@@ -84,7 +84,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 					delCode(&code);
 
 					/* Close file if we're not using stdout */
-					if(outPath)
+					if(hop->outPath)
 					{
 						fclose(fh);
 					}
@@ -104,7 +104,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 	clock_t endHarness = clock();
 
 	/* stdout */
-	if(!outPath)
+	if(!hop->outPath)
 	{
 		fprintf(fh, "{\"" HARNESS_EXEC_TIME "\":%ld}", getExecTime(endHarness, startHarness));
 		fprintf(fh, "]");

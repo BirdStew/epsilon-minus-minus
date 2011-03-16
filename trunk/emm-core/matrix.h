@@ -27,5 +27,6 @@ void printMatrix(Matrix* m);
 char* matrixToString(Matrix* m);
 int vectorAsInt(Matrix* m);
 void copyMatrix(Matrix* src, Matrix* dst);
+Matrix* readMatrix(char* filePath);
 
 #endif /* MATRIX_H_ */

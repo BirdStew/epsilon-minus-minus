@@ -286,3 +286,66 @@ void copyMatrix(Matrix* src, Matrix* dst)
 		}
 	}
 }
+
+
+Matrix* readMatrix(char* filePath)
+{
+	FILE* fh = fopen(filePath,"r");
+
+	if(fh == NULL)
+	{
+		fprintf(stderr, "error: failed to open '%s' for reading in 'readMatrix'\n", filePath);
+		exit(EXIT_FAILURE);
+	}
+
+	/* Get File Size */
+	fseek(fh, 0, SEEK_END);
+	long fileSize = ftell(fh);
+	fseek(fh, 0, SEEK_SET);
+
+	/* allocate space for buffer */
+	Matrix* m = newMatrix(1, fileSize);
+
+	long result = fread(m->data, sizeof(char), fileSize, fh);
+
+	if(result != fileSize)
+	{
+		fprintf(stderr, "error: only read %ld of %ld bytes in 'readMatrix'\n", result, fileSize);
+		exit(EXIT_FAILURE);
+	}
+
+	int firstRowLen = 0;
+	int lineCount = 0;
+	int shift = 0;
+	char last;
+
+	int i;
+	for(i = 0; i < fileSize; i++)
+	{
+		last = m->data[i];
+		if(last == '0' || last == '1' )
+			m->data[i - shift] = last - 48;
+		else
+		{
+			shift++;
+			if(last == '\n')
+			{
+				lineCount++;
+				if(firstRowLen == 0)
+					firstRowLen = i-shift+1;
+			}
+		}
+	}
+	m->data = realloc(m->data, i - shift);
+	m->rows = lineCount;
+	m->cols = firstRowLen;
+
+	if(m->rows * m->cols != fileSize - shift)
+	{
+		fprintf(stderr, "error: invalid matrix format in 'readMatrix'\n");
+		exit(EXIT_FAILURE);
+	}
+
+	fclose(fh);
+	return m;
+}

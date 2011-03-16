@@ -19,7 +19,7 @@
  * equations to use when making the Generator and Control matrices.
  */
 
-Code* newCode(int wordLen, int parityLen, int parityType)
+Code* newCode(int wordLen, int parityLen, int parityType, char* pcmPath)
 {
 	Matrix* tempPCM;
 
@@ -34,14 +34,17 @@ Code* newCode(int wordLen, int parityLen, int parityType)
 		case RANDOM:
 			tempPCM = newRandomParity(wordLen, parityLen);
 			break;
+		case CUSTOM:
+			tempPCM = readMatrix(pcmPath);
+			break;
 		default:
 			fprintf(stderr, "error: Invalid parity type '%d' in 'newCode'\n", parityType);
 			exit(EXIT_FAILURE);
 	}
 
 	Code* c = (Code*)malloc(sizeof(Code));
-	c->wordLen = wordLen;
-	c->parityLen = parityLen;
+	c->wordLen = tempPCM->rows;
+	c->parityLen = tempPCM->cols;
 	c->parityType = parityType;
 	c->generator = newGeneratorMatrix(tempPCM);
 	c->control =  newControlMatrix(tempPCM);

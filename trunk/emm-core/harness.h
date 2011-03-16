@@ -45,8 +45,20 @@ typedef struct CodeStats
 	int codeExecTime; /* (endDecode - startEncode) */
 } CodeStats;
 
+typedef struct harnessOptions
+{
+	int wordLen[2];
+	int parityLen[2];
+	double errorProb;
+	int parityFlags;
+	char* customMatrixPath;
+	char* msgPath;
+	char* outPath;
+	int offset;
+} harnessOptions;
 
-void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,  char* msgPath, char* outPath, int offset);
+
+void runHarness(harnessOptions* hop);
 void testCode(Code* code, Message* msg, Message* decodedMsg, int offset, CodeStats* stats);
 void initCodeStats(CodeStats* stats);
 int nextPacket( Message* msg, Matrix* packetBuffer);
