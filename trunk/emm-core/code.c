@@ -15,8 +15,9 @@
 /*
  * Creates a new code struct and fills all fields with the necessary matrices.
  * This function receives the length of original word (bits) and the number of
- * parity bits used.  The third argument specifies which method of parity check
- * equations to use when making the Generator and Control matrices.
+ * parity bits used. The third argument specifies which method of parity check
+ * equations to use when making the Generator and Control matrices. The forth argument
+ * is only used when parityType is set to CUSTOM.
  */
 
 Code* newCode(int wordLen, int parityLen, int parityType, char* pcmPath)
@@ -83,6 +84,7 @@ void delCode(Code** c)
 	}
 }
 
+
 /*
  * Creates and returns a new generator matrix.  A generator matrix is the
  * result of joining an identity matrix on the left with a “parity check matrix”
@@ -131,12 +133,9 @@ Matrix* newControlMatrix(Matrix* pcm)
 
 Matrix* newSyndromeMatrix(Matrix* control)
 {
-	//fprintf(stderr, "start newSyn\n");
-
 	Matrix* syn = newMatrix(pow(2,control->rows), control->cols); //?  are these even the right dimensions?!!!
 	Matrix* allWords = wordsByWeight(control->cols);
 	Matrix* temp = newMatrix(control->rows, 1);
-//fprintf(stderr,"in syn\n");
 
 	/* Pseudo vector - Transposed(row in allWords) */
 	Matrix w;
@@ -149,29 +148,19 @@ Matrix* newSyndromeMatrix(Matrix* control)
 	r.rows = 1;
 	r.cols = syn->cols;
 	Matrix* result = &r;
-//fprintf(stderr, "synRows: %d\n", syn->rows);
+
 	int i, j;
 	unsigned int index;
 	int insertions = 0;
 	for(i = 1; i < allWords->rows && insertions < syn->rows; i++)
 	{
+		/* Set word pointer to row in words table */
 		word->data = (allWords->data + i*allWords->cols);
-	//fprintf(stderr, "before multiply\n");
+
 		bufferedBinaryMultiply(control, word, temp);
-//	fprintf(stderr, "after multiply\n");
 
-//		fprintf(stdout, "word:\n");
-//	printMatrix(word);
-//		fprintf(stdout, "control:\n");
-//		printMatrix(control);
-//		fprintf(stdout, "Temp:\n");
-//		printMatrix(temp);
-
-
-//	fprintf(stdout, "syn rows: %d\n", syn->rows);
 		/* Resolve vector to int */
 		index = vectorAsInt(temp);
-//	fprintf(stdout, "index: %d\n", index);
 
 		/* Set result pointer to row in syndrome table */
 		result->data = (char*)(syn->data + (index * syn->cols));
@@ -190,7 +179,6 @@ Matrix* newSyndromeMatrix(Matrix* control)
 	delMatrix(&allWords);
 	delMatrix(&temp);
 
-//	fprintf(stderr, "end newSyn\n");
 	return syn;
 }
 
@@ -351,6 +339,7 @@ Matrix* wordsByWeight(int wordLen){
 	return allWords;
 }
 
+
 int calcMinDistance(Matrix* validWords)
 {
 	unsigned int minDist = 0xFFFFFFFF;
@@ -380,12 +369,27 @@ int calcMinDistance(Matrix* validWords)
 }
 
 
+/*
+ * Function to produce an encoded packet. A prerequisite to this function is a code
+ * struct where the generator matrix has already been computed. Packet must be a
+ * 1 x W matrix and the resulting encodedPacket should be a 1 x (W+P) matrix. W
+ * represents word length while represents parity length.
+ */
 
 void encode(Matrix* packet, Matrix* encodedPacket, Code* c)
 {
 	bufferedBinaryMultiply(packet, c->generator, encodedPacket);
 }
 
+
+/*
+ * Function to produce a decoded packet. A prerequisite to this function is a
+ * code struct where the generator matrix and syndrome table have already been
+ * computed. Due to nature of matrix multiplication, both input and output buffers
+ * (matrices) must be the correct dimensions.  ReceivedPacket must be a 1 x (W+P)
+ * matrix. SyndromeIndexBuffer must be P x 1. DecodedPacket must be a W x 1 matrix.
+ * W represents word length while represents parity length.
+ */
 
 void decode(Matrix* receivedPacket, Matrix* syndromeIndexBuffer, Matrix* decodedPacket, Code* c)
 {
@@ -418,9 +422,6 @@ void decode(Matrix* receivedPacket, Matrix* syndromeIndexBuffer, Matrix* decoded
 	else
 	{
 		cosetLeader->data = c->syndrome->data + index * c->syndrome->cols;
-
-		//fprintf(stdout, "CosetLeader:\n");
-		//printMatrix(cosetLeader);
 
 		for(i = 0; i < decodedPacket->rows; i++)
 		{
