@@ -7,6 +7,15 @@
 
 #include "message.h"
 
+
+/*
+ * Creates a new message struct with a data section of “size” bytes.
+ * The data section is filled with zeros and offsets are initialized to zero.
+ * Although a simple array would have sufficed, the message structure was created
+ * to manage markers in a given memory block.  Its main purpose is to house markers
+ * for indexing  into an array at the bit level.
+ */
+
 Message* newMessage(long size)
 {
 	Message* msg = (Message*)malloc(sizeof(Message));
@@ -16,7 +25,7 @@ Message* newMessage(long size)
 		exit(EXIT_FAILURE);
 	}
 
-	char* data = (char*)malloc(size);
+	char* data = (char*)calloc(size, sizeof(char));
 	if(!data)
 	{
 		fprintf(stderr, "error: malloc failed for 'd' in 'newMessage'\n");
@@ -31,6 +40,12 @@ Message* newMessage(long size)
 	return msg;
 }
 
+
+/*
+ * Receives a pointer to a message pointer and safely frees the message
+ * struct from the heap. The passed pointer is then dereferenced and
+ * set to null to prevent users from reading unmanaged memory.
+ */
 
 void delMessage(Message** msg)
 {
@@ -47,6 +62,11 @@ void delMessage(Message** msg)
 
 }
 
+
+/*
+ * Creates a new message struct and fills the data section with
+ * the contents of the file specified by “filePath.”
+ */
 
 Message* readMessage(char* filePath)
 {
@@ -80,6 +100,12 @@ Message* readMessage(char* filePath)
 }
 
 
+/*
+ * Writes the contents of a message struct to an output file
+ * specified by 'filePath.”  The current byte and bit offsets
+ * of the message do not impact writing.
+ */
+
 void saveMessage(Message* msg, char* filePath)
 {
 	FILE* fh = fopen(filePath, "wb");
@@ -100,6 +126,13 @@ void saveMessage(Message* msg, char* filePath)
 	fclose(fh);
 }
 
+
+/*
+ * Makes an exact copy of a message struct and returns a pointer
+ * to the newly created struct. This includes the contents of the
+ * data section, length, byte, and bit offsets.
+ */
+
 Message* copyMessage(Message* msg)
 {
 	Message* copy = newMessage(msg->len);
@@ -108,3 +141,4 @@ Message* copyMessage(Message* msg)
 	memcpy(copy->data, msg->data, msg->len);
 	return copy;
 }
+
