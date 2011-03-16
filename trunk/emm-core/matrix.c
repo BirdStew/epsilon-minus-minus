@@ -22,6 +22,7 @@
  * Creates a matrix of dimensions rows, cols filled with zeros and
  * returns a pointer to the matrix.  Matrix dimensions cannot be negative.
  */
+
 Matrix* newMatrix(int rows, int cols)
 {
 	if(rows < 0 || cols < 0)
@@ -134,7 +135,7 @@ void bufferedBinaryMultiply(Matrix* a, Matrix* b, Matrix* c)
 /*
  * This function transposes a matrix in-place.  If either the
  * rows or the columns is one then it is a one dimensional array.
- * There is no need to transposed the values. Simply reverse reverse
+ * There is no need to transposed the values. Simply reverse
  * the dimensions.
  */
 
@@ -204,6 +205,14 @@ Matrix* joinMatrix(Matrix* a, Matrix* b)
 }
 
 
+/*
+ * Prints an augmented matrix to the standard output stream. The
+ * matrix elements are delimited by spaces and rows and terminated
+ * by newline characters. The vertical separator is drawn with the
+ * '|' pipe character.  It is rendered to the right of the specified
+ * column.  Note:  Indexing starts at zero.
+ */
+
 void printAugMatrix(Matrix* m, int column)
 {
 	int i, j;
@@ -220,6 +229,10 @@ void printAugMatrix(Matrix* m, int column)
 }
 
 
+/*
+ * A wrapper for printAugMatrix with does almost the same task.
+ * The only exception is that there is no vertical column.
+ */
 void printMatrix(Matrix* m)
 {
 	printAugMatrix(m, -1);
@@ -250,6 +263,14 @@ char* matrixToString(Matrix* m)
 }
 
 
+/*
+ * This function converts binary array of 1's and zero's into an integer.
+ * Since the return value is only 32 bits long, vector length cannot exceed
+ * that.  The orientation of the vector doesn't matter.  A 1 x N matrix and
+ * N x 1 matrix will produce the same result.  Bits are joined together
+ * starting from the right hand-side.
+ */
+
 int vectorAsInt(Matrix* m)
 {
 	int value = 0;
@@ -268,6 +289,14 @@ int vectorAsInt(Matrix* m)
 	return value;
 }
 
+
+/*
+ * Performs a buffered matrix copy. The data section for the source
+ * matrix is copied into the data section of the destination matrix.
+ * It does this without altering the dimensions of the matrices, thus
+ * same dimensions is not a required.  The only requirement is that
+ * both data sections be the same size.
+ */
 
 void copyMatrix(Matrix* src, Matrix* dst)
 {
@@ -289,6 +318,15 @@ void copyMatrix(Matrix* src, Matrix* dst)
 	}
 }
 
+
+/*
+ * Creates a new matrix from the contents of an ASCII text file specified
+ * by “filePath.”  The file can be formatted with mixed spacing and even
+ * contain characters other than 1 and 0. Invalid characters will be skipped.
+ * The only strict requirement is that there be one and only one newline character
+ * terminating each row. Rows are computed by newlines and columns are computed
+ * the number of 1/0 elements in the first row.
+ */
 
 Matrix* readMatrix(char* filePath)
 {
