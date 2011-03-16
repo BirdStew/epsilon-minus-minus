@@ -72,7 +72,7 @@ void runHarness(int* wordLen, int* parityLen, double errorProb, int parityFlags,
 					clock_t endCodeExec = clock();
 
 					/* write decoded message to file */
-					sprintf(pathBuffer, "%s/%d-%d-%d-%d.msg", outPath, w, p, pType, (int)(errorProb*100));
+					sprintf(pathBuffer, "%s/%d-%d-%d-%d%s", outPath, w, p, pType, (int)(errorProb*100), strrchr(msgPath,'.'));
 					saveMessage(decodedMsg, pathBuffer);
 
 					/* save execution measures in stats struct */
