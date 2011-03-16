@@ -175,6 +175,12 @@ void testCode(Code* code, Message* msg, Message* decodedMsg, int offset, CodeSta
 }
 
 
+/*
+ *  Initializes all fields of the code struct to zero. This is
+ *  best used in a buffered approach where you are using the
+ *  same struct each time, but clearing it per iteration.
+ */
+
 void initCodeStats(CodeStats* stats)
 {
 	stats->errorProb = 0;
@@ -186,6 +192,15 @@ void initCodeStats(CodeStats* stats)
 	stats->codeExecTime = 0;
 }
 
+
+/*
+ * Function to extract packet sized groups of bits from a message in the form
+ * of a vector.  It tracks the current byte and bit offset in the message struct
+ * to determine the starting point. This function alters the message offset
+ * markers, therefore it is advised that you reset them. The return value is a
+ * boolean indicating if are any bits remaining. If the message bound is reached
+ * during a packet fill, the remaining elements of the packet will be zero.
+ */
 
 int nextPacket(Message* msg, Matrix* packetBuffer)
 {
@@ -217,6 +232,13 @@ int nextPacket(Message* msg, Matrix* packetBuffer)
 }
 
 
+/*
+ * A simple function to simulate errors during transmission of a signal.
+ * Each bit in the enocdedPakctet has a change of being flipped. Within
+ * the function the error provability normally between 0 and 1 is taken
+ * out of 100 in order to be implemented using the C random function.
+ */
+
 void transmit(Matrix* encodedPacket, double errorProb)
 {
 	int i;
@@ -226,7 +248,6 @@ void transmit(Matrix* encodedPacket, double errorProb)
 	{
 		if( rand() % 100 <= prob)
 		{
-			//printf("flip: %d\n", i);
 			encodedPacket->data[i] ^= 1;
 		}
 	}
@@ -299,6 +320,12 @@ void detectErrors(Matrix* packet, Matrix* encodedPacket, Matrix* receivedPacket,
 }
 
 
+/*
+ * This function does the opposite of “nextPacket.” It converts a
+ * vector of bytes back into a bit string and stores it in the message
+ * struct using the byte and bit offsets.
+ */
+
 int packetToMessage(Matrix* packetBuffer, Message* msg)
 {
 	int run = 1;
@@ -330,6 +357,12 @@ int packetToMessage(Matrix* packetBuffer, Message* msg)
 }
 
 
+/*
+ * Function to export the statistics and created matrices of a given code
+ * out to a file stream.  The export is formated in the JSON data markup
+ * language. It does not contain any nested structures, just a one dimensional
+ * associative array.
+ */
 
 void exportResults(Code* code, CodeStats* stats, FILE* fh)
 {
