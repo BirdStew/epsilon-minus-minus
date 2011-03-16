@@ -25,19 +25,16 @@ int main( int argc, char** argv )
 {
 	signed char c;
 
-	/*
-	char linFlag = 0;
-	char hamFlag = 0;
-	char lflag = 0;
-	 */
+	harnessOptions hop;
 
-	int wordLen[] = {0,0};
-	int parityLen[] = {0,0};
-	double errorProb = .01;
-	int parityFlags = PARITY_FLAG_MAX;
-	char* msgPath = NULL;
-	char* outPath = NULL;
-	int offset = 0;
+	hop.wordLen[0]=0,   hop.wordLen[1]=0;
+	hop.parityLen[0]=0, hop.parityLen[1]=0;
+	hop.errorProb = .01;
+	hop.parityFlags = PARITY_FLAG_MAX;
+	hop.customMatrixPath = NULL;
+	hop.msgPath = NULL;
+	hop.outPath = NULL;
+	hop.offset = 0;
 
 	if(argc <= 1 || strstr(argv[1],"help"))
 	{
@@ -48,58 +45,52 @@ int main( int argc, char** argv )
 	//Seed Random number generator with system time.
 	srand(time(NULL));
 
-	while ((c = getopt (argc, argv, "LRHhw:p:e:t:o:s:")) != -1)
+	while ((c = getopt (argc, argv, "hw:p:e:t:c:o:s:")) != -1)
 	{
 		switch(c)
 		{
-			case 'L':
-
-				break;
-
-			case 'R':
-				break;
-
-			case 'H':
-				break;
-
 			case 'h':
 				printUsage();
 				break;
 
 			case 'w':
-				parseRange(optarg, ':', wordLen);
+				parseRange(optarg, ':', hop.wordLen);
 				break;
 
 			case 'p':
-				parseRange(optarg, ':', parityLen);
+				parseRange(optarg, ':', hop.parityLen);
 				break;
 
 			case 'e':
-				errorProb = atof(optarg);
+				hop.errorProb = atof(optarg);
 
-				if(errorProb >= 1 || errorProb <= 0)
+				if(hop.errorProb >= 1 || hop.errorProb <= 0)
 				{
 					fprintf(stderr, "error: -%c must be between 0 and 1.\n", c);
 					return EXIT_FAILURE;
 				}
 
-				if(errorProb*100 != (int)(errorProb*100))
+				if(hop.errorProb*100 != (int)(hop.errorProb*100))
 				{
-					errorProb = ((double)((int)(errorProb * 100)) / 100);
+					hop.errorProb = ((double)((int)(hop.errorProb * 100)) / 100);
 					fprintf(stderr, "warning: -%c rounds to precision 2 decimal places.\n", c);
 				}
 				break;
 
 			case 't':
-				parityFlags = atoi(optarg);
+				hop.parityFlags = atoi(optarg);
+				break;
+
+			case 'c':
+				hop.customMatrixPath = optarg;
 				break;
 
 			case 'o':
-				outPath = optarg;
+				hop.outPath = optarg;
 				break;
 
 			case 's':
-				offset = atoi(optarg);
+				hop.offset = atoi(optarg);
 				break;
 
 			case ':':
@@ -114,16 +105,32 @@ int main( int argc, char** argv )
 
 	}
 
-	if(outPath == NULL)
+	/* require custom path if selected */
+	if(hop.parityFlags == CUSTOM)
+	{
+		if(hop.customMatrixPath == NULL)
+		{
+			fprintf(stderr, "Missing required -c <custom matrix path> argument.\n");
+			return EXIT_FAILURE;
+		}
+
+		if(hop.wordLen[0] != 0 || hop.parityLen[0] != 0)
+		{
+			fprintf(stderr, "warning: ignoring -w and -p options when using custom matrix.\n");
+		}
+	}
+
+	/* require output path */
+	if(hop.outPath == NULL)
 	{
 		fprintf(stderr, "Missing required -o <output directory> argument.\n");
 		return EXIT_FAILURE;
 	}
 
-	/* After getopt switches set required arguments */
+	/* require message path */
 	if(argv[optind])
 	{
-		msgPath = argv[optind];
+		hop.msgPath = argv[optind];
 	}
 	else
 	{
@@ -131,7 +138,7 @@ int main( int argc, char** argv )
 		return EXIT_FAILURE;
 	}
 
-	runHarness(wordLen, parityLen, errorProb, parityFlags, msgPath, outPath, offset);
+	runHarness(&hop);
 
 
 	fprintf(stderr, "END\n"); //FIXME testing only
@@ -146,7 +153,7 @@ int main( int argc, char** argv )
 void printUsage()
 {
 	char* usage=""
-	" Usage: " PROGRAM_NAME " [options] <message file>\n"
+	" Usage: " PROGRAM_NAME " [options] <message>\n"
 	"\n"
 	"Options:\n"
 	//" -L                use linear encoding\n"
@@ -157,16 +164,29 @@ void printUsage()
 	" -p <number>       number of parity bits.\n"
 	" -e <float>        error probability.\n"
 	" -t <number>       flags for parity type.\n"
+	" -c <path>         path to custom parity matrix.\n"
 	" -o <path>         path to output directory.\n"
 	" -s <number>       Offset to start message file.\n"
 	//" -k <number>       number of original bits\n"
 	//" -n <number>       number of encoded bits\n"
 	"\n"
 	"Notes:\n"
-	" <number> can be a single be a unsigned integer or a colon separated range.\n"
-	" <float> is a floating point number with a precision of 2 decimal places between 0 and 1.\n"
-	" <path> A file path to the output directory. Do not terminate with path separator.\n"
-	" <message file> is the path to the message file.\n";
+	" <number>  single unsigned integer or a colon separated range.\n"
+	"\n"
+	" <float>   floating point number with a precision of 2 decimal places \n"
+	"           between 0 and 1.\n"
+	"\n"
+	" <path>    file path to the output directory. Do not terminate with path \n"
+	"           separator.\n"
+	"\n"
+	" <message> path to the message file.\n"
+	"\n"
+	"Parity Type Flags: A number were each bit defines the types parity matrices to \n"
+	"use during the simulation. 1.) DENSE, 2.) LOW_DENSITY, 4.) RANDOM. A flag of 0 enables the \n"
+	"<Custom Parity Matrix> argument."
+	"\n"
+	" Custom Parity Matrix: A text file containing ASCII 1's and 0's. Rows should be \n"
+	" terminated by a newline character.\n";
 
 	printf("%s", usage);
 

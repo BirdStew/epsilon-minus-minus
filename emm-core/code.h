@@ -24,12 +24,13 @@ typedef struct Code
 #define PARITY_FLAG_MAX 7 /* Should always be 2^len(PARITY_TYPE) */
 enum PARITY_TYPE
 {
+	CUSTOM = 0,
 	DENSE = 1,
 	LOW_DENSITY = 2,
-	RANDOM = 4
+	RANDOM = 4,
 };
 
-Code* newCode(int wordLen, int parityLen, int parityType);
+Code* newCode(int wordLen, int parityLen, int parityType, char* pcmPath);
 void delCode(Code** c);
 Matrix* newGeneratorMatrix(Matrix* pcm);
 Matrix* newControlMatrix(Matrix* pcm);
