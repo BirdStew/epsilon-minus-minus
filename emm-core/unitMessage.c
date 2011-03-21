@@ -6,9 +6,9 @@
  */
 
 #include "message.h"
-/*
+
 void utestMessage()
 {
 
 }
-*/
+

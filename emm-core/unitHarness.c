@@ -6,9 +6,9 @@
  */
 
 #include "harness.h"
-/*
+
 void utestHarness()
 {
 
 }
-*/
+
