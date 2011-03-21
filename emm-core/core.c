@@ -1,9 +1,11 @@
 /*
- * main.c
+ * code.c
  *
  *  Created on: Feb 14, 2011
  *      Author: James Bettke
  */
+
+//#ifndef UNIT /* Only if unit-test flag is disabled */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,8 +14,6 @@
 #include <time.h>
 #include "harness.h"
 
-	/* Testing */
-	#include "code.h"
 
 #define PROGRAM_NAME "emm-core"
 
@@ -42,7 +42,7 @@ int main( int argc, char** argv )
 		return EXIT_SUCCESS;
 	}
 
-	//Seed Random number generator with system time.
+	/* Seed Random number generator with system time.  */
 	srand(time(NULL));
 
 	while ((c = getopt (argc, argv, "hw:p:e:t:c:o:s:")) != -1)
@@ -222,3 +222,5 @@ void parseRange(char* str, char delimiter, int* range)
 	}
 }
 
+
+//#endif /* unit-testing flag */

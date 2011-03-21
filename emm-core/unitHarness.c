@@ -5,3 +5,10 @@
  *      Author: James Bettke
  */
 
+#include "harness.h"
+/*
+void utestHarness()
+{
+
+}
+*/
