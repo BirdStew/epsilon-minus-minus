@@ -80,7 +80,24 @@ void utestCopyMatrix(FILE* s)
 
 void utestReadMatrix(FILE* s)
 {
-	memcmp()
+	fprintf(s,"readMatrix - ");
+
+	char t[] = {1,0,0,1,1,0,1,0,1,0,0,1,0,1,1,1,0,1,1,1,1};
+	Matrix m;
+	m.rows = 3;
+	m.cols = 4;
+	m.data = t;
+
+	Matrix* m2 = readMatrix("tests/3x7.txt");
+
+	if(memcmp(m2->data, m.data, m.rows * m.cols))
+	{
+		fprintf(s,"test1: failed\n");
+		return;
+	}
+	delMatrix(&m2);
+
+	fprintf(s,"passed\n");
 }
 
 
