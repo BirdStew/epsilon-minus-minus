@@ -5,3 +5,10 @@
  *      Author: James Bettke
  */
 
+#include "message.h"
+/*
+void utestMessage()
+{
+
+}
+*/
