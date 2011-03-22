@@ -44,9 +44,9 @@ int main( int argc, char** argv )
 	utestMessage(s);
 
 	fprintf(s,"\n\n");
-	fprintf(s, "========================\n");
+	fprintf(s, "=======================\n");
 	fprintf(s, "Unit Testing - Complete\n");
-	fprintf(s, "========================\n");
+	fprintf(s, "=======================\n");
 
 	if(filePath)
 	{
