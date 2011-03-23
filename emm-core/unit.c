@@ -38,10 +38,10 @@ int main( int argc, char** argv )
 	}
 
 	/* run test cases */
-	utestCode(s);
-	utestHarness(s);
 	utestMatrix(s);
 	utestMessage(s);
+	utestCode(s);
+	utestHarness(s);
 
 	fprintf(s,"\n\n");
 	fprintf(s, "=======================\n");
