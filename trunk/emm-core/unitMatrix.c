@@ -10,6 +10,7 @@
 #include <string.h>
 #include "matrix.h"
 
+#define TESTPATH "tests/"
 
 void utestNewIdentity(FILE* s)
 {
@@ -164,11 +165,14 @@ void utestReadMatrix(FILE* s)
 {
 	char t[] = {1,0,0,1,1,0,1,0,1,0,0,1,0,1,1,1,0,1,1,1,1};
 	Matrix m; m.rows = 3; m.cols = 7; m.data = t;
-	Matrix* r = readMatrix("tests/3x7.txt");
+	Matrix* r = readMatrix(TESTPATH "3x7.txt");
 
 	fprintf(s,"readMatrix - test1: ");
 	if(memcmp(r->data, m.data, m.rows * m.cols) && r->rows != 3 && r->cols != 7)
+	{
 		fprintf(s,"failed\n");
+		fprintf(s, "warning: critical function 'readMatrix' failed\n");
+	}
 	else
 		fprintf(s,"passed\n");
 
@@ -176,12 +180,15 @@ void utestReadMatrix(FILE* s)
 
 	char t2[] = {0,0,0,1,1,0,1,1};
 	m.rows = 4; m.cols = 2; m.data = t2;
-	Matrix* r2 = readMatrix("tests/4x2.txt");
+	Matrix* r2 = readMatrix(TESTPATH "4x2.txt");
 
 
 	fprintf(s,"readMatrix - test2: ");
 	if(memcmp(r2->data, m.data, m.rows * m.cols) && r2->rows != 4 && r2->cols != 2)
+	{
 		fprintf(s,"failed\n");
+		fprintf(s, "warning: critical function 'readMatrix' failed\n");
+	}
 	else
 		fprintf(s,"passed\n");
 
@@ -192,6 +199,7 @@ void utestReadMatrix(FILE* s)
 /* local main */
 void utestMatrix(FILE* s)
 {
+	utestReadMatrix(s); /* Critical */
 	utestNewIdentity(s);
 	utestBufferedBinaryMultiply(s);
 	utestTransposeMatrix(s);
@@ -199,7 +207,6 @@ void utestMatrix(FILE* s)
 	utestMatrixToString(s);
 	utestVectorAsInt(s);
 	utestCopyMatrix(s);
-	utestReadMatrix(s);
 
 	fprintf(s, "=========================\n");
 	fprintf(s, "Matrix Testing - Complete\n");
