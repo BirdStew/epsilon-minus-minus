@@ -42,7 +42,27 @@ void utestNewSyndromeMatrix(FILE* s)
 
 void utestNewDenseParity(FILE* s)
 {
-	//Matrix* dp1 = readMatrix();
+	Matrix* dp1 = newDenseParity(4,4);
+	Matrix* dp2 = newDenseParity(3,5);
+	Matrix* exp1 = readMatrix(TESTPATH "denseparity4x4");
+	Matrix* exp2 = readMatrix(TESTPATH "denseparity3x5");
+
+	fprintf(s,"newDenseParity - test1: ");
+	if(!equalsMatrix(dp1,exp1))
+		fprintf(s,"failed\n");
+	else
+		fprintf(s,"passed\n");
+
+	fprintf(s,"newDenseParity - test2: ");
+	if(!equalsMatrix(dp2,exp2))
+		fprintf(s,"failed\n");
+	else
+		fprintf(s,"passed\n");
+
+	delMatrix(&dp1);
+	delMatrix(&dp2);
+	delMatrix(&exp1);
+	delMatrix(&exp2);
 }
 
 

@@ -28,5 +28,6 @@ char* matrixToString(Matrix* m);
 int vectorAsInt(Matrix* m);
 void copyMatrix(Matrix* src, Matrix* dst);
 Matrix* readMatrix(char* filePath);
+int equalsMatrix(Matrix* a, Matrix* b);
 
 #endif /* MATRIX_H_ */
