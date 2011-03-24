@@ -196,9 +196,46 @@ void utestReadMatrix(FILE* s)
 }
 
 
+void utestEqualsMatrix(FILE* s)
+{
+	Matrix a; a.rows = 3; a.cols = 3; char adata[] = {1,0,0,1,0,0,1,0,0}; a.data = adata;
+	Matrix b; b.rows = 3; b.cols = 3; char bdata[] = {0,0,0,1,1,1,0,0,0}; b.data = bdata;
+	Matrix c; c.rows = 1; c.cols = 2; char cdata[] = {1,0}; c.data = cdata;
+	Matrix d; d.rows = 2; d.cols = 1; char ddata[] = {1,0}; d.data = ddata;
+
+	fprintf(s,"equalsMatrix - test1: ");
+	if(equalsMatrix(&a,&b) == 1)
+	{
+		fprintf(s,"failed\n");
+		fprintf(s, "warning: critical function 'equalsMatrix' failed\n");
+	}
+	else
+		fprintf(s,"passed\n");
+
+	fprintf(s,"equalsMatrix - test2: ");
+	if(equalsMatrix(&c,&d) == 1)
+	{
+		fprintf(s,"failed\n");
+		fprintf(s, "warning: critical function 'equalsMatrix' failed\n");
+	}
+	else
+		fprintf(s,"passed\n");
+
+	fprintf(s,"equalsMatrix - test3: ");
+	if(equalsMatrix(&a,&a) == 0)
+	{
+		fprintf(s,"failed\n");
+		fprintf(s, "warning: critical function 'equalsMatrix' failed\n");
+	}
+	else
+		fprintf(s,"passed\n");
+}
+
+
 /* local main */
 void utestMatrix(FILE* s)
 {
+	utestEqualsMatrix(s); /* Critical */
 	utestReadMatrix(s); /* Critical */
 	utestNewIdentity(s);
 	utestBufferedBinaryMultiply(s);

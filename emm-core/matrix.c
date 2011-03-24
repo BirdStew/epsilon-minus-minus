@@ -6,6 +6,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "matrix.h"
 
 /*
@@ -388,4 +389,23 @@ Matrix* readMatrix(char* filePath)
 
 	fclose(fh);
 	return m;
+}
+
+
+/*
+ * Function to see if two matrices are equal to each other.
+ * If two matrices are have the same dimensions and content
+ * it returns a one, otherwise it returns a zero.
+ */
+
+int equalsMatrix(Matrix* a, Matrix* b)
+{
+	if(a->rows != b->rows || a->cols != b->cols || memcmp(a->data, b->data, a->rows * a->cols) != 0)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
 }
