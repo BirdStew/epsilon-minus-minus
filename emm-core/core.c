@@ -73,7 +73,7 @@ int main( int argc, char** argv )
 				if(hop.errorProb*100 != (int)(hop.errorProb*100))
 				{
 					hop.errorProb = ((double)((int)(hop.errorProb * 100)) / 100);
-					fprintf(stderr, "warning: -%c rounds to precision 2 decimal places.\n", c);
+					fprintf(stderr, "warning: -%c rounds to precision 2 decimal places. E is now %.2f\n", c, hop.errorProb);
 				}
 				break;
 
