@@ -46,18 +46,20 @@
                     clear:both;
                     height:10%;
                  }
-            #core, #inst {
-                    width:33%;
-                    float:left;
-                    }
+
+			#next, #prev, #popup, #pupop {
+					float:left;
+					width:25%;
+			}
+			
+			#core{
+			float:left;
+			}
              #def{
                     float:right;
                     height:40%;
                    }
-                   #popup{
-                       float:right;
 
-                    }
                     #output {
                     height:40%;
                     overflow:auto;
@@ -85,6 +87,7 @@
             $(document).ready(function(){
                 $('#def').slideUp('fast');
                 $('#load').slideUp('fast');
+				$('#core').slideUp('fast');
             });
 
             $('#next').bind('click', function(e){//ADD PAGE CYCLING
@@ -111,11 +114,13 @@
                 });
             });
             
+			
+			var word = $('#w');
+            var parity = $('#p');
+            var type = $('#pyt');
+            var error = $('#e');
             $('#request').bind('click', function(e){
-                var word = $('#w');
-                var parity = $('#p');
-                var type = $('#pyt');
-                var error = $('#e');
+                
                 $.ajax({
                     type: 'POST',
                     url: 'assets/async/get_data.php',
@@ -127,26 +132,39 @@
                     },
                     success: function(r){
                         //var data = $.parseJSON(r);
-                        alert('job submitted..');
+                        //alert('job submitted..');
+						$('#load').fadeOut('slow');
                     }
                 });
             });
             $('#display').bind('click', function(e){
-                var url = 'assets/files/2-4-1-90.json';
+                var url = 'assets/files/'+ word.val() + '-' + parity.val() + '-' + type.val() + '-' + error.val()*100 + '.json';
+		var img = 'assets/files/'+ word.val() + '-' + parity.val() + '-' + type.val() + '-' + error.val()*100 + '.bmp';//alert(url);
                 $.ajax({
 			type: 'GET',
 			url: url,
 			success: function(r){
+				//$('#output').clear();
 				var data = $.parseJSON(r);
 				$.each(data, function(key, value){
 					$('#output').append(key + ' ' + value + '<br />');
 				});
+				//$('#output').append(url);
+				$('#output').append('<img src="'+img+'" style="float:right"/>' );
+				$('#load').fadeOut('slow');
+				$('#output').slideDown('slow');
+                $('#core').slideUp('slow');
 			}
+
 		});
             });
             $('#popup').bind('click', function(e){
                 $('#wiki').slideUp('slow');
                 $('#def').slideDown('slow');
+            });
+			$('#pupop').bind('click', function(e){
+                $('#output').slideUp('slow');
+                $('#core').slideDown('slow');
             });
         });
     </script>
@@ -190,23 +208,16 @@
         
         <!--navigation toolbar-->
         <div id="nav">
-            <div id="core">
-                <button type="button" id="request">request data
-                </button>
-                <button type="button" id ="display">display results
-                </button>
-            </div>
+           <!--emm-core-->
+		   <button type="button" id="pupop">emm-core
+				</button>
             <!--instructionals-->
-            <div id="inst">
+
                 <button type="button" id="prev">previous
                 </button>
                 <button type="button" id="next">next
                 </button>
-
-
             
-                
-            </div>
             <!--definitions-->
             <button type="button" id="popup">definitions
                 </button>
@@ -220,7 +231,12 @@
         </div>
         
         <!--input form-->
-        <form id="input">
+		 <div id="core">
+                <button type="button" id="request">request data
+                </button>
+                <button type="button" id ="display">display results
+                </button>
+				        <form id="input">
             word length:
             <select id="w">
                 <?php
@@ -247,10 +263,11 @@
            epsilon:
            <select id="e">
                <?php
-               for($i=0.01;$i<=1.00;$i+=0.01)
-                echo  '<option value="'.$i.'">'.$i.'</option>';
+               for($i=0.01;$i<=0.90;$i+=0.01)
+                echo  '<option value="'.$i.'">'.sprintf("%.2f",$i).'</option>';
                ?>
            </select>
         </form>
+            </div>
     </body>
 </html>
