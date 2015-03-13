@@ -1,0 +1,1 @@
+A web application used for regression testing on the effectiveness of error detection using a parity matrix.  The primary use of this software is academic.
